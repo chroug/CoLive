@@ -1,0 +1,154 @@
+/* --- HERO SECTION --- */
+.hero {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+}
+.hero img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Assombrissement sur la moitié gauche */
+.container {
+    width: 70%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    padding: 40px 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- HEADER --- */
+.top-bar {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 3;
+}
+
+.logo {
+    background: black;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.login-btn {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* --- CONTENT --- */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+}
+
+.hero-content h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 15px;
+    opacity: 0.9;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.cta {
+    background: white;
+    color: black;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-size: 15px;
+    cursor: pointer;
+    width: auto;
+    align-self: flex-start;
+}
+
+/* --- SEARCH BOX --- */
+
+.container-search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+}
+.search-box {
+    display: flex;
+    border-radius: 30px;
+    overflow: hidden;
+    width: 350px;
+    position: relative;
+
+}
+.search-box .hover-search {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 101%;
+    height: 101%;
+    border-radius: 9999px;
+    background: black;
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+    z-index: 2;
+}
+
+.search-box input {
+    border: none;
+    padding: 20px 0 20px 30px;
+    flex: 1;
+    outline: none;
+    font-size: 15px;
+    color: black;
+    z-index: 3;
+    background: white;
+}
+.search-box:focus-within {
+    outline: 2px solid #000;
+}
+
+.search-box button {
+    background: none;
+    border: none;
+    padding: 0 30px 0 20px;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 3;
+    background: white;
+}
+.search-box button svg {
+    fill: black;
+}

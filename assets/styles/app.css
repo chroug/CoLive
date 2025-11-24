@@ -1,3 +1,103 @@
-body {
-    background-color: skyblue;
+/* =========================
+   Modern CSS Reset
+   ========================= */
+
+/* --- Global Reset --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* --- HTML5 display fix --- */
+article, aside, details, figcaption, figure,
+footer, header, main, nav, section, summary {
+    display: block;
+}
+
+/* --- Body defaults --- */
+html, body {
+    height: 100%;
+    line-height: 1;
+    font-family: sans-serif;
+    background: #fff;
+    color: #000;
+}
+
+/* --- Lists --- */
+ol, ul {
+    list-style: none;
+}
+
+/* --- Quotes --- */
+blockquote, q {
+    quotes: none;
+}
+
+blockquote::before, blockquote::after,
+q::before, q::after {
+    content: '';
+}
+
+/* --- Tables --- */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+}
+
+/* --- Links --- */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* --- Images and media --- */
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* --- Form elements --- */
+button, input, select, textarea {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    line-height: normal;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* --- Buttons cursor --- */
+button {
+    cursor: pointer;
+    background: none;
+}
+
+/* --- Hidden elements --- */
+[hidden] {
+    display: none !important;
+}
+
+/* --- Focus outline for accessibility --- */
+:focus {
+    outline: 2px solid #000;
+    outline-offset: 2px;
+}
+
+/* --- Horizontal rules --- */
+hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
 }
