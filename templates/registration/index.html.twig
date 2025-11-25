@@ -1,20 +1,52 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RegistrationController!{% endblock %}
+{% block title %}Créer un compte{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/registration.css') }}">
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="auth-bg">
+        <section class="auth-card">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            <div class="logo-box">C</div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/matth/Desktop/sae3-01/src/Controller/RegistrationController.php</code></li>
-        <li>Your template at <code>C:/Users/matth/Desktop/sae3-01/templates/registration/index.html.twig</code></li>
-    </ul>
-</div>
+            <h2 class="title">Rejoindre CoLive</h2>
+            <p class="subtitle">Créez votre compte pour commencer à partager des logements</p>
+
+            <p class="small-label">Remplissez les informations ci-dessous pour vous inscrire</p>
+
+            <form action="" method="post" enctype="multipart/form-data" class="form">
+
+                <div class="two-cols">
+                    <div>
+                        <label for="prenom">Prénom</label>
+                        <input type="text" id="prenom" name="registrationForm[prenom]" placeholder="Votre Prénom" required>
+                    </div>
+                    <div>
+                        <label for="nom">Nom</label>
+                        <input type="text" id="nom" name="registrationForm[nom]" placeholder="Votre nom" required>
+                    </div>
+                </div>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="registrationForm[email]" placeholder="votre.email@example.com" required>
+
+                <label for="plainPassword_first">Mot de passe</label>
+                <input type="password" id="plainPassword_first" name="registrationForm[plainPassword][first]" placeholder="......." required>
+
+                <label for="plainPassword_second">Répéter le mot de passe</label>
+                <input type="password" id="plainPassword_second" name="registrationForm[plainPassword][second]" placeholder="......." required>
+
+                <button type="submit" class="btn-primary">Créer mon compte</button>
+
+            </form>
+
+            <p class="login-link">
+                Déjà inscrit ? <a href="">Se connecter</a>
+            </p>
+
+        </section>
+    </div>
 {% endblock %}

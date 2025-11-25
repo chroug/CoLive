@@ -1,0 +1,109 @@
+.auth-bg {
+    background:  center/cover no-repeat;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 420px;
+    background: #ffffff;
+    padding: 32px 36px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.logo-box {
+    width: 48px;
+    height: 48px;
+    background: #000;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 28px;
+    font-weight: 700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin: 0 auto 12px;
+}
+
+/* TITRES */
+.title {
+    margin-top: 0;
+    font-size: 22px;
+    font-weight: 600;
+}
+.subtitle {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #777;
+}
+.small-label {
+    text-align: left;
+    margin: 30px 0 10px;
+    font-size: 13px;
+    color:#444;
+}
+
+/* FORM & INPUTS */
+form {
+    margin-top: 20px;
+}
+form label {
+    display: block;
+    text-align: left;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+form :is(input, select) {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #C3C3C3;
+    background: #F2F2F2;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+.two-cols {
+    display:flex;
+    gap:14px;
+}
+.two-cols > div {
+    flex:1;
+}
+
+/* BUTTON */
+.btn-primary {
+    background: #000;
+    color: #fff;
+    border:none;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor:pointer;
+    margin-top: 10px;
+}
+
+/* LINK */
+.login-link {
+    margin-top: 16px;
+    font-size: 13px;
+}
+.login-link a {
+    color:#000;
+    text-decoration: underline;
+}
+
+/* ERROR */
+.error {
+    background: #ffe0e0;
+    color:#b10000;
+    padding: 10px;
+    border-radius:8px;
+    margin-bottom: 15px;
+}
