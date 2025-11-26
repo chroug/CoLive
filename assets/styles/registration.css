@@ -1,13 +1,26 @@
 .auth-bg {
+    position: relative;
     background:  center/cover no-repeat;
     width: 100%;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 50px 5%;
+}
+
+.auth-bg img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .auth-card {
+    position: relative;
+    z-index: 1;
     width: 420px;
     background: #ffffff;
     padding: 32px 36px;
@@ -100,7 +113,7 @@ form :is(input, select) {
 }
 
 /* ERROR */
-.error {
+.flash-error {
     background: #ffe0e0;
     color:#b10000;
     padding: 10px;
