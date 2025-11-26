@@ -152,3 +152,17 @@
 .search-box button svg {
     fill: black;
 }
+
+@media (max-width: 1000px)
+{
+    .hero-content {
+        flex-direction: column;
+    }
+    .container {
+        width: 100%;
+    }
+    .container-search {
+        width: 100%;
+        height: 50vh;
+    }
+}
