@@ -1,11 +1,18 @@
 .auth-bg {
     position: relative;
-    background:  center/cover no-repeat;
     width: 100%;
     min-height: 100vh;
+}
+
+.auth-center {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    backdrop-filter: blur(3px);
+    min-width: 100%;
+    min-height: 100vh;
     padding: 50px 5%;
 }
 
