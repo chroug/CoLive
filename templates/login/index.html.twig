@@ -8,35 +8,38 @@
 
 {% block body %}
     <div class="auth-bg">
-        <section class="auth-card">
+        <img src="{{ asset('img/home.png') }}" alt="CoLive Background" class="hero-bg-image">
+        <div class="auth-center">
+            <section class="auth-card">
 
-            <div class="logo-box">C</div>
-            <h2 class="title">Connexion</h2>
-            <p class="subtitle">Heureux de vous revoir !</p>
+                <div class="logo-box">C</div>
+                <h2 class="title">Connexion</h2>
+                <p class="subtitle">Heureux de vous revoir !</p>
 
-            <form action="{{ path('app_login') }}" method="post" class="form">
+                <form action="{{ path('app_login') }}" method="post" class="form">
 
-                <label for="username">Email</label>
-                <input type="email" id="username" name="_username" value="{{ last_username }}" required autofocus>
+                    <label for="username">Email</label>
+                    <input type="email" id="username" name="_username" value="{{ last_username }}" required autofocus>
 
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="_password" required>
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="_password" required>
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                {% if error %}
-                    <div class="flash-error">
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
-                {% endif %}
+                    {% if error %}
+                        <div class="flash-error">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
 
-                <button type="submit" class="btn-primary">Se connecter</button>
-            </form>
+                    <button type="submit" class="btn-primary">Se connecter</button>
+                </form>
 
-            <p class="login-link">
-                Pas encore de compte ? <a href="{{ path('app_registration') }}">S'inscrire</a>
-            </p>
+                <p class="login-link">
+                    Pas encore de compte ? <a href="{{ path('app_registration') }}">S'inscrire</a>
+                </p>
 
-        </section>
+            </section>
+        </div>
     </div>
 {% endblock %}
