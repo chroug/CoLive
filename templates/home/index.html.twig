@@ -1,44 +1,77 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}CoLive – Accueil{% endblock %}
+
 {% block stylesheets %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
 {% endblock %}
+
 {% block body %}
     <div class="hero">
+        <img src="{{ asset('img/home.png') }}" alt="CoLive Background" class="hero-bg-image">
+
         <div class="overlay"></div>
 
         <header class="top-bar">
             <div class="logo">C</div>
-            <a href="{{ path('app_login') }}" class="login-btn">Se connecter</a>
+            <a href="#loginAajouter" class="login-btn">Se connecter</a>
         </header>
 
         <div class="hero-content">
-            <div class="container">
-                <h1>La solution de cohabitation<br> pour les étudiants en alternance</h1>
+            <div class="text-content">
+                <h1>La cohabitation pensée pour les étudiants en alternance</h1>
 
                 <p class="subtitle">
-                    CoLive connecte les étudiants en alternance pour partager des logements
-                    entre l’école et l’entreprise. Trouvez facilement votre colocataire idéal
-                    ou proposez votre espace.
+                    CoLive connecte les étudiants en alternance pour partager des logements.
+                    Trouvez votre colocataire idéal ou proposez votre espace.
                 </p>
 
-                <a href="#" class="cta">Proposer mon logement</a>
+                <a href="#" class="cta-pill">
+                    Proposer mon logement
+                    <span class="icon-arrow">&rarr;</span>
+                </a>
             </div>
-            <div class="container-search">
-                <form action="#" method="get" class="search-box">
-                    <input type="text" name="q" placeholder="Rechercher..." value="">
-                    <button type="submit">
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                              fill="#0000" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0.4 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="M10.5 19c1.98 0 3.81-.69 5.25-1.83L20 21.42l1.41-1.41-4.25-4.25a8.47 8.47 0 0 0 1.83-5.25c0-4.69-3.81-8.5-8.5-8.5S2 5.81 2 10.5 5.81 19 10.5 19m0-15c3.58 0 6.5 2.92 6.5 6.5S14.08 17 10.5 17 4 14.08 4 10.5 6.92 4 10.5 4"></path>
-                        </svg>
+
+            <div class="search-container">
+                <form action="/" method="get" class="search-bar">
+
+                    <div class="search-item">
+                        <label for="location">Destination</label>
+                        <input type="text" id="location" name="location" placeholder="Ville, école...">
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="search-item">
+                        <label for="date_start">Arrivée</label>
+                        <input type="date" id="date_start" name="date_start">
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="search-item">
+                        <label for="date_end">Départ</label>
+                        <input type="date" id="date_end" name="date_end">
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="search-item">
+                        <label for="type">Type</label>
+                        <select name="type" id="type">
+                            <option value="all">Tout</option>
+                            <option value="coloc">Colocation</option>
+                            <option value="room">Chambre</option>
+                            <option value="studio">Studio</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="search-btn">
+                        Rechercher
                     </button>
-                    <div class="hover-search"></div>
                 </form>
             </div>
         </div>
-        <img src="{{ asset('img/home.png') }}" alt="image-home-appartement">
     </div>
 {% endblock %}
