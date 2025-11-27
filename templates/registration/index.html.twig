@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un compte{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/registration.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="auth-bg">
+        <img src="{{ asset('img/home.png') }}" alt="image-home-appartement">
+        <section class="auth-card">
+
+            <div class="logo-box">C</div>
+
+            <h2 class="title">Rejoindre CoLive</h2>
+            <p class="subtitle">Créez votre compte pour commencer à partager des logements</p>
+            <p class="small-label">Remplissez les informations ci-dessous pour vous inscrire</p>
+
+
+
+            <form action="{{ path('app_registration') }}" method="post" class="form">
+
+                <div class="two-cols">
+                    <div>
+                        <label for="prenom">Prénom</label>
+                        <input type="text" id="prenom" name="registrationForm[prenom]" placeholder="Votre Prénom" required>
+                    </div>
+                    <div>
+                        <label for="nom">Nom</label>
+                        <input type="text" id="nom" name="registrationForm[nom]" placeholder="Votre nom" required>
+                    </div>
+                </div>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="registrationForm[email]" placeholder="votre.email@example.com" required>
+
+                <label for="plainPassword_first">Mot de passe</label>
+                <input type="password" id="plainPassword_first" name="registrationForm[plainPassword][first]" placeholder="......." required>
+
+                <label for="plainPassword_second">Répéter le mot de passe</label>
+                <input type="password" id="plainPassword_second" name="registrationForm[plainPassword][second]" placeholder="......." required>
+
+                {% for message in app.flashes('error') %}
+                    <div class="flash-error">{{ message }}</div>
+                {% endfor %}
+
+                <button type="submit" class="btn-primary">Créer mon compte</button>
+            </form>
+
+            <p class="login-link">
+                Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a>
+            </p>
+
+        </section>
+    </div>
+{% endblock %}
