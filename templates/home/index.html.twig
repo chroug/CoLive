@@ -15,7 +15,18 @@
 
         <header class="top-bar">
             <div class="logo">C</div>
-            <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
+            {% if app.user %}
+                <a href="{{ path('app_profile') }}" class="link-avatar">
+                {% if app.user.avatar %}
+                    <img src="{{ asset('uploads/avatars/' ~ app.user.avatar) }}" alt="Avatar" class="avatar-img">
+                {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="avatar-img">
+                {% endif %}
+                </a>
+            {% else %}
+                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
+            {% endif %}
+
         </header>
 
         <div class="hero-content">
