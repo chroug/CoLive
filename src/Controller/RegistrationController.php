@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -16,7 +18,9 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         EntityManagerInterface $manager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        UserAuthenticatorInterface $userAuthenticator,
+        Security $security
     ): Response
     {
         if ($request->isMethod('POST')) {
@@ -59,7 +63,9 @@ class RegistrationController extends AbstractController
             $manager->flush();
 
             $this->addFlash('success', 'Votre compte a été créé avec succès !');
-            return $this->redirectToRoute('app_home');
+
+            return $security->login($user, 'form_login', 'main');
+
         }
 
         return $this->render('registration/index.html.twig');
