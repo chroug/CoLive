@@ -21,6 +21,10 @@ class RegistrationController extends AbstractController
     {
         if ($request->isMethod('POST')) {
 
+            if ($this->getUser()) {
+                return $this->redirectToRoute('app_home');
+            }
+
             $data = $request->request->all('registrationForm');
 
             $prenom        = $data['prenom'];
