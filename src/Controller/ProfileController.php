@@ -64,6 +64,26 @@ class ProfileController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/profil/like/remove/{id}', name: 'app_like_remove')]
+    public function removeLike(Annonce $annonce, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        $like = $entityManager->getRepository(Liker::class)->findOneBy([
+            'utilisateur' => $user,
+            'annonce' => $annonce
+        ]);
+
+        if ($like) {
+            $entityManager->remove($like);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Annonce retirée de vos favoris.');
+        }
+
+        return $this->redirectToRoute('app_profile');
+    }
 }
 
 
