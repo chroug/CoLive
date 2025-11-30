@@ -82,6 +82,12 @@ a.info-row {
     background: #000000;
     color: #ffff;
 }
+a.info-row:hover {
+    background: #000000cf;
+}
+div.info-row:hover {
+    background-color: #dbdcdd;
+}
 
 .info-icon {
     margin-right: 10px;
