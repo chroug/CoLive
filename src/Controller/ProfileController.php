@@ -28,6 +28,18 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        $totalNote = 0;
+        $countNotes = 0;
+
+        foreach ($user->getAnnonces() as $annonce) {
+            foreach ($annonce->getAvis() as $avis) {
+                $totalNote += $avis->getNote();
+                $countNotes++;
+            }
+        }
+
+        $averageRating = $countNotes > 0 ? $totalNote / $countNotes : 0;
+
         $form = $this->createFormBuilder($user)
             ->add('prenom', TextType::class, [
                 'label' => 'Prénom',
@@ -62,6 +74,8 @@ class ProfileController extends AbstractController
         return $this->render('profile/index.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
+            'averageRating' => $averageRating,
+            'nbNotes' => $countNotes,
         ]);
     }
 

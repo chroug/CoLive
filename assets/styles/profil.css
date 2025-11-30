@@ -306,4 +306,13 @@
 .btn-favoris:hover svg {
     fill: rgb(255 0 0 / 70%);
 }
-
+.note-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.note-info .rating-stars {
+    display: flex;
+    margin-right: 5px;
+}
