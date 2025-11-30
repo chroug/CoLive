@@ -16,11 +16,15 @@
         <div>
             {% if app.user %}
                 <a href="{{ path('app_profile') }}" class="nav-user-pill">
-                    <img src="{{ app.user.avatar ? asset('uploads/' ~ app.user.avatar) : 'https://ui-avatars.com/api/?name=' ~ app.user.prenom ~ '&background=000&color=fff' }}" class="nav-avatar-mini">
+                    {% if app.user.avatar %}
+                        <img src="{{ asset('uploads/avatars/' ~ app.user.avatar) }}" alt="Avatar" class="nav-avatar-mini">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
+                    {% endif %}
                     <span>{{ app.user.prenom }}</span>
                 </a>
             {% else %}
-                <span style="font-weight: 600; font-size: 0.9rem;">Bienvenue</span>
+                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
             {% endif %}
         </div>
     </nav>
