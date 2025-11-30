@@ -15,7 +15,7 @@
         </a>
         <div>
             {% if app.user %}
-                <a href="#" class="nav-user-pill">
+                <a href="{{ path('app_profile') }}" class="nav-user-pill">
                     <img src="{{ app.user.avatar ? asset('uploads/' ~ app.user.avatar) : 'https://ui-avatars.com/api/?name=' ~ app.user.prenom ~ '&background=000&color=fff' }}" class="nav-avatar-mini">
                     <span>{{ app.user.prenom }}</span>
                 </a>
