@@ -1,6 +1,28 @@
-/* =========================================
-   SCOPED CSS - PAGE PROFIL (Mise à jour V2)
-   ========================================= */
+/* NAVBAR */
+.user-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #E5E7EB;
+    height: 70px;
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logout-btn {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 600;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #000000;
+    color: #FFFFFF;
+}
 
 .colive-profile-page {
     font-family: 'Inter', sans-serif;
