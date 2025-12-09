@@ -1,0 +1,171 @@
+.user-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #E5E7EB;
+    height: 70px;
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav-logo { font-size: 1.5rem; font-weight: 800; color: #000; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+.logo-box { background: #000; color: white; padding: 2px 6px; border-radius: 4px; font-size: 1.2rem; }
+.nav-user-pill { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid #ddd; padding: 5px 15px 5px 5px; border-radius: 30px; text-decoration: none; color: #333; font-weight: 600; font-size: 0.9rem; }
+.nav-avatar-mini { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+
+.login-btn {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 600;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #000000;
+    color: #FFFFFF;
+}
+
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto 60px auto;
+    padding: 50px 5%;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.profile-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #F3F4F6;
+    position: sticky;
+    top: 20px;
+}
+
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.profile-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0 0 5px 0;
+    color: #111827;
+}
+
+.profile-sub {
+    color: #6B7280;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+}
+
+.contact-info-wrapper {
+    max-width: 320px;
+    width: 100%;
+    text-align: left;
+    margin-top: 20px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+div.info-row {
+    background: #F9FAFB;
+    color: black;
+}
+a.info-row {
+    background: #000000;
+    color: #ffff;
+}
+a.info-row:hover {
+    background: #000000cf;
+}
+div.info-row:hover {
+    background-color: #dbdcdd;
+}
+
+.info-icon {
+    margin-right: 10px;
+}
+.info-text {
+    font-weight: 600;
+}
+.rating-box {
+    width: 100%;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.rating-large { font-size: 2.5rem; font-weight: 800; color: #111; }
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.rating-count { color: #6B7280; font-size: 0.9rem; }
+
+.content-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #F3F4F6;
+}
+
+.content-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 30px; border-bottom: 1px solid #F3F4F6; padding-bottom: 20px;
+}
+.content-title { font-size: 1.4rem; font-weight: 700; color: #111; }
+.pill-badge { background: #000; color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+
+.reviews-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.review-item { background: #F9FAFB; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s; }
+.review-item:hover { transform: translateY(-2px); }
+.review-head { display: flex; align-items: center; gap: 12px; }
+.review-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+.date-name {display: flex; width: 100%; justify-content: space-between; align-items: center; }
+.review-author h4 { margin: 0; font-size: 1rem; font-weight: 700; }
+.review-date { font-size: 0.8rem; color: #9CA3AF; }
+.head-right {
+    flex: 1;
+}
+.review-stars-mini { display: flex; margin-top: 3px }
+.review-body { font-size: 0.95rem; line-height: 1.5; color: #4B5563;}
+
+@media (max-width: 900px) {
+    .page-container { grid-template-columns: 1fr; }
+    .profile-card { position: static; margin-bottom: 20px; }
+}
+
+@media (max-width: 1200px) {
+    .reviews-grid { grid-template-columns: 1fr; }
+}

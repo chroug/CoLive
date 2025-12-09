@@ -1,0 +1,340 @@
+/* NAVBAR */
+.user-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #E5E7EB;
+    height: 70px;
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logout-btn {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 600;
+    border: 2px solid #000000;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #000000;
+    color: #FFFFFF;
+}
+
+.colive-profile-page {
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    padding-bottom: 4rem;
+}
+
+.colive-profile-page * { box-sizing: border-box; }
+
+/* --- LAYOUT --- */
+.colive-profile-page .container {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.colive-profile-page .profile-header {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+.colive-profile-page h1 { font-size: 2rem; font-weight: 700; margin: 0; }
+.colive-profile-page .subtitle { color: #6b7280; margin-top: 0.5rem; }
+
+.colive-profile-page .grid-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 992px) {
+    .colive-profile-page .grid-layout { grid-template-columns: 350px 1fr; }
+}
+
+/* --- CARDS GÉNÉRALES --- */
+.colive-profile-page .card {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* --- SIDEBAR (Gauche) - STYLE V1 --- */
+
+/* Carte globale */
+.colive-profile-page .sidebar .card {
+    text-align: center; /* Centre le contenu principal */
+    padding: 2.5rem 2rem;
+}
+
+/* Avatar */
+.colive-profile-page .avatar-container {
+    width: 140px; /* Un peu plus grand comme sur la V1 */
+    height: 140px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+}
+
+.colive-profile-page .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb; /* Bordure fine grise */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Nom et Date */
+.colive-profile-page .user-name {
+    font-size: 1.6rem;
+    font-weight: 800; /* Plus gras */
+    color: #111827;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.025em;
+}
+
+.colive-profile-page .user-meta {
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 2.5rem;
+}
+
+/* Informations de contact (Alignement gauche) */
+.colive-profile-page .contact-section {
+    text-align: left; /* Important : aligne le texte à gauche */
+    margin-bottom: 2.5rem;
+    padding: 0 1rem; /* Petit retrait pour centrer visuellement le bloc */
+}
+
+.colive-profile-page .contact-row {
+    display: flex;
+    align-items: center; /* Centre l'icône verticalement avec le texte */
+    gap: 12px;
+    margin-bottom: 0.8rem;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.colive-profile-page .contact-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    color: #6b7280;
+    font-size: 0.8rem;
+    flex-shrink: 0; /* Empêche l'icône de s'écraser */
+}
+
+/* Boîte de Statistiques (Style V1) */
+.colive-profile-page .stats-box {
+    background-color: #fff; /* Fond blanc */
+    border: 1px solid #e5e7eb; /* Bordure visible */
+    border-radius: 16px; /* Arrondi */
+    padding: 1.25rem 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.colive-profile-page .stat-item {
+    text-align: center;
+    flex: 1; /* Prend la moitié de l'espace */
+}
+
+.colive-profile-page .stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.colive-profile-page .stat-label {
+    font-size: 0.7rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+
+.colive-profile-page .stat-divider {
+    width: 1px;
+    height: 40px;
+    background-color: #e5e7eb;
+}
+/* --- TABS (Onglets) --- */
+.colive-profile-page .tabs-container {
+    margin-bottom: 1.5rem;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    background: #fff; padding: 0.5rem;
+    border-radius: 50px; border: 1px solid #e5e7eb;
+    width: fit-content;
+}
+
+.colive-profile-page .tab-btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px; border: none;
+    font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    display: flex;
+}
+.colive-profile-page .tab-btn svg {
+    margin-left: 5px;
+}
+.colive-profile-page .tab-btn.active {
+    background-color: #000; color: #fff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.colive-profile-page .tab-btn.inactive {
+    background-color: transparent; color: #4b5563;
+}
+.colive-profile-page .tab-btn.inactive:hover { background-color: #f3f4f6; }
+
+/* Gestion de l'affichage des sections */
+.colive-profile-page .tab-content { display: none; animation: fadeIn 0.3s ease; }
+.colive-profile-page .tab-content.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- LISTE DES ANNONCES (Design Wireframe) --- */
+.colive-profile-page .header-section {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+}
+.header-section h3 {
+    display: flex;
+}
+.header-section h3 svg {
+    margin-left: 7.5px;
+}
+.colive-profile-page .btn-new {
+    background-color: #000; color: #fff;
+    padding: 0.5rem 1.2rem; border-radius: 50px;
+    text-decoration: none; font-size: 0.85rem; font-weight: 600;
+}
+
+/* Carte Annonce Individuelle */
+.colive-profile-page .listing-card {
+    display: flex; flex-direction: column;
+    padding: 1.25rem;
+    border: 1px solid #eee; border-radius: 16px;
+    margin-bottom: 1rem; transition: border-color 0.2s;
+}
+.colive-profile-page .listing-card:hover { border-color: #000; }
+
+@media(min-width: 600px) {
+    .colive-profile-page .listing-card { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+
+.colive-profile-page .listing-info h4 { margin: 0 0 0.25rem 0; font-size: 1.1rem; font-weight: 700; }
+.colive-profile-page .listing-details { font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem; }
+.colive-profile-page .listing-actions { display: flex; align-items: center; gap: 10px; }
+
+.colive-profile-page .badge {
+    font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;
+    font-weight: 600; border: 1px solid #e5e7eb; background: #f9fafb; color: #374151;
+}
+
+.colive-profile-page .btn-manage {
+    padding: 0.4rem 1rem; border: 1px solid #d1d5db;
+    border-radius: 8px; background: #fff; cursor: pointer;
+    font-size: 0.85rem; font-weight: 600;
+}
+.colive-profile-page .btn-manage:hover { background: #f3f4f6; }
+
+.colive-profile-page .link-delete {
+    color: #ef4444; font-size: 0.85rem; text-decoration: underline; cursor: pointer; border: none; background: none;
+}
+
+/* --- FORMULAIRE --- */
+.colive-profile-page .form-grid {
+    display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;
+}
+@media (min-width: 768px) { .colive-profile-page .form-grid { grid-template-columns: 1fr 1fr; } }
+
+.colive-profile-page label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
+.colive-profile-page input, .colive-profile-page textarea {
+    width: 100%; padding: 0.75rem 1rem; border-radius: 12px;
+    background-color: #f9fafb; border: 2px solid transparent;
+    font-family: inherit;
+}
+.colive-profile-page input:focus, .colive-profile-page textarea:focus {
+    background-color: #fff; border-color: #000; outline: none;
+}
+.colive-profile-page .btn-save {
+    background-color: #000; color: #fff; border: none;
+    padding: 0.75rem 2rem; border-radius: 50px; cursor: pointer; float: right;
+}
+
+/* --- MODIFICATION LISTING CARD POUR INCLURE L'IMAGE --- */
+
+.colive-profile-page .listing-card {
+    display: flex;
+    flex-direction: row; /* Force la ligne */
+    align-items: center; /* Centre verticalement */
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+    background: #fff;
+    gap: 15px; /* Espace entre image et texte */
+}
+
+/* Conteneur de l'image (pour qu'elle ait une taille fixe) */
+.colive-profile-page .listing-img-container {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0; /* Empêche l'image de s'écraser */
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f3f4f6;
+}
+
+/* L'image elle-même */
+.colive-profile-page .listing-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Recadre l'image sans la déformer */
+    display: block;
+}
+
+/* Ajustement du bloc texte pour qu'il prenne la place restante */
+.colive-profile-page .listing-info {
+    flex-grow: 1;
+}
+
+.btn-favoris {
+    padding: 10px;
+}
+.btn-favoris svg {
+    fill: rgb(255 0 0 / 100%);
+}
+.btn-favoris:hover svg {
+    fill: rgb(255 0 0 / 70%);
+}
+.note-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.note-info .rating-stars {
+    display: flex;
+    margin-right: 5px;
+}
