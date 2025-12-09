@@ -14,6 +14,8 @@ final class AnnonceController extends AbstractController
 {
     #[Route('/announce/create', name: 'app_announce_create')]
     public function index(Request $request, EntityManagerInterface $em): Response
+    #[Route('/annonce', name: 'app_annonce')]
+    public function index(): Response
     {
         $annonce = new Annonce();
         $form = $this->createForm(AnnonceType::class, $annonce);
@@ -26,6 +28,7 @@ final class AnnonceController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
         return $this->render('annonce/create.html.twig', [
+        return $this->render('annonce/index.html.twig', [
             'controller_name' => 'AnnonceController',
             'formAnnonce' => $form->createView(),
         ]);
