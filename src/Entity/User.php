@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -41,26 +42,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "integer")]
     private int $role = 1;
 
-    // --- RELATIONS ---
-
-    // Tes annonces (Propriétaire)
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Annonce::class)]
     private Collection $annonces;
 
-    // Tes likes (via l'entité Liker)
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Liker::class, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
-    // Tes avis
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Avis::class)]
     private Collection $avis;
+
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    #[ORM\JoinTable(name: "user_contacts")]
+    #[ORM\JoinColumn(name: "user_source_id", referencedColumnName: "id_utilisateur")]
+    #[ORM\InverseJoinColumn(name: "user_target_id", referencedColumnName: "id_utilisateur")]
+    private Collection $contacts;
 
     public function __construct()
     {
         $this->dateCreationCompte = new \DateTime();
         $this->annonces = new ArrayCollection();
-        $this->likes = new ArrayCollection(); // Changé ici
+        $this->likes = new ArrayCollection();
         $this->avis = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
     }
 
     public function getUserIdentifier(): string { return $this->email; }
@@ -88,4 +91,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAnnonces(): Collection { return $this->annonces; }
     public function getLikes(): Collection { return $this->likes; }
     public function getAvis(): Collection { return $this->avis; }
+
 }
