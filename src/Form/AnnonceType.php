@@ -63,6 +63,12 @@ class AnnonceType extends AbstractType
             ])
             ->add('adresse')
             ->add('ville')
+            ->add('code_postal', TextType::class, [
+                'label' => 'Code postal'
+            ])
+            ->add('surface', NumberType::class, [
+                'label' => 'Surface'
+            ])
 //            ->add('utilisateur', EntityType::class, [
 //                'class' => User::class,
 //                'choice_label' => 'id',
