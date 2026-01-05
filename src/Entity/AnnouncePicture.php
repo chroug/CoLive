@@ -19,9 +19,9 @@ class PhotoAnnonce
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $dateCreation;
 
-    #[ORM\ManyToOne(targetEntity: Annonce::class, inversedBy: 'photos')]
+    #[ORM\ManyToOne(targetEntity: Announce::class, inversedBy: 'photos')]
     #[ORM\JoinColumn(name: "id_annonce", referencedColumnName: "id_annonce", nullable: false)]
-    private ?Annonce $annonce = null;
+    private ?Announce $annonce = null;
 
     public function __construct()
     {
@@ -33,6 +33,6 @@ class PhotoAnnonce
     public function setUrl(string $url): self { $this->url = $url; return $this; }
     public function getDateCreation(): \DateTimeInterface { return $this->dateCreation; }
     public function setDateCreation(\DateTimeInterface $d): self { $this->dateCreation = $d; return $this; }
-    public function getAnnonce(): ?Annonce { return $this->annonce; }
-    public function setAnnonce(?Annonce $a): self { $this->annonce = $a; return $this; }
+    public function getAnnonce(): ?Announce { return $this->annonce; }
+    public function setAnnonce(?Announce $a): self { $this->annonce = $a; return $this; }
 }
