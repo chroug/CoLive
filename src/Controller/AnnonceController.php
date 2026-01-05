@@ -9,11 +9,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class AnnonceController extends AbstractController
 {
-    #[Route('/announce/create', name: 'app_announce_create')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    #[Route('/announces/create', name: 'app_announces_create')]
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
         $annonce = new Annonce();
         $form = $this->createForm(AnnonceType::class, $annonce);

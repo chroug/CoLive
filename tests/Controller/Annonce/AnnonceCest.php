@@ -34,6 +34,8 @@ final class AnnonceCest
             'annonce[type]' => 'Appartement',
             'annonce[nb_pieces]' => 2,
             'annonce[prix]' => 90,
+            'annonce[surface]' => 25,
+            'annonce[code_postal]' => '51100',
             'annonce[ville]' => 'Reims',
             'annonce[adresse]' => 'Rue de Vesle',
             'annonce[disponibilite_debut]' => '2025-05-01',
@@ -50,6 +52,12 @@ final class AnnonceCest
         }
         if ($annonce->getVille() !== 'Reims') {
             throw new \Exception("ECHEC : La ville enregistrée n'est pas la bonne.");
+        }
+        if ($annonce->getCodePostal() !== '51100') {
+            throw new \Exception("ECHEC : Le code postal n'a pas été enregistré correctement.");
+        }
+        if ($annonce->getSurface() != 25) {
+            throw new \Exception("ECHEC : La surface n'a pas été enregistrée correctement.");
         }
     }
 }
