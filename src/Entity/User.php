@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: "utilisateur")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -92,4 +92,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getLikes(): Collection { return $this->likes; }
     public function getAvis(): Collection { return $this->avis; }
 
+    /**
+     * @return Collection<int, self>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(self $contact): self
+    {
+        if (!$this->contacts->contains($contact) && $contact !== $this) {
+            $this->contacts->add($contact);
+        }
+        return $this;
+    }
+
+    public function removeContact(self $contact): self
+    {
+        $this->contacts->removeElement($contact);
+        return $this;
+    }
 }
