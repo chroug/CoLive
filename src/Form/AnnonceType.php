@@ -6,6 +6,13 @@ use App\Entity\Annonce;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,24 +21,52 @@ class AnnonceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titre')
-            ->add('description')
-            ->add('type')
-            ->add('nb_pieces')
-            ->add('prix')
-            ->add('latitude')
-            ->add('longitude')
-            ->add('equipements')
-            ->add('regle')
-            ->add('dateCreation')
-            ->add('disponibilite_debut')
-            ->add('disponibilite_fin')
+            ->add('titre', TextType::class, [
+                'label' => 'Titre de l\'annonce'
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description détaillée',
+                'attr' => ['rows' => 5]
+            ])
+            ->add('type', ChoiceType::class, [
+                'label' => 'Type de bien',
+                'choices'  => [
+                    'Appartement' => 'Appartement',
+                    'Maison' => 'Maison',
+                    'Studio' => 'Studio',
+                    'Villa' => 'Villa',
+                ],
+            ])
+            ->add('nb_pieces', IntegerType::class, [
+                'label' => 'Nombre de pièces'
+            ])
+            ->add('prix', MoneyType::class, [
+                'label' => 'Prix par nuit',
+                'currency' => 'EUR'
+            ])
+            ->add('latitude', NumberType::class, ['scale' => 6])
+            ->add('longitude', NumberType::class, ['scale' => 6])
+            ->add('equipements', TextType::class, [
+                'help' => 'Ex: Wifi, Parking, Piscine...'
+            ])
+            ->add('regle', TextareaType::class, [
+                'required' => false
+            ])
+//            ->add('dateCreation')
+            ->add('disponibilite_debut', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Disponible du'
+            ])
+            ->add('disponibilite_fin', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Au'
+            ])
             ->add('adresse')
             ->add('ville')
-            ->add('utilisateur', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+//            ->add('utilisateur', EntityType::class, [
+//                'class' => User::class,
+//                'choice_label' => 'id',
+//            ])
         ;
     }
 
