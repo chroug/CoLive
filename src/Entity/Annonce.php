@@ -57,6 +57,12 @@ class Annonce
     #[ORM\Column(length: 255)]
     private ?string $ville = null;
 
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $code_postal = null;
+
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $surface = null;
+
     // --- RELATIONS ---
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'annonces')]
@@ -119,4 +125,9 @@ class Annonce
     public function getAvis(): Collection { return $this->avis; }
     public function getPhotos(): Collection { return $this->photos; }
     public function getLikes(): Collection { return $this->likes; }
+    public function getCodePostal(): ?string { return $this->code_postal; }
+    public function setCodePostal(?string $cp): self { $this->code_postal = $cp; return $this; }
+
+    public function getSurface(): ?float { return $this->surface; }
+    public function setSurface(?float $s): self { $this->surface = $s; return $this; }
 }
