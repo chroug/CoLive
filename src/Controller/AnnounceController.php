@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Announce;
 use App\Form\AnnounceType;
+use App\Repository\AnnounceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,9 +15,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class AnnounceController extends AbstractController
 {
     #[Route('/announce', name: 'app_annouce')]
-    public function index()
+    public function index(AnnounceRepository $announceRepository)
     {
-        return $this->render('announce/index.html.twig');
+        $announces = $announceRepository->findAll();
+        return $this->render('announce/index.html.twig', [
+            'announces'=>$announces,
+        ]);
     }
     #[Route('/announces/create', name: 'app_announces_create')]
     public function create(Request $request, EntityManagerInterface $em): Response
