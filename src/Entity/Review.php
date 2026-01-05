@@ -26,9 +26,9 @@ class Avis
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?User $utilisateur = null;
 
-    #[ORM\ManyToOne(targetEntity: Annonce::class, inversedBy: 'avis')]
+    #[ORM\ManyToOne(targetEntity: Announce::class, inversedBy: 'avis')]
     #[ORM\JoinColumn(name: "id_annonce", referencedColumnName: "id_annonce", nullable: false)]
-    private ?Annonce $annonce = null;
+    private ?Announce $annonce = null;
 
     public function __construct()
     {
@@ -43,6 +43,6 @@ class Avis
     public function getDateCreation(): \DateTimeInterface { return $this->dateCreation; }
     public function getUtilisateur(): ?User { return $this->utilisateur; }
     public function setUtilisateur(?User $u): self { $this->utilisateur = $u; return $this; }
-    public function getAnnonce(): ?Annonce { return $this->annonce; }
-    public function setAnnonce(?Annonce $a): self { $this->annonce = $a; return $this; }
+    public function getAnnonce(): ?Announce { return $this->annonce; }
+    public function setAnnonce(?Announce $a): self { $this->annonce = $a; return $this; }
 }

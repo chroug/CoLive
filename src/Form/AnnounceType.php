@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Annonce;
+use App\Entity\Announce;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -79,7 +79,7 @@ class AnnonceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Annonce::class,
+            'data_class' => Announce::class,
         ]);
     }
 }

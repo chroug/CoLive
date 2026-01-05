@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Annonce;
 
-use App\Entity\Annonce;
+use App\Entity\Announce;
 use App\Entity\User;
 use App\Tests\Support\ControllerTester;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,7 +29,7 @@ final class AnnonceCest
     {
         $I->amOnPage('/announce/create');
         $I->submitForm('form', [
-            'annonce[titre]' => 'Annonce Validée',
+            'annonce[titre]' => 'Announce Validée',
             'annonce[description]' => 'Description testée avec le Twig minimal',
             'annonce[type]' => 'Appartement',
             'annonce[nb_pieces]' => 2,
@@ -45,8 +45,8 @@ final class AnnonceCest
         ]);
         $I->dontSeeCurrentUrlEquals('/announce/create');
         $em = $I->grabService('doctrine.orm.entity_manager');
-        $annonceRepository = $em->getRepository(Annonce::class);
-        $annonce = $annonceRepository->findOneBy(['titre' => 'Annonce Validée']);
+        $annonceRepository = $em->getRepository(Announce::class);
+        $annonce = $annonceRepository->findOneBy(['titre' => 'Announce Validée']);
         if (!$annonce) {
             throw new \Exception("ECHEC : L'annonce n'a pas été trouvée en base de données !");
         }
