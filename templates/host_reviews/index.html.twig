@@ -40,7 +40,7 @@
             <div class="profile-sub">Membre depuis {{ host.dateCreationCompte|date('Y') }}</div>
 
             <div class="contact-info-wrapper">
-                <a href="#messagerie" class="info-row">
+                <a href="{{ path('app_message') }}" class="info-row">
                     <span class="info-icon">
                         <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                               fill="#fff" viewBox="0 0 24 24" >
