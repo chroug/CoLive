@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Annonce;
+namespace App\Tests\Controller\Announce;
 
 use App\Entity\Announce;
 use App\Entity\User;
 use App\Tests\Support\ControllerTester;
 use Doctrine\ORM\EntityManagerInterface;
 
-final class AnnonceCest
+final class AnnounceCest
 {
     public function _before(ControllerTester $I): void
     {
@@ -29,26 +29,26 @@ final class AnnonceCest
     {
         $I->amOnPage('/announce/create');
         $I->submitForm('form', [
-            'annonce[titre]' => 'Announce Validée',
-            'annonce[description]' => 'Description testée avec le Twig minimal',
-            'annonce[type]' => 'Appartement',
-            'annonce[nb_pieces]' => 2,
-            'annonce[prix]' => 90,
-            'annonce[surface]' => 25,
-            'annonce[code_postal]' => '51100',
-            'annonce[ville]' => 'Reims',
-            'annonce[adresse]' => 'Rue de Vesle',
-            'annonce[disponibilite_debut]' => '2025-05-01',
-            'annonce[disponibilite_fin]' => '2025-05-30',
-            'annonce[latitude]' => 49.258,
-            'annonce[longitude]' => 4.031,
+            'announce[titre]' => 'Announce Validée',
+            'announce[description]' => 'Description testée avec le Twig minimal',
+            'announce[type]' => 'Appartement',
+            'announce[nb_pieces]' => 2,
+            'announce[prix]' => 90,
+            'announce[surface]' => 25,
+            'announce[code_postal]' => '51100',
+            'announce[ville]' => 'Reims',
+            'announce[adresse]' => 'Rue de Vesle',
+            'announce[disponibilite_debut]' => '2025-05-01',
+            'announce[disponibilite_fin]' => '2025-05-30',
+            'announce[latitude]' => 49.258,
+            'announce[longitude]' => 4.031,
         ]);
         $I->dontSeeCurrentUrlEquals('/announce/create');
         $em = $I->grabService('doctrine.orm.entity_manager');
         $annonceRepository = $em->getRepository(Announce::class);
         $annonce = $annonceRepository->findOneBy(['titre' => 'Announce Validée']);
         if (!$annonce) {
-            throw new \Exception("ECHEC : L'annonce n'a pas été trouvée en base de données !");
+            throw new \Exception("ECHEC : L'announce n'a pas été trouvée en base de données !");
         }
         if ($annonce->getVille() !== 'Reims') {
             throw new \Exception("ECHEC : La ville enregistrée n'est pas la bonne.");

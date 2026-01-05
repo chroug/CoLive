@@ -16,13 +16,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AnnonceType extends AbstractType
+class AnnounceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('titre', TextType::class, [
-                'label' => 'Titre de l\'annonce'
+                'label' => 'Titre de l\'announce'
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description détaillée',

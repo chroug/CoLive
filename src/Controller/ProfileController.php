@@ -12,8 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Entity\Annonce;
-use App\Entity\Liker;
+use App\Entity\Announce;
+use App\Entity\Like;
 
 #[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
@@ -80,20 +80,20 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/profil/like/remove/{id}', name: 'app_like_remove')]
-    public function removeLike(Annonce $annonce, EntityManagerInterface $entityManager): Response
+    public function removeLike(Announce $annonce, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
 
-        $like = $entityManager->getRepository(Liker::class)->findOneBy([
+        $like = $entityManager->getRepository(Like::class)->findOneBy([
             'utilisateur' => $user,
-            'annonce' => $annonce
+            'announce' => $annonce
         ]);
 
         if ($like) {
             $entityManager->remove($like);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Annonce retirée de vos favoris.');
+            $this->addFlash('success', 'Announce retirée de vos favoris.');
         }
 
         return $this->redirectToRoute('app_profile');

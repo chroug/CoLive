@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: "photo_annonce")]
-class PhotoAnnonce
+class AnnouncePicture
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
