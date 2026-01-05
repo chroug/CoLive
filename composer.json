@@ -97,7 +97,7 @@
         ],
         "test:codeception": [
             "php vendor/bin/codecept clean",
-            "bin/console doctrine:database:drop --force --quiet --env=test",
+            "bin/console doctrine:database:drop --force --if-exists --quiet --env=test",
             "bin/console doctrine:database:create --quiet --env=test",
             "bin/console doctrine:schema:create --quiet --env=test",
             "php vendor/bin/codecept run"
@@ -115,6 +115,7 @@
     "require-dev": {
         "codeception/codeception": "^5.3",
         "codeception/module-asserts": "^3.3",
+        "codeception/module-doctrine": "^3.3",
         "codeception/module-symfony": "^3.8",
         "phpunit/phpunit": "^12.4",
         "symfony/browser-kit": "7.3.*",

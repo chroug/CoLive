@@ -25,7 +25,7 @@ final class AnnonceController extends AbstractController
             $this->addFlash('success', 'Votre annonce a été publiée avec succès. Elle est désormais visible par les utilisateurs.');
             return $this->redirectToRoute('app_home');
         }
-        return $this->render('annonce/index.html.twig', [
+        return $this->render('annonce/create.html.twig', [
             'controller_name' => 'AnnonceController',
             'formAnnonce' => $form->createView(),
         ]);
