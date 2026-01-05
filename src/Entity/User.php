@@ -44,15 +44,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     // --- RELATIONS ---
 
     // Tes annonces (Propriétaire)
-    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Annonce::class)]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Announce::class)]
     private Collection $annonces;
 
-    // Tes likes (via l'entité Liker)
-    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Liker::class, cascade: ['persist', 'remove'])]
+    // Tes likes (via l'entité Like)
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Like::class, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
     // Tes avis
-    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Avis::class)]
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Review::class)]
     private Collection $avis;
 
     public function __construct()

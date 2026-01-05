@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: "avis")]
-class Avis
+class Review
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

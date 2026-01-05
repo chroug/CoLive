@@ -7,8 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: "annonce")]
-class Annonce
+#[ORM\Table(name: "announce")]
+class Announce
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -69,14 +69,14 @@ class Annonce
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?User $utilisateur = null;
 
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Avis::class)]
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Review::class)]
     private Collection $avis;
 
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: PhotoAnnonce::class)]
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: AnnouncePicture::class)]
     private Collection $photos;
 
-    // Relation via l'entité Liker
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Liker::class, cascade: ['persist', 'remove'])]
+    // Relation via l'entité Like
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Like::class, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
     public function __construct()
