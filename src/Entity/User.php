@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: "utilisateur")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -41,26 +42,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "integer")]
     private int $role = 1;
 
-    // --- RELATIONS ---
+    // --- RELATIONS D'ORIGINE ---
 
-    // Tes annonces (Propriétaire)
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Announce::class)]
     private Collection $annonces;
 
-    // Tes likes (via l'entité Like)
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Like::class, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
-    // Tes avis
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Review::class)]
     private Collection $avis;
+
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    #[ORM\JoinTable(name: "user_contacts")]
+    #[ORM\JoinColumn(name: "user_source_id", referencedColumnName: "id_utilisateur")]
+    #[ORM\InverseJoinColumn(name: "user_target_id", referencedColumnName: "id_utilisateur")]
+    private Collection $contacts;
 
     public function __construct()
     {
         $this->dateCreationCompte = new \DateTime();
         $this->annonces = new ArrayCollection();
-        $this->likes = new ArrayCollection(); // Changé ici
+        $this->likes = new ArrayCollection();
         $this->avis = new ArrayCollection();
+
+        $this->contacts = new ArrayCollection();
     }
 
     public function getUserIdentifier(): string { return $this->email; }
@@ -88,4 +94,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAnnonces(): Collection { return $this->annonces; }
     public function getLikes(): Collection { return $this->likes; }
     public function getAvis(): Collection { return $this->avis; }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(self $contact): self
+    {
+        if (!$this->contacts->contains($contact) && $contact !== $this) {
+            $this->contacts->add($contact);
+        }
+        return $this;
+    }
+
+    public function removeContact(self $contact): self
+    {
+        $this->contacts->removeElement($contact);
+        return $this;
+    }
 }

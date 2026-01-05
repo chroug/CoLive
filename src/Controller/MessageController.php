@@ -45,7 +45,6 @@ class MessageController extends AbstractController
                         $message->setSender($currentUser);
                         $message->setRecipient($selectedUser);
 
-                        // Upload Fichier
                         if ($file) {
                             $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
                             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
