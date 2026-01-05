@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: "liker")]
-class Liker
+class Like
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,15 +17,15 @@ class Liker
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?User $utilisateur = null;
 
-    #[ORM\ManyToOne(targetEntity: Annonce::class, inversedBy: 'likes')]
+    #[ORM\ManyToOne(targetEntity: Announce::class, inversedBy: 'likes')]
     #[ORM\JoinColumn(name: "id_annonce", referencedColumnName: "id_annonce", nullable: false)]
-    private ?Annonce $annonce = null;
+    private ?Announce $annonce = null;
 
     public function getId(): ?int { return $this->id; }
 
     public function getUtilisateur(): ?User { return $this->utilisateur; }
     public function setUtilisateur(?User $utilisateur): self { $this->utilisateur = $utilisateur; return $this; }
 
-    public function getAnnonce(): ?Annonce { return $this->annonce; }
-    public function setAnnonce(?Annonce $annonce): self { $this->annonce = $annonce; return $this; }
+    public function getAnnonce(): ?Announce { return $this->annonce; }
+    public function setAnnonce(?Announce $annonce): self { $this->annonce = $annonce; return $this; }
 }
