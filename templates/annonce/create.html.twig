@@ -12,21 +12,21 @@
         }
         .form-control, .form-select {
             background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
+            border: 0.0625rem solid #e9ecef; /* 1px -> 0.0625rem */
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
         }
         .form-control:focus, .form-select:focus {
             background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+            box-shadow: 0 0 0 0.25rem rgba(0,0,0,0.05); /* 4px -> 0.25rem */
             border-color: #dee2e6;
         }
         .card {
             border: none;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            box-shadow: 0 0.25rem 1.5rem rgba(0,0,0,0.06); /* 0 4px 24px -> 0 0.25rem 1.5rem */
         }
         .upload-area {
-            border: 2px dashed #dee2e6;
+            border: 0.125rem dashed #dee2e6; /* 2px -> 0.125rem */
             transition: all 0.3s ease;
         }
         .upload-area:hover {
@@ -40,10 +40,10 @@
 
     <div style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('img/home.png') }}') no-repeat center center fixed; background-size: cover; min-height: 100vh; padding-top: 3rem; padding-bottom: 5rem;">
 
-        <div class="container" style="max-width: 850px;">
+        <div class="container" style="max-width: 53rem;"> {# 850px -> 53rem #}
 
             <div class="mb-4 text-start">
-                <span class="bg-black text-white d-inline-flex align-items-center justify-content-center rounded-3 fw-bold" style="width: 40px; height: 40px; font-size: 1.2rem;">C</span>
+                <span class="bg-black text-white d-inline-flex align-items-center justify-content-center rounded-3 fw-bold" style="width: 2.5rem; height: 2.5rem; font-size: 1.2rem;">C</span> {# 40px -> 2.5rem #}
             </div>
 
             {{ form_start(formAnnonce) }}
@@ -68,9 +68,9 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="h-100">
+                        <div>
                             <label class="form-label fw-bold small">Description <span class="text-danger">*</span></label>
-                            {{ form_widget(formAnnonce.description, {'attr': {'class': 'form-control h-100', 'style': 'min-height: 200px;', 'placeholder': 'Décrivez votre logement, l\'ambiance, les avantages...'}}) }}
+                            {{ form_widget(formAnnonce.description, {'attr': {'class': 'form-control', 'style': 'height: 14rem; resize: none;', 'placeholder': 'Décrivez votre logement, l\'ambiance, les avantages...'}}) }} {# 225px -> 14rem #}
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold small">Code postal <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" placeholder="Code postal">
+                        {{ form_widget(formAnnonce.code_postal, {'attr': {'class': 'form-control', 'placeholder': 'Code postal'}}) }}
                     </div>
                 </div>
                 <div class="d-none">
@@ -105,7 +105,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold small">Surface (m²) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" placeholder="25">
+                        {{ form_widget(formAnnonce.surface, {'attr': {'class': 'form-control', 'placeholder': '25'}}) }}
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold small">Prix par mois (€) <span class="text-danger">*</span></label>
@@ -117,7 +117,7 @@
             <div class="card rounded-4 mb-4 p-4">
                 <h5 class="fw-bold mb-1">Photos</h5>
                 <p class="text-muted small mb-4">Ajoutez des photos de votre logement (optionnel)</p>
-                <div class="upload-area rounded-4 p-5 text-center d-flex flex-column align-items-center justify-content-center bg-white" style="min-height: 200px;">
+                <div class="upload-area rounded-4 p-5 text-center d-flex flex-column align-items-center justify-content-center bg-white" style="min-height: 12.5rem;"> {# 200px -> 12.5rem #}
                     <button type="button" class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3 fw-medium">Choisir des fichiers</button>
                     <p class="text-muted small mb-0">Glissez-déposez vos photos ici ou cliquez pour sélectionner</p>
                 </div>
