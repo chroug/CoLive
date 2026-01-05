@@ -13,6 +13,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class AnnounceController extends AbstractController
 {
+    #[Route('/announce', name: 'app_annouce')]
+    public function index()
+    {
+        return $this->render('announce/index.html.twig');
+    }
     #[Route('/announces/create', name: 'app_announces_create')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
