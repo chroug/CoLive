@@ -35,7 +35,7 @@
                         <!-- Avatar -->
                         <div class="avatar-container">
                             {% if user.avatar %}
-                                <img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="Avatar" class="avatar-img">
+                                <img src="{{ user.avatar }}" alt="Avatar" class="avatar-img">
                             {% else %}
                                 <img src="https://ui-avatars.com/api/?name={{ user.prenom }}+{{ user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="avatar-img">
                             {% endif %}
@@ -126,6 +126,14 @@
                         </div>
 
                         {{ form_start(form) }}
+
+                        <div style="margin-bottom: 1.5rem; background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px dashed #d1d5db;">
+                            {{ form_label(form.avatarFile, 'Changer ma photo de profil', {'label_attr': {'style': 'display:block; margin-bottom:0.5rem; font-weight:600;'}}) }}
+                            {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control', 'style': 'width:100%'}}) }}
+                            <div style="color:red; font-size:0.85rem; margin-top:0.25rem;">
+                                {{ form_errors(form.avatarFile) }}
+                            </div>
+                        </div>
                         <div class="form-grid">
                             <div>
                                 {{ form_label(form.prenom) }}

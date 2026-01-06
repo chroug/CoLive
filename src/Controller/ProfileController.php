@@ -6,12 +6,14 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType; // <--- AJOUTÉ
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Constraints\File; // <--- AJOUTÉ (C'est lui qui manquait !)
 use App\Entity\Announce;
 use App\Entity\UserLikes;
 
@@ -27,7 +29,6 @@ class ProfileController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-
         $totalNote = 0;
         $countNotes = 0;
 
@@ -58,11 +59,37 @@ class ProfileController extends AbstractController
                 'required' => false,
                 'attr' => ['placeholder' => '06 12 34 56 78']
             ])
+            ->add('avatarFile', FileType::class, [
+                'label' => 'Changer ma photo de profil',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '4096k', // 4 Mo max
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Merci d\'uploader une image valide (JPG, PNG, WEBP)',
+                    ])
+                ],
+            ])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $form->get('avatarFile')->getData();
+
+            if ($uploadedFile) {
+                $fileContent = file_get_contents($uploadedFile->getPathname());
+                $base64 = base64_encode($fileContent);
+                $mimeType = $uploadedFile->getMimeType();
+                $dataUri = 'data:' . $mimeType . ';base64,' . $base64;
+                $user->setAvatar($dataUri);
+            }
+
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -99,5 +126,3 @@ class ProfileController extends AbstractController
         return $this->redirectToRoute('app_profile');
     }
 }
-
-
