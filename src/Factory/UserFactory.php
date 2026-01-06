@@ -27,7 +27,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'prenom' => self::faker()->firstName(),
             'nom' => self::faker()->lastName(),
             'tel' => self::faker()->phoneNumber(),
-            'password' => '  ',
+            'password' => 'password',
             'role' => 1,
             'dateCreationCompte' => self::faker()->dateTimeBetween('-1 year', 'now'),
         ];
