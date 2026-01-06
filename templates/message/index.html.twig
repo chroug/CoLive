@@ -23,7 +23,7 @@
                     <div class="list-scroll" id="contactListContainer">
                         {% for user in users %}
                             <div class="contact-item-wrapper" style="position: relative;">
-                                <a href="{{ path('app_messagerie_conversation', {id: user.id}) }}"
+                                <a href="{{ path('app_message_conversation', {id: user.id}) }}"
                                    class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}"
                                    data-name="{{ user.prenom|lower }} {{ user.nom|lower }}">
                                     <div class="avatar">{{ user.prenom|first|upper }}</div>
