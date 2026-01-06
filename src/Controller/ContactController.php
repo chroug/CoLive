@@ -38,8 +38,6 @@ class ContactController extends AbstractController
 
             $em->persist($currentUser);
             $em->flush();
-
-            $this->addFlash('success', 'Discussion supprimée.');
         }
 
         return $this->redirectToRoute('app_messagerie');

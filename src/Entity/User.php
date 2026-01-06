@@ -42,8 +42,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "integer")]
     private int $role = 1;
 
-    // --- RELATIONS D'ORIGINE ---
-
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Announce::class)]
     private Collection $annonces;
 

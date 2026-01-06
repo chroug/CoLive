@@ -71,12 +71,16 @@
                                 </div>
                             </div>
                         {% else %}
-                            <div class="empty-chat">Nouvelle discussion. Dites bonjour ! 👋</div>
+                            <div class="empty-chat">Nouvelle discussion. Dites bonjour !</div>
                         {% endfor %}
                     </div>
                     <div class="input-area">
                         <form method="post" class="input-form" enctype="multipart/form-data">
-                            <label for="file-upload" class="btn-attachment" title="Ajouter une image">📂</label>
+                            <label for="file-upload" class="btn-attachment" title="Ajouter une image"><svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                                                                            fill="#000000" viewBox="0 0 24 24" >
+                                    <!--Boxicons v3.0.6 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                    <path d="m20,4h-8.59l-1.41-1.41c-.38-.38-.88-.59-1.41-.59h-4.59c-1.1,0-2,.9-2,2v14c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2V6c0-1.1-.9-2-2-2Zm0,2v3H4v-3h16ZM4,18v-7h16v7H4Z"></path>
+                                </svg></label>
                             <input id="file-upload" type="file" name="file_upload" style="display: none;" accept="image/*">
 
                             <input type="text" name="content" placeholder="Écrivez votre message..." autocomplete="off">
