@@ -14,12 +14,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class AnnounceController extends AbstractController
 {
-    #[Route('/announce', name: 'app_annouce')]
-    public function index(AnnounceRepository $announceRepository)
+    #[Route('/announce', name: 'app_announce')]
+    public function index(AnnounceRepository $announceRepository, Request $request)
     {
-        $announces = $announceRepository->findAll();
+        $location = $request->query->get('location');
+        $type = $request->query->get('type');
+        $dateStart = $request->query->get('date_start');
+        $dateEnd = $request->query->get('date_end');
+        $announces = $announceRepository->findByFilters($location, $type, $dateStart, $dateEnd);
         return $this->render('announce/index.html.twig', [
             'announces'=>$announces,
+            'searchLocation' => $location,
+            'searchType' => $type,
+            'searchStart' => $dateStart,
+            'searchEnd' => $dateEnd,
         ]);
     }
     #[IsGranted('IS_AUTHENTICATED_FULLY')]

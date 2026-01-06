@@ -46,7 +46,7 @@
             </div>
 
             <div class="search-container">
-                <form action="/" method="get" class="search-bar">
+                <form action="{{ path('app_announce') }}" method="get" class="search-bar">
 
                     <div class="search-item">
                         <label for="location">Destination</label>
@@ -73,9 +73,9 @@
                         <label for="type">Type</label>
                         <select name="type" id="type">
                             <option value="all">Tout</option>
-                            <option value="coloc">Colocation</option>
-                            <option value="room">Chambre</option>
-                            <option value="studio">Studio</option>
+                            <option value="Chambre">Chambre</option>
+                            <option value="Colocation">Colocation</option>
+                            <option value="Studio">Studio</option>
                         </select>
                     </div>
 
