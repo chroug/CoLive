@@ -14,7 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class AnnounceController extends AbstractController
 {
-    #[Route('/announce', name: 'app_annouce')]
+    #[Route('/announce', name: 'app_announce')]
     public function index(AnnounceRepository $announceRepository, Request $request)
     {
         $location = $request->query->get('location');
