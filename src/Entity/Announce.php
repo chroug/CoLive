@@ -76,8 +76,8 @@ class Announce
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: AnnouncePicture::class)]
     private Collection $photos;
 
-    // Relation via l'entité Like
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Like::class, cascade: ['persist', 'remove'])]
+    // Relation via l'entité UserLikes
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: UserLikes::class, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
     public function __construct()
