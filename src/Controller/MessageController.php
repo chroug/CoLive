@@ -59,7 +59,7 @@ class MessageController extends AbstractController
                         $entityManager->persist($message);
                         $entityManager->flush();
 
-                        return $this->redirectToRoute('app_messagerie_conversation', ['id' => $selectedUser->getId()]);
+                        return $this->redirectToRoute('app_message_conversation', ['id' => $selectedUser->getId()]);
                     }
                 }
                 $messages = $messageRepository->findConversation($currentUser, $selectedUser);
