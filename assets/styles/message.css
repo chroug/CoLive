@@ -1,0 +1,218 @@
+.messagerie-wrapper {
+    padding: 20px;
+    background-color: #f4f4f4;
+    height: 90vh;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+.messagerie-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 2px solid #333;
+}
+
+/* SIDEBAR */
+.messagerie-sidebar {
+    width: 350px;
+    border-right: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.brand-logo {
+    background: black;
+    color: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.search-box { padding: 0 20px 20px; }
+.search-box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    box-sizing: border-box;
+}
+.contact-list h3 {
+    padding: 0 20px;
+    font-size: 1rem;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 0;
+}
+.list-scroll {
+    overflow-y: auto;
+    flex: 1;
+    padding: 10px;
+}
+
+/* Contact Card */
+.contact-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    text-decoration: none;
+    color: black;
+    transition: 0.2s;
+}
+.contact-card:hover, .contact-card.active {
+    border-color: #333;
+    background-color: #f9f9f9;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    border: 1px solid #333;
+    flex-shrink: 0;
+}
+.info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.name {
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sub-text {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.messagerie-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+.chat-header {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px;
+    border: 1px solid #333;
+    border-radius: 30px;
+}
+.messages-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message-row {
+    display: flex;
+    gap: 10px;
+    max-width: 70%;
+}
+.message-row.sent {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+.message-row.received {
+    align-self: flex-start;
+}
+.message-bubble {
+    padding: 15px;
+    border: 1px solid #333;
+    border-radius: 15px;
+    background: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.message-row.received .message-bubble {
+    border-bottom-left-radius: 0;
+}
+
+.message-row.sent .message-bubble {
+    border-bottom-right-radius: 0;
+    background: #f9f9f9;
+}
+
+.message-time {
+    font-size: 0.6rem;
+    color: #999;
+    align-self: flex-end;
+    margin-top: 5px;
+}
+.message-image img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    object-fit: cover;
+}
+
+/* Input */
+.input-area {
+    padding: 20px;
+    background: white;
+}
+.input-form {
+    display: flex;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 5px;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+}
+.input-form input[type="text"] {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    outline: none;
+}
+.btn-attachment, .btn-send {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+.btn-attachment:hover {
+    background: #ddd;
+    border-radius: 50%;
+}
+.btn-send { font-weight: bold; }
+.no-selection {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+}
