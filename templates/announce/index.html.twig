@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nos annonces{% endblock %}
+{% block title %}Toutes nos annonces{% endblock %}
 
 {% block body %}
-
     <style>
         .card-hover {
             transition: all 0.3s ease;
@@ -19,53 +18,51 @@
         }
     </style>
 
-    <div class="container my-5">
-        <h1 class="fw-bold mb-5 px-2">Toutes nos annonces</h1>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    <main class="container my-5">
+        <header class="mb-4">
+            <nav aria-label="Navigation retour">
+                <a href="{{ path('app_home') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Retour
+                </a>
+            </nav>
+        </header>
 
-            {% for announce in announces %}
-                <div class="col">
-                    <div class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden text-white position-relative card-hover">
+        <section aria-labelledby="page-title">
+            <h1 id="page-title" class="fw-bold mb-5 px-2">Toutes nos annonces</h1>
 
-                        {% set photo = announce.photos|first %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                {% for announce in announces %}
+                    <div class="col">
+                        <article class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden text-white position-relative card-hover">
 
-                        {% if photo %}
-                            <img src="{{ photo.url }}"
-                                 class="card-img h-100 w-100"
-                                 style="object-fit: cover; height: 22rem;"
-                                 alt="Photo de {{ announce.titre }}">
-                        {% else %}
-                            <img src="https://picsum.photos/seed/{{ announce.id }}/600/800"
-                                 class="card-img h-100 w-100"
-                                 style="object-fit: cover; height: 22rem;"
-                                 alt="Image par défaut">
-                        {% endif %}
+                            {% set photo = announce.photos|first %}
 
-                        <div class="card-img-overlay d-flex flex-column justify-content-end p-4"
-                             style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%);">
+                            {% if photo %}
+                                <img src="{{ photo.url }}" class="card-img h-100 w-100" style="object-fit: cover; height: 22rem;" alt="Photo de {{ announce.titre }}">
+                            {% else %}
+                                <img src="https://picsum.photos/seed/{{ announce.id }}/600/800" class="card-img h-100 w-100" style="object-fit: cover; height: 22rem;" alt="Image par défaut">
+                            {% endif %}
 
-                            <h3 class="h5 fw-bold mb-1 text-truncate text-shadow-strong">{{ announce.titre }}</h3>
+                            <div class="card-img-overlay d-flex flex-column justify-content-end p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%);">
+                                <h2 class="h5 fw-bold mb-1 text-truncate text-shadow-strong">{{ announce.titre }}</h2>
 
-                            <p class="mb-3 small opacity-100 text-shadow-strong">
-                                <i class="bi bi-geo-alt-fill me-1"></i>
-                                {{ announce.ville }} ({{ announce.codePostal }})
-                            </p>
+                                <p class="mb-3 small opacity-100 text-shadow-strong">
+                                    <i class="bi bi-geo-alt-fill me-1"></i>{{ announce.ville }} ({{ announce.codePostal }})
+                                </p>
 
-                            <div class="d-flex align-items-baseline text-shadow-strong">
-                                <span class="fw-bold fs-4 me-1">{{ announce.prix }}€</span>
-                                <span class="small fw-light">/ mois</span>
+                                <div class="d-flex align-items-baseline text-shadow-strong">
+                                    <span class="fw-bold fs-4 me-1">{{ announce.prix }}€</span>
+                                    <span class="small fw-light">/ mois</span>
+                                </div>
                             </div>
-
-                        </div>
+                        </article>
                     </div>
-                </div>
-
-            {% else %}
-                <div class="col-12 text-center py-5">
-                    <p class="text-muted fs-5">Aucune annonce disponible pour le moment.</p>
-                </div>
-            {% endfor %}
-
-        </div>
-    </div>
+                {% else %}
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted fs-5">Aucune annonce disponible pour le moment.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
 {% endblock %}
