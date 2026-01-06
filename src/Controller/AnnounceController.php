@@ -21,7 +21,7 @@ final class AnnounceController extends AbstractController
         $type = $request->query->get('type');
         $dateStart = $request->query->get('date_start');
         $dateEnd = $request->query->get('date_end');
-        $announces = $announceRepository->findAll();
+        $announces = $announceRepository->findByFilters($location, $type, $dateStart, $dateEnd);
         return $this->render('announce/index.html.twig', [
             'announces'=>$announces,
             'searchLocation' => $location,
