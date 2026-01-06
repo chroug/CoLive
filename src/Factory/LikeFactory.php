@@ -2,14 +2,14 @@
 
 namespace App\Factory;
 
-use App\Entity\Like;
+use App\Entity\UserLikes;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 final class LikeFactory extends PersistentProxyObjectFactory
 {
     public static function class(): string
     {
-        return Like::class;
+        return UserLikes::class;
     }
 
     protected function defaults(): array|callable
