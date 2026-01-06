@@ -22,7 +22,8 @@ final class AnnounceController extends AbstractController
             'announces'=>$announces,
         ]);
     }
-    #[Route('/announces/create', name: 'app_announces_create')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/announce/create', name: 'app_announce_create')]
     public function create(Request $request, EntityManagerInterface $em): Response
     {
         $annonce = new Announce();
