@@ -10,21 +10,21 @@
         }
         .form-control, .form-select {
             background-color: #f8f9fa;
-            border: 0.0625rem solid #e9ecef; /* 1px -> 0.0625rem */
+            border: 0.0625rem solid #e9ecef;
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
         }
         .form-control:focus, .form-select:focus {
             background-color: #fff;
-            box-shadow: 0 0 0 0.25rem rgba(0,0,0,0.05); /* 4px -> 0.25rem */
+            box-shadow: 0 0 0 0.25rem rgba(0,0,0,0.05);
             border-color: #dee2e6;
         }
         .card {
             border: none;
-            box-shadow: 0 0.25rem 1.5rem rgba(0,0,0,0.06); /* 0 4px 24px -> 0 0.25rem 1.5rem */
+            box-shadow: 0 0.25rem 1.5rem rgba(0,0,0,0.06);
         }
         .upload-area {
-            border: 0.125rem dashed #dee2e6; /* 2px -> 0.125rem */
+            border: 0.125rem dashed #dee2e6;
             transition: all 0.3s ease;
         }
         .upload-area:hover {
@@ -38,10 +38,10 @@
 
     <div style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('img/home.png') }}') no-repeat center center fixed; background-size: cover; min-height: 100vh; padding-top: 3rem; padding-bottom: 5rem;">
 
-        <div class="container" style="max-width: 53rem;"> {# 850px -> 53rem #}
+        <div class="container" style="max-width: 53rem;">
 
             <div class="mb-4 text-start">
-                <span class="bg-black text-white d-inline-flex align-items-center justify-content-center rounded-3 fw-bold" style="width: 2.5rem; height: 2.5rem; font-size: 1.2rem;">C</span> {# 40px -> 2.5rem #}
+                <span class="bg-black text-white d-inline-flex align-items-center justify-content-center rounded-3 fw-bold" style="width: 2.5rem; height: 2.5rem; font-size: 1.2rem;">C</span>
             </div>
 
             {{ form_start(formAnnonce) }}
@@ -61,14 +61,14 @@
                             {{ form_widget(formAnnonce.type, {'attr': {'class': 'form-select'}}) }}
                         </div>
                         <div class="mb-0">
-                            <label class="form-label fw-bold small">Nombre de pièces</label>
+                            <label class="form-label fw-bold small">Nombre de pièces <span class="text-danger">*</span></label>
                             {{ form_widget(formAnnonce.nb_pieces, {'attr': {'class': 'form-control', 'placeholder': 'Nombre de pièces'}}) }}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div>
                             <label class="form-label fw-bold small">Description <span class="text-danger">*</span></label>
-                            {{ form_widget(formAnnonce.description, {'attr': {'class': 'form-control', 'style': 'height: 14rem; resize: none;', 'placeholder': 'Décrivez votre logement, l\'ambiance, les avantages...'}}) }} {# 225px -> 14rem #}
+                            {{ form_widget(formAnnonce.description, {'attr': {'class': 'form-control', 'style': 'height: 14rem; resize: none;', 'placeholder': 'Décrivez votre logement, l\'ambiance, les avantages...'}}) }}
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
             <div class="card rounded-4 mb-4 p-4">
                 <h5 class="fw-bold mb-1">Photos</h5>
                 <p class="text-muted small mb-4">Ajoutez des photos de votre logement (optionnel)</p>
-                <div class="upload-area rounded-4 p-5 text-center d-flex flex-column align-items-center justify-content-center bg-white" style="min-height: 12.5rem;"> {# 200px -> 12.5rem #}
+                <div class="upload-area rounded-4 p-5 text-center d-flex flex-column align-items-center justify-content-center bg-white" style="min-height: 12.5rem;">
                     <button type="button" class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3 fw-medium">Choisir des fichiers</button>
                     <p class="text-muted small mb-0">Glissez-déposez vos photos ici ou cliquez pour sélectionner</p>
                 </div>
@@ -124,7 +124,7 @@
             <div class="card rounded-4 mb-4 p-4">
                 <h5 class="fw-bold mb-1">Équipements et services</h5>
                 <p class="text-muted small mb-4">Quels équipements sont disponibles ?</p>
-                <label class="form-label fw-bold small">Liste des équipements</label>
+                <label class="form-label fw-bold small">Liste des équipements <span class="text-danger">*</span></label>
                 {{ form_widget(formAnnonce.equipements, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Wifi, Cuisine équipée, Lave-linge...'}}) }}
             </div>
 
@@ -133,11 +133,11 @@
                 <p class="text-muted small mb-4">Quand votre logement est-il disponible ?</p>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small">Disponible à partir du</label>
+                        <label class="form-label fw-bold small">Disponible à partir du <span class="text-danger">*</span></label>
                         {{ form_widget(formAnnonce.disponibilite_debut, {'attr': {'class': 'form-control'}}) }}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small">Disponible jusqu'au</label>
+                        <label class="form-label fw-bold small">Disponible jusqu'au <span class="text-danger">*</span></label>
                         {{ form_widget(formAnnonce.disponibilite_fin, {'attr': {'class': 'form-control'}}) }}
                     </div>
                 </div>

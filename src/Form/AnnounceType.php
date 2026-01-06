@@ -31,10 +31,9 @@ class AnnounceType extends AbstractType
             ->add('type', ChoiceType::class, [
                 'label' => 'Type de bien',
                 'choices'  => [
-                    'Appartement' => 'Appartement',
-                    'Maison' => 'Maison',
+                    'Chambre' => 'Chambre',
+                    'Collocation' => 'Collocation',
                     'Studio' => 'Studio',
-                    'Villa' => 'Villa',
                 ],
             ])
             ->add('nb_pieces', IntegerType::class, [
