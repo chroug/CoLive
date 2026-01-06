@@ -5,8 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: "like")]
-class Like
+#[ORM\Table(name: "user_likes")]
+class UserLikes
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
