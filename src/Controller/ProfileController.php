@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Announce;
-use App\Entity\Like;
+use App\Entity\UserLikes;
 
 #[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
@@ -84,7 +84,7 @@ class ProfileController extends AbstractController
     {
         $user = $this->getUser();
 
-        $like = $entityManager->getRepository(Like::class)->findOneBy([
+        $like = $entityManager->getRepository(UserLikes::class)->findOneBy([
             'utilisateur' => $user,
             'announce' => $annonce
         ]);
