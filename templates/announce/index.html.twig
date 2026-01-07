@@ -29,7 +29,7 @@
             box-sizing: border-box;
         }
 
-        /****** HEADER (Navigation Only) ******/
+        /****** HEADER ******/
         .header-nav {
             position: sticky;
             top: 0;
@@ -123,9 +123,9 @@
             height: 100vh;
             background: white;
             z-index: 1000;
-            width: 85vw;
-            max-width: 400px;
-            padding: 25px;
+            width: 50vw;
+            min-width: 320px;
+            padding: 40px 30px;
             box-shadow: 5px 0 25px rgba(0,0,0,0.15);
             overflow-y: auto;
             transform: translateX(-100%);
@@ -155,22 +155,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
         }
         .sidebar-title {
             margin: 0;
-            font-size: 1.5rem;
-            font-weight: 800; }
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
 
         .btn-close {
             background: #f5f5f5;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 2.5rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -178,8 +179,52 @@
             color: #333;
             transition: background 0.2s;
         }
-        .btn-close:active {
-            background: #e0e0e0;
+
+        /****** FILTER FORM ******/
+        .form-label {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 25px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border: 3px solid #eee;
+            border-radius: 15px;
+            background-color: #fcfcfc;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .form-input:focus { border-color: #000; }
+
+        .form-fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        .form-legend {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 30px;
+            background-color: #000;
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 900;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 40px;
         }
 
         /****** GRID LAYOUT ******/
@@ -250,6 +295,31 @@
             font-weight: 500;
             opacity: 0.9;
         }
+
+        .radio-hidden {
+            display: none;
+        }
+
+        .radio-text-label {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #d6d6d6;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s;
+            padding: 10px 0;
+            margin-bottom: 5px;
+        }
+
+        .radio-text-label:hover {
+            color: #a0a0a0;
+        }
+
+        .radio-hidden:checked + .radio-text-label {
+            color: #000000;
+            transform: translateX(10px);
+        }
+
     </style>
 
     <div class="main-wrapper">
@@ -271,37 +341,58 @@
             <form action="{{ path('app_announce') }}" method="get">
 
                 <div>
-                    <label for="location">Ville :</label>
-                    <input type="text" id="location" name="location" value="{{ searchLocation|default('') }}">
+                    <label for="location" class="form-label">Ville</label>
+                    <input type="text" id="location" name="location" value="{{ searchLocation|default('') }}" class="form-input" placeholder="Ex: Paris">
                 </div>
 
-                <div style="height: 20px;"></div>
+                <div style="height: 50px;"></div>
 
-                <fieldset>
-                    <legend>Type</legend>
-                    <div style="margin-bottom:5px;"><input type="radio" name="type" value="all" checked> <label>Tout</label></div>
-                    <div style="margin-bottom:5px;"><input type="radio" name="type" value="Chambre"> <label>Chambre</label></div>
-                    <div style="margin-bottom:5px;"><input type="radio" name="type" value="Colocation"> <label>Colocation</label></div>
-                    <div style="margin-bottom:5px;"><input type="radio" name="type" value="Studio"> <label>Studio</label></div>
+                <fieldset class="form-fieldset">
+                    <legend class="form-legend">Type de logement</legend>
+
+                    {% set currentFilter = app.request.query.get('type', 'all') %}
+
+                    <div>
+                        <input type="radio" id="type_all" name="type" value="all" class="radio-hidden"
+                               {% if currentFilter == 'all' %}checked{% endif %}>
+                        <label for="type_all" class="radio-text-label">Tout</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_chambre" name="type" value="Chambre" class="radio-hidden"
+                               {% if currentFilter == 'Chambre' %}checked{% endif %}>
+                        <label for="type_chambre" class="radio-text-label">Chambre</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_coloc" name="type" value="Colocation" class="radio-hidden"
+                               {% if currentFilter == 'Colocation' %}checked{% endif %}>
+                        <label for="type_coloc" class="radio-text-label">Colocation</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_studio" name="type" value="Studio" class="radio-hidden"
+                               {% if currentFilter == 'Studio' %}checked{% endif %}>
+                        <label for="type_studio" class="radio-text-label">Studio</label>
+                    </div>
+
                 </fieldset>
 
-                <div style="height: 20px;"></div>
+                <div style="height: 50px;"></div>
 
-                <fieldset>
-                    <legend>Dates</legend>
-                    <div style="margin-bottom:10px;">
-                        <label>Arrivée :</label>
-                        <input type="date" name="date_start">
+                <fieldset class="form-fieldset">
+                    <legend class="form-legend">Période</legend>
+                    <div style="margin-bottom:30px;">
+                        <label class="form-label">Arrivée</label>
+                        <input type="date" name="date_start" class="form-input">
                     </div>
                     <div>
-                        <label>Départ :</label>
-                        <input type="date" name="date_end">
+                        <label class="form-label">Départ</label>
+                        <input type="date" name="date_end" class="form-input">
                     </div>
                 </fieldset>
 
-                <div style="height: 30px;"></div>
-
-                <button type="submit">Voir les résultats</button>
+                <button type="submit" class="btn-submit">Voir les résultats</button>
             </form>
         </aside>
 
@@ -329,8 +420,6 @@
                             <div class="card-price">{{ announce.prix }}€ <small>/mois</small></div>
                         </div>
                     </article>
-                {% else %}
-                    <p style="grid-column: 1/-1; text-align:center;">Aucune annonce.</p>
                 {% endfor %}
             </div>
         </section>
