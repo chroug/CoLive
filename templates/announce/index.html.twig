@@ -717,10 +717,10 @@
             <form action="{{ path('app_announce') }}" method="get">
                 <div>
                     <label for="location" class="form-label">Ville</label>
-                    <input type="text" id="location" name="location" value="{{ searchLocation|default('') }}" class="form-input" placeholder="Ex: Paris">
+                    <input type="text" id="location" name="location" value="{{ app.request.query.get('location') }}" class="form-input" placeholder="Ex: Paris">
                 </div>
 
-                <div style="height: 50px;"></div>
+                <div style="height: 50px;" class="desktop-hidden"></div>
 
                 <fieldset class="form-fieldset">
                     <legend class="form-legend">Type de logement</legend>
@@ -753,17 +753,17 @@
 
                 </fieldset>
 
-                <div style="height: 50px;"></div>
+                <div style="height: 50px;" class="desktop-hidden"></div>
 
                 <fieldset class="form-fieldset">
                     <legend class="form-legend">Période</legend>
                     <div style="margin-bottom:30px;">
                         <label class="form-label">Arrivée</label>
-                        <input type="date" name="date_start" class="form-input">
+                        <input type="date" name="date_start" class="form-input" value="{{ app.request.query.get('date_start') }}">
                     </div>
                     <div>
                         <label class="form-label">Départ</label>
-                        <input type="date" name="date_end" class="form-input">
+                        <input type="date" name="date_end" class="form-input" value="{{ app.request.query.get('date_end') }}">
                     </div>
                 </fieldset>
 
