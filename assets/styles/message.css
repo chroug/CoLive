@@ -1,9 +1,9 @@
 .messagerie-wrapper {
-    padding: 20px;
+    height: calc(100vh - 35px);
     background-color: #f4f4f4;
-    height: 90vh;
     box-sizing: border-box;
-    font-family: sans-serif;
+    padding: 0;
+    margin: 0;
 }
 .messagerie-container {
     display: flex;
@@ -16,7 +16,6 @@
     border: 2px solid #333;
 }
 
-/* SIDEBAR */
 .messagerie-sidebar {
     width: 350px;
     border-right: 2px solid #333;
@@ -42,7 +41,10 @@
     font-weight: bold;
 }
 
-.search-box { padding: 0 20px 20px; }
+.search-box {
+    padding: 0 20px 20px;
+}
+
 .search-box input {
     width: 100%;
     padding: 10px;
