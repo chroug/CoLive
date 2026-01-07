@@ -2,20 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Controller\Profile;
+namespace App\Tests\Controller\User;
 
+use App\Entity\User;
 use App\Tests\Support\ControllerTester;
 
 final class ProfileCest
 {
     public function _before(ControllerTester $I): void
     {
-        // Code here will be executed before each test function.
+        $user = $I->grabEntityFromRepository(User::class, ['email' => 'test@example.com']);
+        $I->amLoggedInAs($user);
     }
 
-    // All `public` methods will be executed as tests.
-    public function tryToTest(ControllerTester $I): void
+    public function testUpdateProfile(ControllerTester $I): void
     {
-        // Write your test content here.
+        $I->amOnPage('/profil');
+
+        $I->fillField('form[prenom]', 'Jean-Michel');
+        $I->fillField('form[nom]', 'Dupont');
+        $I->fillField('form[tel]', '0612345678');
+
+        $I->click('Enregistrer');
+
+        $I->see('Jean-Michel', '.user-name');
     }
 }
