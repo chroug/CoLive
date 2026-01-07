@@ -21,6 +21,8 @@
         body {
             background-color: #f8f9fa;
             margin: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
         }
 
         .main-wrapper {
@@ -424,6 +426,125 @@
             animation: likePop 0.4s ease;
         }
 
+        .card-date {
+            font-size: 1rem;
+            margin-bottom: 4px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /***** DFESKTOP *******/
+
+        @media (min-width: 992px) {
+
+            :root {
+                --header-height: 80px;
+                --gap-size: 25px;
+            }
+
+            /* HEADER */
+            .header-nav {
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                padding: 0 50px;
+                box-sizing: border-box;
+            }
+
+            .header-logo {
+                font-size: 2rem;
+            }
+
+            .nav-login-btn {
+                padding: 10px 25px;
+                font-size: 1rem;
+            }
+
+            .nav-user-pill {
+                padding: 4px 15px 4px 4px;
+                font-size: 1rem;
+            }
+
+            .nav-avatar-mini {
+                width: 40px;
+                height: 40px;
+            }
+
+            /* GRIS PINTEREST AIRBNB*/
+            .pinterest-grid {
+                grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 40px 24px;
+            }
+
+            /* CARDS AIRBNB */
+            .announce-card {
+                aspect-ratio: auto;
+                background: transparent;
+                box-shadow: none;
+                border-radius: 0;
+                overflow: visible;
+            }
+
+            .card-img {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 20/19;
+                border-radius: 12px;
+                margin-bottom: 12px;
+                object-fit: cover;
+            }
+
+            .card-content {
+                position: static;
+                background: none;
+                color: #222;
+                padding: 0;
+                height: auto;
+                justify-content: flex-start;
+                text-shadow: none;
+            }
+
+            .card-title {
+                font-size: 1rem;
+                font-weight: 600;
+                white-space: normal;
+                line-height: 1.2;
+                margin-bottom: 2px;
+                text-shadow: none;
+            }
+
+            .card-location {
+                color: #717171;
+                font-size: 0.9rem;
+                margin-bottom: 2px;
+                order: 2;
+            }
+
+            .card-date {
+                color: #717171;
+                font-size: 0.9rem;
+                margin-bottom: 6px;
+                order: 3;
+            }
+
+            .card-price {
+                font-size: 1rem;
+                color: #222;
+                margin-top: 4px;
+                order: 4;
+            }
+
+            .card-like-btn {
+                top: 10px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+            }
+            .card-like-btn i {
+                font-size: 1.4rem;
+                filter: drop-shadow(0 0 2px rgba(0,0,0,0.3));
+            }
+        }
+
     </style>
 
     <div class="main-wrapper">
@@ -458,7 +579,6 @@
             </div>
 
             <form action="{{ path('app_announce') }}" method="get">
-
                 <div>
                     <label for="location" class="form-label">Ville</label>
                     <input type="text" id="location" name="location" value="{{ searchLocation|default('') }}" class="form-input" placeholder="Ex: Paris">
@@ -554,6 +674,11 @@
                         <div class="card-content">
                             <h2 class="card-title">{{ announce.titre }}</h2>
                             <p class="card-location"><i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}</p>
+                            {% if announce.disponibiliteDebut and announce.disponibiliteFin %}
+                                <p class="card-date">
+                                    {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M') }}
+                                </p>
+                            {% endif %}
                             <div class="card-price">{{ announce.prix }}€ <small>/mois</small></div>
                         </div>
                     </article>
