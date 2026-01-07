@@ -27,37 +27,59 @@
             </nav>
         </header>
 
-        <div>
+        <aside aria-label="Filtres de recherche">
             <form action="{{ path('app_announce') }}" method="get">
+
+                <h2>Filtres</h2>
 
                 <div>
                     <label for="location">Ville :</label>
                     <input type="text" id="location" name="location" value="{{ searchLocation|default('') }}" placeholder="Ex: Paris">
                 </div>
-                <div>
-                    <strong>Type de logement :</strong><br>
-                    <input type="radio" id="type_all" name="type" value="all" {{ searchType == 'all' or searchType is null ? 'checked' : '' }}>
-                    <label for="type_all">Tout</label><br>
 
-                    <input type="radio" id="type_chambre" name="type" value="Chambre" {{ searchType == 'Chambre' ? 'checked' : '' }}>
-                    <label for="type_chambre">Chambre</label><br>
+                <fieldset>
+                    <legend>Type de logement</legend>
 
-                    <input type="radio" id="type_coloc" name="type" value="Colocation" {{ searchType == 'Colocation' ? 'checked' : '' }}>
-                    <label for="type_coloc">Colocation</label><br>
+                    <div>
+                        <input type="radio" id="type_all" name="type" value="all" {{ searchType == 'all' or searchType is null ? 'checked' : '' }}>
+                        <label for="type_all">Tout</label>
+                    </div>
 
-                    <input type="radio" id="type_studio" name="type" value="Studio" {{ searchType == 'Studio' ? 'checked' : '' }}>
-                    <label for="type_studio">Studio</label>
-                </div>
-                <div>
-                    <label for="date_start">Arrivée après le :</label>
-                    <input type="date" id="date_start" name="date_start" value="{{ searchStart|default('') }}">
-                    <label for="date_end">Départ avant le :</label>
-                    <input type="date" id="date_end" name="date_end" value="{{ searchEnd|default('') }}">
-                </div>
+                    <div>
+                        <input type="radio" id="type_chambre" name="type" value="Chambre" {{ searchType == 'Chambre' ? 'checked' : '' }}>
+                        <label for="type_chambre">Chambre</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_coloc" name="type" value="Colocation" {{ searchType == 'Colocation' ? 'checked' : '' }}>
+                        <label for="type_coloc">Colocation</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_studio" name="type" value="Studio" {{ searchType == 'Studio' ? 'checked' : '' }}>
+                        <label for="type_studio">Studio</label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Disponibilité</legend>
+
+                    <div>
+                        <label for="date_start">Arrivée après le :</label>
+                        <input type="date" id="date_start" name="date_start" value="{{ searchStart|default('') }}">
+                    </div>
+
+                    <div>
+                        <label for="date_end">Départ avant le :</label>
+                        <input type="date" id="date_end" name="date_end" value="{{ searchEnd|default('') }}">
+                    </div>
+                </fieldset>
+
                 <button type="submit">Appliquer les filtres</button>
                 <a href="{{ path('app_announce') }}">Réinitialiser</a>
             </form>
-        </div>
+        </aside>
+
         <section aria-labelledby="page-title">
             <h1 id="page-title" class="fw-bold mb-5 px-2">Toutes nos annonces</h1>
 
