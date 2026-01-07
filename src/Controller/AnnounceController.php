@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Announce;
+use App\Entity\UserLikes;
 use App\Form\AnnounceType;
 use App\Repository\AnnounceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -48,5 +50,31 @@ final class AnnounceController extends AbstractController
             'controller_name' => 'AnnounceController',
             'formAnnonce' => $form->createView(),
         ]);
+    }
+
+    #[Route('/announce/{id}/like', name: 'app_announce_like')]
+    public function like(Announce $announce, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non autorisé'], 403);
+        }
+        $like = $entityManager->getRepository(UserLikes::class)->findOneBy([
+            'utilisateur' => $user,
+            'annonce' => $announce
+        ]);
+        if ($like) {
+            $entityManager->remove($like);
+            $entityManager->flush();
+            return $this->json(['isLiked' => false]);
+        }
+        $newLike = new UserLikes();
+        $newLike->setUtilisateur($user);
+        $newLike->setAnnonce($announce);
+
+        $entityManager->persist($newLike);
+        $entityManager->flush();
+
+        return $this->json(['isLiked' => true]);
     }
 }
