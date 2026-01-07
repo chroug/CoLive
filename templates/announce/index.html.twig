@@ -377,6 +377,53 @@
             color: #000;
         }
 
+        /* BOUTON COEUR */
+        .card-like-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-like-btn:active {
+            transform: scale(0.8);
+        }
+
+        /* ICON */
+        .card-like-btn i {
+            font-size: 1.8rem;
+            color: #fff;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            display: flex;
+            transition: color 0.2s;
+        }
+
+        /* ICON LIKÉ */
+        .card-like-btn.liked i {
+            color: #ed4956;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        /* POP LIKE ANIM */
+        @keyframes likePop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+
+        .card-like-btn.liked.animate i {
+            animation: likePop 0.4s ease;
+        }
+
     </style>
 
     <div class="main-wrapper">
@@ -483,7 +530,21 @@
 
             <div class="pinterest-grid">
                 {% for announce in announces %}
-                    <article class="announce-card">
+                    <article class="announce-card" {# onclick="window.location.href='{{ path('app_announce_show', {'id': announce.id}) }}'"   QUAND LA PAGE DETAIL SERA FAITE #}>
+                        {% set isLiked = false %}
+                        {% if app.user %}
+                            {% for like in announce.likes %}
+                                {% if like.utilisateur == app.user %}
+                                    {% set isLiked = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <button class="card-like-btn {{ isLiked ? 'liked' : '' }}"
+                                onclick="toggleLike(event, {{ announce.id }})">
+                            <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        </button>
+
                         {% set photo = announce.photos|first %}
                         {% if photo %}
                             <img src="{{ photo.url }}" class="card-img" alt="Photo">
@@ -508,6 +569,45 @@
             const overlay = document.getElementById('overlay');
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+        }
+        async function toggleLike(event, announceId) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            {% if not app.user %}
+            window.location.href = "{{ path('app_login') }}";
+            return;
+            {% endif %}
+
+            const btn = event.currentTarget;
+            const icon = btn.querySelector('i');
+
+            try {
+                const response = await fetch('/announce/' + announceId + '/like', {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.isLiked) {
+                        btn.classList.add('liked');
+                        btn.classList.add('animate');
+
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+
+                        setTimeout(() => btn.classList.remove('animate'), 400);
+
+                    } else {
+                        btn.classList.remove('liked');
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur', error);
+            }
         }
     </script>
 {% endblock %}
