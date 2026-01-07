@@ -2,67 +2,202 @@
 
 {% block title %}Toutes nos annonces{% endblock %}
 
-{% block body %}
-    <style>
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: scale(1.03);
-            z-index: 10;
-            box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
-            cursor: pointer;
-        }
-        .text-shadow-strong {
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-    </style>
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('styles/announce.css') }}">
 
-    <main class="container my-5">
-        <header class="mb-4">
-            <nav aria-label="Navigation retour">
-                <a href="{{ path('app_home') }}" class="btn btn-outline-secondary rounded-pill px-4">
-                    <i class="bi bi-arrow-left me-2"></i>Retour
+{% endblock %}
+
+{% block body %}
+
+    <div class="main-wrapper">
+
+        <header class="header-nav">
+            <a href="{{ path('app_home') }}" class="header-logo">
+                CoLive
+            </a>
+
+            {% if app.user %}
+                <a href="{{ path('app_profile') }}" class="nav-user-pill">
+                    {% if app.user.avatar %}
+                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
+                    {% endif %}
+                    <span>{{ app.user.prenom }}</span>
                 </a>
-            </nav>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="nav-login-btn">
+                    Se connecter
+                </a>
+            {% endif %}
         </header>
 
-        <section aria-labelledby="page-title">
-            <h1 id="page-title" class="fw-bold mb-5 px-2">Toutes nos annonces</h1>
+        <div class="filter-overlay" id="overlay" onclick="toggleMenu()"></div>
 
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        <aside class="filter-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Filtres</h2>
+                <button class="btn-close" onclick="toggleMenu()">&times;</button>
+            </div>
+
+            <form action="{{ path('app_announce') }}" method="get">
+                <div>
+                    <label for="location" class="form-label">Ville</label>
+                    <input type="text" id="location" name="location" value="{{ app.request.query.get('location') }}" class="form-input" placeholder="Ex: Paris">
+                </div>
+
+                <div style="height: 50px;" class="desktop-hidden"></div>
+
+                <fieldset class="form-fieldset">
+                    <legend class="form-legend">Type de logement</legend>
+
+                    {% set currentFilter = app.request.query.get('type', 'all') %}
+
+                    <div>
+                        <input type="radio" id="type_all" name="type" value="all" class="radio-hidden"
+                               {% if currentFilter == 'all' %}checked{% endif %}>
+                        <label for="type_all" class="radio-text-label">Tout</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_chambre" name="type" value="Chambre" class="radio-hidden"
+                               {% if currentFilter == 'Chambre' %}checked{% endif %}>
+                        <label for="type_chambre" class="radio-text-label">Chambre</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_coloc" name="type" value="Colocation" class="radio-hidden"
+                               {% if currentFilter == 'Colocation' %}checked{% endif %}>
+                        <label for="type_coloc" class="radio-text-label">Colocation</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="type_studio" name="type" value="Studio" class="radio-hidden"
+                               {% if currentFilter == 'Studio' %}checked{% endif %}>
+                        <label for="type_studio" class="radio-text-label">Studio</label>
+                    </div>
+
+                </fieldset>
+
+                <div style="height: 50px;" class="desktop-hidden"></div>
+
+                <fieldset class="form-fieldset">
+                    <legend class="form-legend">Période</legend>
+                    <div style="margin-bottom:30px;">
+                        <label class="form-label">Arrivée</label>
+                        <input type="date" name="date_start" class="form-input" value="{{ app.request.query.get('date_start') }}">
+                    </div>
+                    <div>
+                        <label class="form-label">Départ</label>
+                        <input type="date" name="date_end" class="form-input" value="{{ app.request.query.get('date_end') }}">
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="btn-submit">Voir les résultats</button>
+
+                <a href="{{ path('app_announce') }}" class="btn-reset-filters">
+                    Réinitialiser les filtres
+                </a>
+            </form>
+        </aside>
+
+        <section>
+            <div class="page-header-container">
+                <h1 class="page-title">Toutes nos annonces</h1>
+
+                <button class="btn-filter-text" onclick="toggleMenu()">
+                    <i class="bi bi-filter"></i> Filtres
+                </button>
+            </div>
+
+            <div class="pinterest-grid">
                 {% for announce in announces %}
-                    <div class="col">
-                        <article class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden text-white position-relative card-hover">
+                    <article class="announce-card" {# onclick="window.location.href='{{ path('app_announce_show', {'id': announce.id}) }}'"   QUAND LA PAGE DETAIL SERA FAITE #}>
+                        {% set isLiked = false %}
+                        {% if app.user %}
+                            {% for like in announce.likes %}
+                                {% if like.utilisateur == app.user %}
+                                    {% set isLiked = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
 
-                            {% set photo = announce.photos|first %}
+                        <button class="card-like-btn {{ isLiked ? 'liked' : '' }}"
+                                onclick="toggleLike(event, {{ announce.id }})">
+                            <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        </button>
 
-                            {% if photo %}
-                                <img src="{{ photo.url }}" class="card-img h-100 w-100" style="object-fit: cover; height: 22rem;" alt="Photo de {{ announce.titre }}">
-                            {% else %}
-                                <img src="https://picsum.photos/seed/{{ announce.id }}/600/800" class="card-img h-100 w-100" style="object-fit: cover; height: 22rem;" alt="Image par défaut">
-                            {% endif %}
-
-                            <div class="card-img-overlay d-flex flex-column justify-content-end p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0) 100%);">
-                                <h2 class="h5 fw-bold mb-1 text-truncate text-shadow-strong">{{ announce.titre }}</h2>
-
-                                <p class="mb-3 small opacity-100 text-shadow-strong">
-                                    <i class="bi bi-geo-alt-fill me-1"></i>{{ announce.ville }} ({{ announce.codePostal }})
+                        {% set photo = announce.photos|first %}
+                        {% if photo %}
+                            <img src="{{ photo.url }}" class="card-img" alt="Photo">
+                        {% else %}
+                            <img src="https://picsum.photos/seed/{{ announce.id }}/400/600" class="card-img" alt="Defaut">
+                        {% endif %}
+                        <div class="card-content">
+                            <h2 class="card-title">{{ announce.titre }}</h2>
+                            <p class="card-location"><i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}</p>
+                            {% if announce.disponibiliteDebut and announce.disponibiliteFin %}
+                                <p class="card-date">
+                                    {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M') }}
                                 </p>
-
-                                <div class="d-flex align-items-baseline text-shadow-strong">
-                                    <span class="fw-bold fs-4 me-1">{{ announce.prix }}€</span>
-                                    <span class="small fw-light">/ mois</span>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                {% else %}
-                    <div class="col-12 text-center py-5">
-                        <p class="text-muted fs-5">Aucune annonce disponible pour le moment.</p>
-                    </div>
+                            {% endif %}
+                            <div class="card-price">{{ announce.prix }}€ <small>/mois</small></div>
+                        </div>
+                    </article>
                 {% endfor %}
             </div>
         </section>
-    </main>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+        async function toggleLike(event, announceId) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            {% if not app.user %}
+            window.location.href = "{{ path('app_login') }}";
+            return;
+            {% endif %}
+
+            const btn = event.currentTarget;
+            const icon = btn.querySelector('i');
+
+            try {
+                const response = await fetch('/announce/' + announceId + '/like', {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.isLiked) {
+                        btn.classList.add('liked');
+                        btn.classList.add('animate');
+
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+
+                        setTimeout(() => btn.classList.remove('animate'), 400);
+
+                    } else {
+                        btn.classList.remove('liked');
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur', error);
+            }
+        }
+    </script>
 {% endblock %}
