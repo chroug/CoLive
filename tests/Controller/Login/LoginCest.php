@@ -8,14 +8,28 @@ use App\Tests\Support\ControllerTester;
 
 final class LoginCest
 {
-    public function _before(ControllerTester $I): void
+    public function testSuccessfulLogin(ControllerTester $I): void
     {
-        // Code here will be executed before each test function.
+        $I->amOnPage('/login');
+
+        $I->fillField('_username', 'test@example.com');
+        $I->fillField('_password', 'password');
+        $I->click('Se connecter');
+
+        $I->seeCurrentUrlEquals('/');
+
+        $I->amOnPage('/profil');
+        $I->see('Se déconnecter', '.logout-btn');
     }
 
-    // All `public` methods will be executed as tests.
-    public function tryToTest(ControllerTester $I): void
+    public function testFailedLogin(ControllerTester $I): void
     {
-        // Write your test content here.
+        $I->amOnPage('/login');
+        $I->fillField('_username', 'test@example.com');
+        $I->fillField('_password', 'mauvais_mdp');
+        $I->click('Se connecter');
+
+        $I->seeCurrentUrlEquals('/login');
+        $I->seeElement('.flash-error');
     }
 }
