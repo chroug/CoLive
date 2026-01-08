@@ -338,3 +338,40 @@
     display: flex;
     margin-right: 5px;
 }
+
+
+ .card-like-btn {
+     width: 45px;
+     height: 45px;
+     background: transparent;
+     border: none;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     cursor: pointer;
+     transition: transform 0.2s;
+     padding: 0;
+ }
+.card-like-btn:active { transform: scale(0.8); }
+
+.card-like-btn i {
+    font-size: 1.5rem;
+    color: #ccc; /* Gris si unliké */
+    transition: color 0.2s;
+}
+
+/* État Liké (Rouge) */
+.card-like-btn.liked i {
+    color: #ed4956;
+}
+
+/* Animation Pop */
+@keyframes likePop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+.card-like-btn.liked.animate i {
+    animation: likePop 0.4s ease;
+}
+
