@@ -12,6 +12,9 @@
 {% block body %}
 
     <div class="hero-wrapper">
+        <a href="{{ path('app_announce') }}" class="btn-back-floating" onclick="event.stopPropagation()">
+            <i class="bi bi-arrow-left"></i>
+        </a>
         {% if announce.photos is not empty %}
             <img src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Couverture">
         {% else %}
@@ -112,5 +115,90 @@
         </div>
         <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
     </div>
+
+    <script>
+        async function toggleLike(event, announceId) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            {% if not app.user %}
+            window.location.href = "{{ path('app_login') }}";
+            return;
+            {% endif %}
+
+            const btn = event.currentTarget;
+            const icon = btn.querySelector('i');
+
+            try {
+                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.isLiked) {
+                        // --- C'EST ICI QUE CA CHANGE ---
+                        btn.classList.add('liked');
+                        btn.classList.add('animate'); // Déclenche l'animation CSS
+
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+
+                        // On retire la classe d'animation après 0.4s pour pouvoir la rejouer plus tard
+                        setTimeout(() => btn.classList.remove('animate'), 400);
+                    } else {
+                        // UNLIKE
+                        btn.classList.remove('liked');
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                    }
+                }
+            } catch (error) { console.error(error); }
+        }
+
+        const galleryImages = [];
+        {% if announce.photos is not empty %}
+        {% for photo in announce.photos %}
+        galleryImages.push("{{ photo.contenu }}");
+        {% endfor %}
+        {% else %}
+        galleryImages.push("https://picsum.photos/seed/{{ announce.id }}/800/1000");
+        {% endif %}
+
+        let currentImageIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const counter = document.getElementById('lightbox-counter');
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            updateLightbox();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+            updateLightbox();
+        }
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateLightbox();
+        }
+        function updateLightbox() {
+            lightboxImg.src = galleryImages[currentImageIndex];
+            counter.innerText = (currentImageIndex + 1) + " / " + galleryImages.length;
+        }
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        lightbox.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+        lightbox.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) nextImage();
+            if (touchEndX > touchStartX + 50) prevImage();
+        });
+    </script>
 
 {% endblock %}
