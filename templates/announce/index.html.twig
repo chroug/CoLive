@@ -136,7 +136,7 @@
 
                         {% set photo = announce.photos|first %}
                         {% if photo %}
-                            <img src="{{ photo.url }}" class="card-img" alt="Photo">
+                            <img src="{{ photo.contenu }}" class="card-img" alt="Photo">
                         {% else %}
                             <img src="https://picsum.photos/seed/{{ announce.id }}/400/600" class="card-img" alt="Defaut">
                         {% endif %}
