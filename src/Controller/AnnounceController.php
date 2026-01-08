@@ -79,8 +79,10 @@ final class AnnounceController extends AbstractController
     }
 
     #[Route('/announce/{id}', name: 'app_announce_show')]
-    public function show(AnnounceRepository $announce)
+    public function show(Announce $announce): Response
     {
-        $this->render('announce/show.html.twig');
+        return $this->render('announce/show.html.twig', [
+            'announce' => $announce,
+        ]);
     }
 }
