@@ -34,9 +34,43 @@
             {% endif %}
         </ul>
 
+        <section class="host-card">
+            {% if announce.utilisateur.avatar %}
+                <img src="{{ announce.utilisateur.avatar }}" class="host-avatar" alt="Avatar">
+            {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" class="host-avatar" alt="Avatar">
+            {% endif %}
+            <div class="host-info">
+                <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
+                <p>Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
+            </div>
+        </section>
+
         <section>
             <h2 class="section-title">Le logement</h2>
             <p class="text-content">{{ announce.description }}</p>
+        </section>
+
+        <section>
+            <h2 class="section-title">Photos</h2>
+            <div class="mini-gallery">
+                {% for photo in announce.photos|slice(1) %}
+                    <img src="{{ photo.contenu }}" alt="Photo" onclick="openLightbox({{ loop.index }})">
+                {% endfor %}
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Équipements</h2>
+            <p class="text-content">{{ announce.equipements }}</p>
+        </section>
+
+        <section>
+            <h2 class="section-title">Dates</h2>
+            <div class="tag-pill" style="display:inline-flex;">
+                <i class="bi bi-calendar3"></i>
+                {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M Y') }}
+            </div>
         </section>
     </main>
 {% endblock %}
