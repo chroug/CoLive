@@ -152,3 +152,67 @@ body {
     flex-shrink: 0;
     cursor: pointer;
 }
+
+/**********PRICE************/
+
+.fixed-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 2px solid #eee;
+    padding: 30px 30px 40px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 900;
+    box-shadow: 0 -10px 60px rgba(0,0,0,0.15);
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+.price-amount { font-size: 3.5rem; font-weight: 900; color: #000; line-height: 1; }
+.price-label { font-size: 1.5rem; color: #666; font-weight: 500; }
+
+.buttons-row {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 25px 0;
+    border-radius: 25px;
+    font-weight: 800;
+    font-size: 1.4rem;
+    text-align: center;
+    transition: transform 0.1s;
+}
+.btn-action:active { transform: scale(0.98); }
+
+.btn-contact {
+    background-color: #f3f4f6;
+    color: #000;
+    border: 2px solid #e5e7eb;
+}
+.btn-reserve {
+    background-color: #000;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.spacer-footer {
+    height: 350px;
+    width: 100%;
+}
