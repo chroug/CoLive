@@ -26,10 +26,56 @@
         .upload-area {
             border: 0.125rem dashed #dee2e6;
             transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
         }
-        .upload-area:hover {
+        .upload-area:hover, .upload-area.dragover {
             border-color: #adb5bd;
             background-color: #f8f9fa;
+        }
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .preview-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100px;
+        }
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .btn-remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-remove-image:hover {
+            background-color: #bb2d3b;
+            transform: scale(1.1);
         }
     </style>
 {% endblock %}
@@ -117,9 +163,19 @@
             <div class="card rounded-4 mb-4 p-4">
                 <h5 class="fw-bold mb-1">Photos</h5>
                 <p class="text-muted small mb-4">Ajoutez des photos de votre logement (optionnel)</p>
-                <div class="upload-area rounded-4 p-5 text-center d-flex flex-column align-items-center justify-content-center bg-white" style="min-height: 12.5rem;">
-                    <button type="button" class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3 fw-medium">Choisir des fichiers</button>
+
+                <div class="d-none">
+                    {{ form_widget(formAnnonce.images) }}
+                </div>
+
+                <div class="upload-area rounded-4 p-5 text-center d-flex flex-column align-items-center justify-content-center bg-white" id="drop-zone" style="min-height: 12.5rem;">
+                    <button type="button" class="btn btn-outline-dark rounded-pill px-4 py-2 mb-3 fw-medium" style="pointer-events: none;">Choisir des fichiers</button>
                     <p class="text-muted small mb-0">Glissez-déposez vos photos ici ou cliquez pour sélectionner</p>
+                    <div id="preview-container" class="preview-container"></div>
+                </div>
+
+                <div class="text-danger mt-2 small">
+                    {{ form_errors(formAnnonce.images) }}
                 </div>
             </div>
 
