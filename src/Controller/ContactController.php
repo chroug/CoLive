@@ -18,13 +18,12 @@ class ContactController extends AbstractController
 
         if ($currentUser && $userToAdd) {
             $currentUser->addContact($userToAdd);
-
+            $userToAdd->addContact($currentUser);
             $em->persist($currentUser);
             $em->flush();
 
-            $this->addFlash('success', 'Contact ajouté ! Vous pouvez discuter.');
         }
-        return $this->redirectToRoute('app_messagerie_conversation', ['id' => $userToAdd->getId()]);
+        return $this->redirectToRoute('app_message_conversation', ['id' => $userToAdd->getId()]);
     }
 
     #[Route('/contact/supprimer/{id}', name: 'app_contact_remove')]
@@ -35,11 +34,12 @@ class ContactController extends AbstractController
 
         if ($currentUser) {
             $currentUser->removeContact($userToRemove);
-
+            $userToRemove->removeContact($currentUser);
             $em->persist($currentUser);
+            $em->persist($userToRemove);
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_messagerie');
+        return $this->redirectToRoute('app_message');
     }
 }

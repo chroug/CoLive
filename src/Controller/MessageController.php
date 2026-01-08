@@ -15,19 +15,27 @@ class MessageController extends AbstractController
 {
     #[Route('/message', name: 'app_message')]
     #[Route('/message/{id}', name: 'app_message_conversation')]
-    public function index(
-        ?int $id,
-        MessageRepository $messageRepository,
-        EntityManagerInterface $entityManager,
-        Request $request
-    ): Response
+    public function index(?int $id, MessageRepository $messageRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
         if (!$currentUser) {
             return $this->redirectToRoute('app_login');
         }
-        $users = $currentUser->getContacts();
+        $allContacts = $currentUser->getContacts();
+        $searchTerm = $request->query->get('q');
+        $users = [];
+
+        if ($searchTerm) {
+            foreach ($allContacts as $contact) {
+                if (stripos($contact->getNom(), $searchTerm) !== false ||
+                    stripos($contact->getPrenom(), $searchTerm) !== false) {
+                    $users[] = $contact;
+                }
+            }
+        } else {
+            $users = $allContacts;
+        }
         $selectedUser = null;
         $messages = [];
 
@@ -59,7 +67,7 @@ class MessageController extends AbstractController
                         $entityManager->persist($message);
                         $entityManager->flush();
 
-                        return $this->redirectToRoute('app_messagerie_conversation', ['id' => $selectedUser->getId()]);
+                        return $this->redirectToRoute('app_message_conversation', ['id' => $selectedUser->getId()]);
                     }
                 }
                 $messages = $messageRepository->findConversation($currentUser, $selectedUser);
@@ -70,6 +78,7 @@ class MessageController extends AbstractController
             'users' => $users,
             'selectedUser' => $selectedUser,
             'messages' => $messages,
+            'searchTerm' => $searchTerm,
         ]);
     }
 }

@@ -4,26 +4,58 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/message.css') }}">
 {% endblock %}
-
 {% block body %}
+    <header class="top-bar">
+        <a href="{{ path('app_home') }}" style="text-decoration: none;">
+            <div class="logo">C</div>
+        </a>
+
+        <div class="nav-right-group">
+            {% if app.user %}
+                <a href="{{ path('app_message') }}" class="nav-icon-btn" title="Mes messages">
+                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                          fill="#000000" viewBox="0 0 24 24" >
+                        <!--Boxicons v3.0.6 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path d="m21.55,8.17l-2.55-1.7v-1.46c0-.55-.45-1-1-1h-2.7l-2.75-1.83c-.34-.22-.77-.22-1.11,0l-2.75,1.83h-2.7c-.55,0-1,.45-1,1v1.46l-2.55,1.7c-.28.19-.45.5-.45.83v11c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2v-11c0-.33-.17-.65-.45-.83Zm-14.55-2.17h10v4.46l-5,3.33-5-3.33v-4.46Zm-3,14v-9.13l1.45.96,6,4c.17.11.36.17.55.17s.39-.06.55-.17l6-4,1.45-.96v9.13H4Z"></path>
+                    </svg>
+                </a>
+
+                <a href="{{ path('app_profile') }}" class="nav-user-pill">
+                    {% if app.user.avatar %}
+                        <img src="{{ asset('uploads/avatars/' ~ app.user.avatar) }}" alt="Avatar" class="nav-avatar-mini">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
+                    {% endif %}
+                    <span>{{ app.user.prenom }}</span>
+                </a>
+            {% else %}
+                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
+            {% endif %}
+        </div>
+    </header>
+
     <div class="messagerie-wrapper">
         <div class="messagerie-container">
             <div class="messagerie-sidebar">
                 <div class="sidebar-header">
-                    <div class="brand-logo">C</div>
                     <h2>Messagerie</h2>
                 </div>
-
                 <div class="search-box">
-                    <input type="text" id="searchContact" placeholder="Chercher dans mes discussions..." onkeyup="filterContacts()">
+                    <form action="{{ path('app_message') }}" method="get">
+                        <input type="text"
+                               name="q"
+                               value="{{ searchTerm }}"
+                               placeholder="Rechercher un contact"
+                               autocomplete="off">
+                        <button type="submit" style="display: none;"></button>
+                    </form>
                 </div>
-
                 <div class="contact-list">
                     <h3>Mes Discussions ({{ users|length }})</h3>
                     <div class="list-scroll" id="contactListContainer">
                         {% for user in users %}
                             <div class="contact-item-wrapper" style="position: relative;">
-                                <a href="{{ path('app_messagerie_conversation', {id: user.id}) }}"
+                                <a href="{{ path('app_message_conversation', {id: user.id}) }}"
                                    class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}"
                                    data-name="{{ user.prenom|lower }} {{ user.nom|lower }}">
                                     <div class="avatar">{{ user.prenom|first|upper }}</div>
@@ -47,6 +79,13 @@
                     <div class="chat-header">
                         <div class="avatar">{{ selectedUser.prenom|first|upper }}</div>
                         <h3>{{ selectedUser.prenom }} {{ selectedUser.nom }}</h3>
+                        <a href="{{ path('app_contact_remove', {id: selectedUser.id}) }}" class="btn-delete-contact" title="Supprimer la conversation">
+                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                   viewBox="0 0 24 24" >
+                                <!--Boxicons v3.0.7 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
+                            </svg>
+                        </a>
                     </div>
 
                     <div class="messages-area" id="messagesArea">
