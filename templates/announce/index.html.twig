@@ -6,7 +6,7 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('styles/announce.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/announce_index.css') }}">
 
 {% endblock %}
 
@@ -106,7 +106,11 @@
 
         <section>
             <div class="page-header-container">
-                <h1 class="page-title">Toutes nos annonces</h1>
+                <h1 class="page-title">Toutes nos annonces
+                {% if app.request.query.get('type') != 'all' %}
+                    de {{ app.request.query.get('type') }}
+                {% endif %}
+                </h1>
 
                 <button class="btn-filter-text" onclick="toggleMenu()">
                     <i class="bi bi-filter"></i> Filtres
@@ -115,7 +119,7 @@
 
             <div class="pinterest-grid">
                 {% for announce in announces %}
-                    <article class="announce-card" {# onclick="window.location.href='{{ path('app_announce_show', {'id': announce.id}) }}'"   QUAND LA PAGE DETAIL SERA FAITE #}>
+                    <article class="announce-card" onclick="window.location.href='{{ path('app_announce_show', {'id': announce.id}) }}'">
                         {% set isLiked = false %}
                         {% if app.user %}
                             {% for like in announce.likes %}
@@ -132,7 +136,7 @@
 
                         {% set photo = announce.photos|first %}
                         {% if photo %}
-                            <img src="{{ photo.url }}" class="card-img" alt="Photo">
+                            <img src="{{ photo.contenu }}" class="card-img" alt="Photo">
                         {% else %}
                             <img src="https://picsum.photos/seed/{{ announce.id }}/400/600" class="card-img" alt="Defaut">
                         {% endif %}

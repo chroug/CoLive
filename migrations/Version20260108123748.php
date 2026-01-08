@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260106160436 extends AbstractMigration
+final class Version20260108123748 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20260106160436 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE announce (id_annonce INT AUTO_INCREMENT NOT NULL, titre VARCHAR(100) NOT NULL, description LONGTEXT NOT NULL, type VARCHAR(255) NOT NULL, nb_pieces INT NOT NULL, prix DOUBLE PRECISION NOT NULL, latitude DOUBLE PRECISION NOT NULL, longitude DOUBLE PRECISION NOT NULL, equipements VARCHAR(255) DEFAULT NULL, regle VARCHAR(255) DEFAULT NULL, date_creation DATETIME NOT NULL, disponibilite_debut DATE NOT NULL, disponibilite_fin DATE NOT NULL, adresse VARCHAR(255) NOT NULL, ville VARCHAR(255) NOT NULL, code_postal VARCHAR(10) DEFAULT NULL, surface DOUBLE PRECISION DEFAULT NULL, id_utilisateur INT NOT NULL, INDEX IDX_E6D6DD7550EAE44 (id_utilisateur), PRIMARY KEY (id_annonce)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE announce_picture (id_photoAnnonce INT AUTO_INCREMENT NOT NULL, url VARCHAR(255) NOT NULL, date_creation DATETIME NOT NULL, id_annonce INT NOT NULL, INDEX IDX_2FC49EC828C83A95 (id_annonce), PRIMARY KEY (id_photoAnnonce)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE announce_picture (id_photoAnnonce INT AUTO_INCREMENT NOT NULL, contenu LONGTEXT NOT NULL, date_creation DATETIME NOT NULL, id_annonce INT NOT NULL, INDEX IDX_2FC49EC828C83A95 (id_annonce), PRIMARY KEY (id_photoAnnonce)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE message (id INT AUTO_INCREMENT NOT NULL, content LONGTEXT DEFAULT NULL, attachment VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, is_read TINYINT NOT NULL, sender_id INT NOT NULL, recipient_id INT NOT NULL, INDEX IDX_B6BD307FF624B39D (sender_id), INDEX IDX_B6BD307FE92F8F78 (recipient_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE review (id_avis INT AUTO_INCREMENT NOT NULL, note INT NOT NULL, commentaire LONGTEXT DEFAULT NULL, date_creation DATETIME NOT NULL, id_utilisateur INT NOT NULL, id_annonce INT NOT NULL, INDEX IDX_794381C650EAE44 (id_utilisateur), INDEX IDX_794381C628C83A95 (id_annonce), PRIMARY KEY (id_avis)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE user (id_utilisateur INT AUTO_INCREMENT NOT NULL, nom VARCHAR(50) NOT NULL, prenom VARCHAR(50) NOT NULL, email VARCHAR(100) NOT NULL, tel VARCHAR(50) DEFAULT NULL, mot_de_passe VARCHAR(255) NOT NULL, avatar LONGTEXT DEFAULT NULL, date_creation_compte DATETIME NOT NULL, role INT NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY (id_utilisateur)) DEFAULT CHARACTER SET utf8mb4');

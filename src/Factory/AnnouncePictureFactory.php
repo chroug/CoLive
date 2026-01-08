@@ -15,8 +15,25 @@ final class AnnouncePictureFactory extends PersistentProxyObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'url' => 'https://loremflickr.com/800/600/room?lock=' . self::faker()->unique()->numberBetween(1, 1000),
+            'contenu' => $this->getRandomImageBase64(),
             'annonce' => AnnounceFactory::new(),
+            'dateCreation' => self::faker()->dateTimeBetween('-6 months', 'now'),
         ];
+    }
+
+    private function getRandomImageBase64(): string
+    {
+        $url = 'https://loremflickr.com/400/300/interiors,room?lock=' . self::faker()->numberBetween(1, 1000);
+        try {
+            $imageContent = file_get_contents($url);
+            if ($imageContent === false) {
+                throw new \Exception("Erreur de téléchargement");
+            }
+            $base64 = base64_encode($imageContent);
+            return 'data:image/jpeg;base64,' . $base64;
+
+        } catch (\Exception $e) {
+            return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+        }
     }
 }

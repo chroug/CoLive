@@ -3,16 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Announce;
+use App\Entity\AnnouncePicture;
 use App\Entity\UserLikes;
 use App\Form\AnnounceType;
 use App\Repository\AnnounceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class AnnounceController extends AbstractController
 {
@@ -34,20 +37,30 @@ final class AnnounceController extends AbstractController
     }
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/announce/create', name: 'app_announce_create')]
-    public function create(Request $request, EntityManagerInterface $em): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $annonce = new Announce();
         $form = $this->createForm(AnnounceType::class, $annonce);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $annonce->setUtilisateur($this->getUser());
+            $images = $form->get('images')->getData();
+            foreach ($images as $image) {
+                $fileContent = file_get_contents($image->getPathname());
+                $base64 = base64_encode($fileContent);
+                $mimeType = $image->getMimeType();
+                $dataUri = 'data:' . $mimeType . ';base64,' . $base64;
+                $picture = new AnnouncePicture();
+                $picture->setContenu($dataUri);
+                $picture->setAnnonce($annonce);
+                $em->persist($picture);
+            }
             $em->persist($annonce);
             $em->flush();
-            $this->addFlash('success', 'Votre announce a été publiée avec succès. Elle est désormais visible par les utilisateurs.');
+            $this->addFlash('success', 'Votre annonce a été publiée avec succès.');
             return $this->redirectToRoute('app_home');
         }
         return $this->render('announce/create.html.twig', [
-            'controller_name' => 'AnnounceController',
             'formAnnonce' => $form->createView(),
         ]);
     }
@@ -76,5 +89,13 @@ final class AnnounceController extends AbstractController
         $entityManager->flush();
 
         return $this->json(['isLiked' => true]);
+    }
+
+    #[Route('/announce/{id}', name: 'app_announce_show')]
+    public function show(Announce $announce): Response
+    {
+        return $this->render('announce/show.html.twig', [
+            'announce' => $announce,
+        ]);
     }
 }
