@@ -6,9 +6,11 @@
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('styles/announce_show.css') }}">
 {% endblock %}
 
 {% block body %}
+
     <div class="hero-wrapper">
         {% if announce.photos is not empty %}
             <img src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Couverture">
@@ -19,7 +21,7 @@
 
     <main class="content-sheet">
         <div class="title-row">
-            <h1 class="aanounce-title">{{ announce.titre }}</h1>
+            <h1 class="announce-title">{{ announce.titre }}</h1>
         </div>
         <div class="announce-location">
             <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
