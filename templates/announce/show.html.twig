@@ -9,5 +9,11 @@
 {% endblock %}
 
 {% block body %}
-
+    <div class="hero-wrapper">
+        {% if announce.photos is not empty %}
+            <img src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Couverture">
+        {% else %}
+            <img src="https://picsum.photos/seed/{{ announce.id }}/800/1000" class="hero-img" alt="Couverture">
+        {% endif %}
+    </div>
 {% endblock %}
