@@ -119,7 +119,7 @@
 
             <div class="pinterest-grid">
                 {% for announce in announces %}
-                    <article class="announce-card" {# onclick="window.location.href='{{ path('app_announce_show', {'id': announce.id}) }}'"   QUAND LA PAGE DETAIL SERA FAITE #}>
+                    <article class="announce-card" onclick="window.location.href='{{ path('app_announce_show', {'id': announce.id}) }}'">
                         {% set isLiked = false %}
                         {% if app.user %}
                             {% for like in announce.likes %}
