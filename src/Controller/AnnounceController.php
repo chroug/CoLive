@@ -46,20 +46,14 @@ final class AnnounceController extends AbstractController
             $annonce->setUtilisateur($this->getUser());
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
-                $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
-                try {
-                    $image->move(
-                        $this->getParameter('kernel.project_dir') . '/public/uploads/announces',
-                        $newFilename
-                    );
-                    $picture = new AnnouncePicture();
-                    $picture->setUrl('/uploads/announces/' . $newFilename);
-                    $picture->setAnnonce($annonce);
-                    $em->persist($picture);
-                } catch (FileException $e) {
-                }
+                $fileContent = file_get_contents($image->getPathname());
+                $base64 = base64_encode($fileContent);
+                $mimeType = $image->getMimeType();
+                $dataUri = 'data:' . $mimeType . ';base64,' . $base64;
+                $picture = new AnnouncePicture();
+                $picture->setContenu($dataUri);
+                $picture->setAnnonce($annonce);
+                $em->persist($picture);
             }
             $em->persist($annonce);
             $em->flush();
