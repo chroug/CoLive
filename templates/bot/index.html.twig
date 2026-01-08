@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Assistant CoLive{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/bot.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header class="top-bar">
+        <a href="{{ path('app_home') }}" style="text-decoration: none;">
+            <div class="logo">C</div>
+        </a>
+
+        <div class="nav-right-group">
+            {% if app.user %}
+                <a href="{{ path('app_message') }}" class="nav-icon-btn" title="Mes messages">
+                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                          fill="#000000" viewBox="0 0 24 24" >
+                        <!--Boxicons v3.0.6 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path d="m21.55,8.17l-2.55-1.7v-1.46c0-.55-.45-1-1-1h-2.7l-2.75-1.83c-.34-.22-.77-.22-1.11,0l-2.75,1.83h-2.7c-.55,0-1,.45-1,1v1.46l-2.55,1.7c-.28.19-.45.5-.45.83v11c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2v-11c0-.33-.17-.65-.45-.83Zm-14.55-2.17h10v4.46l-5,3.33-5-3.33v-4.46Zm-3,14v-9.13l1.45.96,6,4c.17.11.36.17.55.17s.39-.06.55-.17l6-4,1.45-.96v9.13H4Z"></path>
+                    </svg>
+                </a>
+
+                <a href="{{ path('app_profile') }}" class="nav-user-pill">
+                    {% if app.user.avatar %}
+                        <img src="{{ asset('uploads/avatars/' ~ app.user.avatar) }}" alt="Avatar" class="nav-avatar-mini">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
+                    {% endif %}
+                    <span>{{ app.user.prenom }}</span>
+                </a>
+            {% else %}
+                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="bot-container">
+        <div class="bot-window">
+            <div class="bot-header">
+                <div class="bot-info">
+                    <h3>Assistant CoLive</h3>
+                    <span>En ligne (IA)</span>
+                </div>
+            </div>
+
+            <div class="bot-messages" id="chatBox">
+                <div class="message bot">
+                    <div class="bubble">Bonjour ! Je suis l'IA de CoLive. Une question sur le site ?</div>
+                </div>
+            </div>
+            <div class="bot-input">
+                <input type="text" id="userInput" placeholder="Posez votre question..." autocomplete="off">
+                <button onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function sendMessage() {
+            let input = document.getElementById('userInput');
+            let text = input.value.trim();
+            let chatBox = document.getElementById('chatBox');
+
+            if(text === "") return;
+            chatBox.innerHTML += `
+            <div class="message user">
+                <div class="bubble">${text}</div>
+            </div>
+        `;
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+            input.value = "";
+
+            let loadingId = "loading-" + Date.now();
+            chatBox.innerHTML += `
+            <div class="message bot" id="${loadingId}">
+                <div class="bubble" style="font-style:italic; color:#777;">Écrit...</div>
+            </div>
+        `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            fetch("{{ path('app_bot_ask') }}", {
+                method: "POST",
+                body: JSON.stringify({ message: text }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(loadingId).remove();
+
+                    chatBox.innerHTML += `
+                <div class="message bot">
+                    <div class="bubble">${data.response}</div>
+                </div>
+            `;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                })
+                .catch(error => {
+                    document.getElementById(loadingId).remove();
+                    alert("Erreur de communication avec le bot.");
+                });
+        }
+
+        document.getElementById('userInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") sendMessage();
+        });
+    </script>
+{% endblock %}
