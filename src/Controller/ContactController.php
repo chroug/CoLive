@@ -34,11 +34,12 @@ class ContactController extends AbstractController
 
         if ($currentUser) {
             $currentUser->removeContact($userToRemove);
-
+            $userToRemove->removeContact($currentUser);
             $em->persist($currentUser);
+            $em->persist($userToRemove);
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_messagerie');
+        return $this->redirectToRoute('app_message');
     }
 }
