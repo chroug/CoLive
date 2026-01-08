@@ -4,113 +4,168 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/announce_show.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('styles/announce_show.css') }}">
 {% endblock %}
 
 {% block body %}
 
-    <div class="hero-wrapper">
-        <a href="{{ path('app_announce') }}" class="btn-back-floating" onclick="event.stopPropagation()">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
+    <!-- HEADER DESKTOP -->
+    <header class="desktop-header">
+        <a href="{{ path('app_home') }}" class="header-logo">CoLive</a>
         {% if app.user %}
-            <a href="{{ path('app_profile') }}" class="btn-profile-floating" onclick="event.stopPropagation()">
+            <a href="{{ path('app_profile') }}" class="nav-user-pill">
                 {% if app.user.avatar %}
-                    <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
+                    <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini-desktop">
                 {% else %}
-                    <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
+                    <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini-desktop" alt="Avatar">
                 {% endif %}
                 <span>{{ app.user.prenom }}</span>
             </a>
         {% else %}
-            <a href="{{ path('app_login') }}" class="btn-profile-floating" onclick="event.stopPropagation()" style="padding: 0 30px;">
-                Se connecter
-            </a>
+            <a href="{{ path('app_login') }}" class="nav-login-btn">Se connecter</a>
         {% endif %}
+    </header>
 
-        {% if announce.photos is not empty %}
-            <img src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Couverture">
-        {% else %}
-            <img src="https://picsum.photos/seed/{{ announce.id }}/800/1000" class="hero-img" alt="Couverture">
-        {% endif %}
+    <div class="main-desktop-wrapper">
+
+        <!--HERO WRAPPER (CARROUSEL DESKTOP / HERO MOBILE) -->
+        <div class="hero-wrapper" id="heroWrapper">
+
+            <!-- BOUTONS MOBILE -->
+            <a href="{{ path('app_announce') }}" class="btn-back-floating" onclick="event.stopPropagation()">
+                <i class="bi bi-arrow-left"></i>
+            </a>
+            {% if app.user %}
+                <a href="{{ path('app_profile') }}" class="btn-profile-floating" onclick="event.stopPropagation()">
+                    {% if app.user.avatar %}
+                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini" alt="Avatar">
+                    {% endif %}
+                    <span>{{ app.user.prenom }}</span>
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn-profile-floating" onclick="event.stopPropagation()" style="padding: 0 30px;">Se connecter</a>
+            {% endif %}
+
+            <!-- FLECHES CAROUSSEL MOBILE -->
+            <div class="desktop-carousel-nav">
+                <button class="desk-nav-btn prev" onclick="moveDesktopCarousel(-1, event)"><i class="bi bi-chevron-left"></i></button>
+                <button class="desk-nav-btn next" onclick="moveDesktopCarousel(1, event)"><i class="bi bi-chevron-right"></i></button>
+            </div>
+
+            {% if announce.photos is not empty %}
+                <img id="main-hero-img" src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Couverture" onclick="handleHeroClick()">
+                <div id="desktop-photo-count" class="photo-count-badge">1 / {{ announce.photos|length }}</div>
+            {% else %}
+                <img src="https://picsum.photos/seed/{{ announce.id }}/800/1000" class="hero-img" alt="Couverture">
+            {% endif %}
+        </div>
+
+        <!-- 2. CONTENU PRINCIPAL -->
+        <main class="content-sheet">
+
+            <div class="left-column">
+                <div class="title-row">
+                    <h1 class="announce-title">{{ announce.titre }}</h1>
+                    {% set isLiked = false %}
+                    {% if app.user %}
+                        {% for like in announce.likes %}
+                            {% if like.utilisateur == app.user %}{% set isLiked = true %}{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <button class="btn-like-big {{ isLiked ? 'liked' : '' }}" onclick="toggleLike(event, {{ announce.id }})">
+                        <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                    </button>
+                </div>
+
+                <div class="announce-location">
+                    <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
+                </div>
+
+                <ul class="tags-list">
+                    <li class="tag-pill">{{ announce.type }}</li>
+                    {% if announce.surface %}<li class="tag-pill">{{ announce.surface }} m²</li>{% endif %}
+                    {% if announce.nbPieces %}<li class="tag-pill">{{ announce.nbPieces }} pièces</li>{% endif %}
+                </ul>
+
+                {% if announce.utilisateur %}
+                    <section class="host-card">
+                        {% if announce.utilisateur.avatar %}
+                            <img src="{{ announce.utilisateur.avatar }}" class="host-avatar" alt="Avatar">
+                        {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" class="host-avatar" alt="Avatar">
+                        {% endif %}
+                        <div class="host-info">
+                            <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
+                            <p>Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
+                        </div>
+                    </section>
+                {% endif %}
+
+                <section>
+                    <h2 class="section-title">Le logement</h2>
+                    <p class="text-content">{{ announce.description }}</p>
+                </section>
+
+                {% if announce.photos|length > 1 %}
+                    <section>
+                        <h2 class="section-title">Photos</h2>
+                        <div class="mini-gallery">
+                            {% for photo in announce.photos|slice(1) %}
+                                <img src="{{ photo.contenu }}" alt="Photo" onclick="openLightbox({{ loop.index }})">
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if announce.equipements %}
+                    <section>
+                        <h2 class="section-title">Équipements</h2>
+                        <p class="text-content">{{ announce.equipements }}</p>
+                    </section>
+                {% endif %}
+
+                <section class="d-lg-none" style="display:block;">
+                    <h2 class="section-title">Dates</h2>
+                    <div class="tag-pill" style="display:inline-flex;">
+                        <i class="bi bi-calendar3"></i>
+                        {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M Y') }}
+                    </div>
+                </section>
+            </div>
+
+            <!-- SIDEBAR DESKTOP -->
+            <div class="desktop-sidebar-wrapper">
+                <div class="booking-card">
+                    <div class="card-price-row">
+                        <span class="card-price-amount">{{ announce.prix }}€</span>
+                        <span class="card-price-label">par mois</span>
+                    </div>
+                    <div class="card-dates-box">
+                        <div class="card-date-line">
+                            <span>Arrivée</span>
+                            <span class="card-date-val">{{ announce.disponibiliteDebut|date('d/m/Y') }}</span>
+                        </div>
+                        <div class="card-date-line">
+                            <span>Départ</span>
+                            <span class="card-date-val">{{ announce.disponibiliteFin|date('d/m/Y') }}</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-card-action btn-reserve-desk">Réserver</a>
+                    <a href="mailto:{{ announce.utilisateur.email }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
+                </div>
+            </div>
+
+            <div class="spacer-footer"></div>
+
+        </main>
+
     </div>
 
-    <main class="content-sheet">
-        <div class="title-row">
-            <h1 class="announce-title">{{ announce.titre }}</h1>
-
-            {% set isLiked = false %}
-            {% if app.user %}
-                {% for like in announce.likes %}
-                    {% if like.utilisateur == app.user %}
-                        {% set isLiked = true %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-
-            <button class="btn-like-big {{ isLiked ? 'liked' : '' }}" onclick="toggleLike(event, {{ announce.id }})">
-                <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-            </button>
-        </div>
-        <div class="announce-location">
-            <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
-        </div>
-        <ul class="tags-list">
-            <li class="tag-pill">{{ announce.type }}</li>
-            {% if announce.surface %}
-                <li class="tag-pill">{{ announce.surface }} m²</li>
-            {% endif %}
-            {% if announce.nbPieces %}
-                <li class="tag-pill">{{ announce.nbPieces }} pièces</li>
-            {% endif %}
-        </ul>
-
-        <section class="host-card">
-            {% if announce.utilisateur.avatar %}
-                <img src="{{ announce.utilisateur.avatar }}" class="host-avatar" alt="Avatar">
-            {% else %}
-                <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" class="host-avatar" alt="Avatar">
-            {% endif %}
-            <div class="host-info">
-                <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
-                <p>Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="section-title">Le logement</h2>
-            <p class="text-content">{{ announce.description }}</p>
-        </section>
-
-        <section>
-            <h2 class="section-title">Photos</h2>
-            <div class="mini-gallery">
-                {% for photo in announce.photos|slice(1) %}
-                    <img src="{{ photo.contenu }}" alt="Photo" onclick="openLightbox({{ loop.index }})">
-                {% endfor %}
-            </div>
-        </section>
-
-        <section>
-            <h2 class="section-title">Équipements</h2>
-            <p class="text-content">{{ announce.equipements }}</p>
-        </section>
-
-        <section>
-            <h2 class="section-title">Dates</h2>
-            <div class="tag-pill" style="display:inline-flex;">
-                <i class="bi bi-calendar3"></i>
-                {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M Y') }}
-            </div>
-        </section>
-
-        <div class="spacer-footer"></div>
-
-    </main>
-
+    <!-- FOOTER MOBILE -->
     <aside class="fixed-bottom-bar">
         <div class="price-row">
             <span class="price-amount">{{ announce.prix }}€</span>
@@ -122,6 +177,7 @@
         </div>
     </aside>
 
+    <!-- LIGHTBOX -->
     <div id="lightbox" class="lightbox">
         <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
         <img id="lightbox-img" src="" class="lightbox-img" alt="Plein écran">
@@ -133,43 +189,7 @@
     </div>
 
     <script>
-        async function toggleLike(event, announceId) {
-            event.stopPropagation();
-            event.preventDefault();
-
-            {% if not app.user %}
-            window.location.href = "{{ path('app_login') }}";
-            return;
-            {% endif %}
-
-            const btn = event.currentTarget;
-            const icon = btn.querySelector('i');
-
-            try {
-                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
-                if (response.ok) {
-                    const data = await response.json();
-
-                    if (data.isLiked) {
-                        // --- C'EST ICI QUE CA CHANGE ---
-                        btn.classList.add('liked');
-                        btn.classList.add('animate'); // Déclenche l'animation CSS
-
-                        icon.classList.remove('bi-heart');
-                        icon.classList.add('bi-heart-fill');
-
-                        // On retire la classe d'animation après 0.4s pour pouvoir la rejouer plus tard
-                        setTimeout(() => btn.classList.remove('animate'), 400);
-                    } else {
-                        // UNLIKE
-                        btn.classList.remove('liked');
-                        icon.classList.remove('bi-heart-fill');
-                        icon.classList.add('bi-heart');
-                    }
-                }
-            } catch (error) { console.error(error); }
-        }
-
+        // --- 1. DONNEES IMAGES ---
         const galleryImages = [];
         {% if announce.photos is not empty %}
         {% for photo in announce.photos %}
@@ -179,10 +199,27 @@
         galleryImages.push("https://picsum.photos/seed/{{ announce.id }}/800/1000");
         {% endif %}
 
+        // --- 2. CARROUSEL DESKTOP ---
+        let currentHeroIndex = 0;
+        const mainHeroImg = document.getElementById('main-hero-img');
+        const desktopCounter = document.getElementById('desktop-photo-count');
+
+        function moveDesktopCarousel(direction, event) {
+            event.stopPropagation(); // Empêche l'ouverture de la lightbox quand on clique sur les flèches
+            currentHeroIndex = (currentHeroIndex + direction + galleryImages.length) % galleryImages.length;
+            mainHeroImg.src = galleryImages[currentHeroIndex];
+            if(desktopCounter) desktopCounter.innerText = (currentHeroIndex + 1) + " / " + galleryImages.length;
+        }
+
+        // --- 3. LIGHTBOX ---
         let currentImageIndex = 0;
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const counter = document.getElementById('lightbox-counter');
+
+        function handleHeroClick() {
+            openLightbox(currentHeroIndex);
+        }
 
         function openLightbox(index) {
             currentImageIndex = index;
@@ -207,6 +244,34 @@
             counter.innerText = (currentImageIndex + 1) + " / " + galleryImages.length;
         }
 
+        // --- 4. LIKE AJAX ---
+        async function toggleLike(event, announceId) {
+            event.stopPropagation();
+            event.preventDefault();
+            {% if not app.user %}
+            window.location.href = "{{ path('app_login') }}";
+            return;
+            {% endif %}
+            const btn = event.currentTarget;
+            const icon = btn.querySelector('i');
+            try {
+                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.isLiked) {
+                        btn.classList.add('liked');
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+                    } else {
+                        btn.classList.remove('liked');
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                    }
+                }
+            } catch (error) { console.error(error); }
+        }
+
+        // Swipe & Clavier
         let touchStartX = 0;
         let touchEndX = 0;
         lightbox.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
@@ -214,6 +279,11 @@
             touchEndX = e.changedTouches[0].screenX;
             if (touchEndX < touchStartX - 50) nextImage();
             if (touchEndX > touchStartX + 50) prevImage();
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") closeLightbox();
+            if (event.key === "ArrowRight") nextImage();
+            if (event.key === "ArrowLeft") prevImage();
         });
     </script>
 
