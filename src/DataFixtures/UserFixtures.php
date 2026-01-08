@@ -16,6 +16,12 @@ class UserFixtures extends Fixture
             'nom' => 'Test',
             'password' => 'password'
         ]);
+        UserFactory::createOne([
+            'email' => 'bot@colive.com',
+            'prenom' => 'Assitant',
+            'nom' => 'FAQ',
+            'password' => 'password'
+        ]);
 
         UserFactory::createMany(15);
     }
