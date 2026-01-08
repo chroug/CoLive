@@ -22,6 +22,19 @@
     <main class="content-sheet">
         <div class="title-row">
             <h1 class="announce-title">{{ announce.titre }}</h1>
+
+            {% set isLiked = false %}
+            {% if app.user %}
+                {% for like in announce.likes %}
+                    {% if like.utilisateur == app.user %}
+                        {% set isLiked = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <button class="btn-like-big {{ isLiked ? 'liked' : '' }}" onclick="toggleLike(event, {{ announce.id }})">
+                <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+            </button>
         </div>
         <div class="announce-location">
             <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
@@ -89,5 +102,15 @@
             <a href="#" class="btn-action btn-reserve">Réserver</a>
         </div>
     </aside>
+
+    <div id="lightbox" class="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-img" src="" class="lightbox-img" alt="Plein écran">
+        <div class="lightbox-nav">
+            <button class="lightbox-btn" onclick="prevImage()"><i class="bi bi-chevron-left"></i></button>
+            <button class="lightbox-btn" onclick="nextImage()"><i class="bi bi-chevron-right"></i></button>
+        </div>
+        <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
+    </div>
 
 {% endblock %}
