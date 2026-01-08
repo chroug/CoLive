@@ -77,4 +77,10 @@ final class AnnounceController extends AbstractController
 
         return $this->json(['isLiked' => true]);
     }
+
+    #[Route('/announce/{id}', name: 'app_announce_show')]
+    public function show(AnnounceRepository $announce)
+    {
+        $this->render('announce/show.html.twig');
+    }
 }
