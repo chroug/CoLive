@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -13,9 +14,8 @@ class AnnouncePicture
     #[ORM\Column(name: "id_photoAnnonce", type: "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 255)]
-    private string $url;
-
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $contenu = null;
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $dateCreation;
 
@@ -29,8 +29,9 @@ class AnnouncePicture
     }
 
     public function getId(): ?int { return $this->id; }
-    public function getUrl(): string { return $this->url; }
-    public function setUrl(string $url): self { $this->url = $url; return $this; }
+    public function getContenu(): ?string { return $this->contenu; }
+
+    public function setContenu(string $contenu): self { $this->contenu = $contenu; return $this; }
     public function getDateCreation(): \DateTimeInterface { return $this->dateCreation; }
     public function setDateCreation(\DateTimeInterface $d): self { $this->dateCreation = $d; return $this; }
     public function getAnnonce(): ?Announce { return $this->annonce; }
