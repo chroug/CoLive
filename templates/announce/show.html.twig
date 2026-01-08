@@ -4,4 +4,7 @@
 
 {% block body %}
     <h1>{{ announce.titre }}</h1>
+    {% for picture in announce.photos %}
+        <img src="{{ picture.contenu }}" alt="">
+    {% endfor %}
 {% endblock %}

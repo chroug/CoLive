@@ -175,13 +175,14 @@
                                     <!-- IMAGE -->
                                     <div class="listing-img-container">
                                         {% if annonce.photos is not empty %}
-                                            {# Si c'est une URL externe (http) #}
-                                            {% if 'http' in annonce.photos|first.url %}
-                                                <img src="{{ annonce.photos|first.url }}" alt="Photo" class="listing-thumb">
-                                            {% else %}
-                                                {# Si c'est un fichier local (dans public/uploads/annonces/) #}
-                                                <img src="{{ asset('uploads/annonces/' ~ annonce.photos|first.url) }}" alt="Photo" class="listing-thumb">
-                                            {% endif %}
+{#                                            #}{# Si c'est une URL externe (http) #}
+{#                                            {% if 'http' in annonce.photos|first.contenu %}#}
+{#                                                <img src="{{ annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">#}
+{#                                            {% else %}#}
+{#                                                #}{# Si c'est un fichier local (dans public/uploads/annonces/) #}
+{#                                                <img src="{{ asset('uploads/annonces/' ~ annonce.photos|first.contenu) }}" alt="Photo" class="listing-thumb">#}
+{#                                            {% endif %}#}
+                                            <img src="{{ annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
                                         {% else %}
                                             <!-- Image par défaut si aucune photo -->
                                             <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
@@ -243,11 +244,12 @@
                                     <!-- IMAGE -->
                                     <div class="listing-img-container">
                                         {% if like.annonce.photos is not empty %}
-                                            {% if 'http' in like.annonce.photos|first.url %}
-                                                <img src="{{ like.annonce.photos|first.url }}" alt="Photo" class="listing-thumb">
-                                            {% else %}
-                                                <img src="{{ asset('uploads/annonces/' ~ like.annonce.photos|first.url) }}" alt="Photo" class="listing-thumb">
-                                            {% endif %}
+{#                                            {% if 'http' in like.annonce.photos|first.contenu %}#}
+{#                                                <img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">#}
+{#                                            {% else %}#}
+{#                                                <img src="{{ asset('uploads/annonces/' ~ like.annonce.photos|first.contenu) }}" alt="Photo" class="listing-thumb">#}
+{#                                            {% endif %}#}
+                                            <img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
                                         {% else %}
                                             <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
                                         {% endif %}
