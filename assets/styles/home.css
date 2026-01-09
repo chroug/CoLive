@@ -269,3 +269,26 @@ input[type="date"] {
 .nav-icon-btn:hover {
     background-color: #f2f2f2;
 }
+
+.nav-bot-link {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    color: #000;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.nav-bot-link:hover {
+    background-color: #bbdefb;
+    border-color: #90caf9;
+}
+
+.bot-emoji { font-size: 1.2rem; }
