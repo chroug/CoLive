@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver - {{ announce.titre }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5" style="min-height: 80vh; padding-top: 2rem;">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+
+                <a href="{{ path('app_announce_show', {'id': announce.id}) }}" class="text-decoration-none text-dark mb-4 d-inline-block">
+                    <i class="bi bi-arrow-left"></i> Retour à l'annonce
+                </a>
+
+                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+                    <h2 class="fw-bold mb-4">Réserver ce logement</h2>
+
+                    <div class="d-flex gap-3 mb-4 align-items-center p-3 rounded-3" style="background-color: #f8f9fa;">
+                        {% if announce.photos|length > 0 %}
+                            <img src="{{ announce.photos|first.contenu }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" alt="Photo">
+                        {% endif %}
+                        <div>
+                            <h5 class="mb-1 fw-bold">{{ announce.titre }}</h5>
+                            <p class="mb-0 text-muted">{{ announce.ville }} &bull; <span class="text-primary fw-bold">{{ announce.prix }}€</span> / mois</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-calendar-check"></i>
+                        Disponible du <strong>{{ announce.disponibiliteDebut|date('d/m/Y') }}</strong> au
+                        <strong>{{ announce.disponibiliteFin|date('d/m/Y') }}</strong>.
+                    </div>
+
+                    {{ form_start(form) }}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">Date d'arrivée</label>
+                        {{ form_widget(form.dateDebut) }}
+                        <div class="text-danger small">{{ form_errors(form.dateDebut) }}</div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">Date de départ</label>
+                        {{ form_widget(form.dateFin) }}
+                        <div class="text-danger small">{{ form_errors(form.dateFin) }}</div>
+                    </div>
+
+                    {{ form_row(form.submit) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
