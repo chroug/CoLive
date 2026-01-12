@@ -18,40 +18,63 @@ class ReservationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function reserve(Announce $announce, Request $request, EntityManagerInterface $em): Response
     {
-        // 1. Initialisation de la réservation
         $reservation = new Reservation();
         $reservation->setAnnounce($announce);
         $reservation->setLocataire($this->getUser());
 
-        // Pré-remplissage avec les dates de l'annonce par défaut
-        $reservation->setDateDebut($announce->getDisponibiliteDebut());
-        $reservation->setDateFin($announce->getDisponibiliteFin());
+        $unavailableDates = [];
+        $existingReservations = $announce->getReservations();
 
-        // 2. Création du formulaire
+        foreach ($existingReservations as $res) {
+            if ($res->getStatut() !== 'CANCELLED') {
+                $unavailableDates[] = [
+                    'from' => $res->getDateDebut()->format('Y-m-d'),
+                    'to'   => $res->getDateFin()->format('Y-m-d'),
+                ];
+            }
+        }
+        $unavailableDatesJson = json_encode($unavailableDates);
+
+        $today = new \DateTime();
+        $minDate = $announce->getDisponibiliteDebut();
+        if ($minDate < $today) {
+            $minDate = $today;
+        }
+
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
-        // 3. Traitement
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // Vérification simple : dates dans la plage de l'annonce
             if ($reservation->getDateDebut() < $announce->getDisponibiliteDebut() ||
                 $reservation->getDateFin() > $announce->getDisponibiliteFin()) {
 
                 $this->addFlash('danger', 'Les dates choisies sont en dehors des disponibilités de l\'annonce.');
+            }
+            else {
+                $overlaps = $em->getRepository(Reservation::class)->findOverlappingReservations(
+                    $announce,
+                    $reservation->getDateDebut(),
+                    $reservation->getDateFin()
+                );
 
-            } else {
-                $em->persist($reservation);
-                $em->flush();
+                if (count($overlaps) > 0) {
+                    $this->addFlash('danger', 'Désolé, ces dates sont déjà réservées par un autre utilisateur.');
+                } else {
+                    $em->persist($reservation);
+                    $em->flush();
 
-                $this->addFlash('success', 'Votre demande de réservation a bien été envoyée !');
-                return $this->redirectToRoute('app_announce_show', ['id' => $announce->getId()]);
+                    $this->addFlash('success', 'Votre demande de réservation a bien été envoyée !');
+                    return $this->redirectToRoute('app_announce_show', ['id' => $announce->getId()]);
+                }
             }
         }
 
         return $this->render('reservation/book.html.twig', [
             'form' => $form->createView(),
-            'announce' => $announce
+            'announce' => $announce,
+            'unavailableDates' => $unavailableDatesJson,
+            'minDateCalculated' => $minDate
         ]);
     }
 }
