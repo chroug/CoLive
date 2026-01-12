@@ -2,50 +2,356 @@
 
 {% block title %}Réserver - {{ announce.titre }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+
+    <style>
+        :root {
+            --primary-color: #E51D53; /* Rose Airbnb / CoLive */
+            --primary-hover: #D70466;
+            --text-main: #222222;
+            --text-light: #717171;
+            --bg-light: #F7F7F7;
+            --border-color: #B0B0B0;
+            --border-radius: 12px;
+            --shadow-card: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Fond page très léger */
+            color: var(--text-main);
+        }
+
+        /* --- CONTENEUR PRINCIPAL --- */
+        .booking-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-card);
+            max-width: 850px; /* Plus large pour accueillir 2 mois */
+            margin: 40px auto;
+        }
+
+        /* --- HEADER (Titre + Prix) --- */
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        .booking-title { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+        .booking-subtitle { font-size: 14px; color: var(--text-light); }
+        .booking-price { font-size: 22px; font-weight: 800; text-align: right; }
+        .booking-price span { font-size: 16px; font-weight: 400; color: var(--text-light); }
+
+        /* --- INPUTS DATES (Style Pillule Fusionnée) --- */
+        .date-inputs-wrapper {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .date-input-box {
+            flex: 1;
+            padding: 14px 20px;
+            cursor: pointer;
+            position: relative;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        #box_start { border-right: 1px solid var(--border-color); }
+        #box_start:hover {background: #f7f7f7;}
+        .date-input-box:hover { background: #f7f7f7; }
+
+        /* État Actif (Bordure Noire) */
+        .date-input-box.active {
+            background: white;
+            border-color: transparent; /* Masque la bordure grise */
+            z-index: 10;
+        }
+
+        .input-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .input-value {
+            font-size: 15px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .input-value.filled { color: var(--text-main); font-weight: 500; }
+
+        /* --- FLATPICKR PERSONNALISÉ --- */
+        .flatpickr-calendar {
+            box-shadow: none !important;
+            border: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .flatpickr-months { align-items: center; margin-bottom: 20px; }
+        .flatpickr-month { color: var(--text-main) !important; fill: var(--text-main) !important; }
+        .flatpickr-current-month { font-size: 16px; font-weight: 600; padding-top: 0; }
+        .flatpickr-weekdays { margin-top: 10px; }
+        .flatpickr-weekday { color: var(--text-light) !important; font-size: 12px !important; font-weight: 600 !important; }
+
+        .flatpickr-days { width: 100% !important; }
+        .dayContainer { width: 100% !important; min-width: 300px; max-width: 100%; }
+
+        .flatpickr-day {
+            border-radius: 50% !important;
+            font-weight: 600;
+            color: var(--text-main);
+            height: 44px; line-height: 44px; /* Plus grandes touches */
+            margin-top: 2px;
+            border: 1px solid transparent !important; /* Prévient le saut de pixel au hover */
+        }
+
+        /* Sélection (Rond Noir) */
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+            background: black !important;
+            color: white !important;
+            border-color: black !important;
+        }
+
+        /* Plage (Gris) */
+        .flatpickr-day.inRange {
+            background: #F2F2F2 !important;
+            border-color: #F2F2F2 !important;
+            box-shadow: -5px 0 0 #F2F2F2, 5px 0 0 #F2F2F2 !important;
+            color: var(--text-main) !important;
+            border-radius: 0 !important;
+        }
+
+        .flatpickr-day.startRange.inRange { box-shadow: none !important; border-top-left-radius: 50% !important; border-bottom-left-radius: 50% !important; }
+        .flatpickr-day.endRange.inRange { box-shadow: none !important; border-top-right-radius: 50% !important; border-bottom-right-radius: 50% !important; }
+
+        .flatpickr-day:hover:not(.selected):not(.inRange):not(.flatpickr-disabled) {
+            border: 1px solid black !important;
+            background: white !important;
+        }
+
+        /* --- FOOTER & BOUTON --- */
+        .booking-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end; /* Bouton à droite ou spread */
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            gap: 20px;
+        }
+
+        .btn-clear {
+            text-decoration: underline;
+            color: var(--text-main);
+            font-weight: 600;
+            background: none; border: none; padding: 0;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            background: #000;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .flatpickr-months .flatpickr-prev-month svg,
+        .flatpickr-months .flatpickr-next-month svg {
+            fill: #333333 !important;
+        }
+        .flatpickr-months .flatpickr-prev-month:hover svg,
+        .flatpickr-months .flatpickr-next-month:hover svg {
+            fill: #000 !important;
+        }
+        .btn-submit:hover { background: #333;}
+        .btn-submit:active { transform: scale(0.98); }
+
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-main); text-decoration: none; font-weight: 600; margin-bottom: 20px; font-size: 14px; }
+        .back-link:hover { text-decoration: underline; }
+
+        @media(max-width: 768px) {
+            .booking-container { padding: 20px; margin: 10px; }
+            .booking-header { flex-direction: column; gap: 10px; }
+            .booking-price { text-align: left; }
+            .flatpickr-calendar { justify-content: center; }
+            .booking-footer { flex-direction: column-reverse; width: 100%; }
+            .btn-submit { width: 100%; }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="container mt-5 mb-5" style="min-height: 80vh; padding-top: 2rem;">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+    <div class="container">
+        <a href="{{ path('app_announce_show', {'id': announce.id}) }}" class="back-link">
+            <svg width="12" height="12" viewBox="0 0 320 512" fill="currentColor"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+            Retour à l'annonce
+        </a>
 
-                <a href="{{ path('app_announce_show', {'id': announce.id}) }}" class="text-decoration-none text-dark mb-4 d-inline-block">
-                    <i class="bi bi-arrow-left"></i> Retour à l'annonce
-                </a>
+        <div class="booking-container">
 
-                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
-                    <h2 class="fw-bold mb-4">Réserver ce logement</h2>
-
-                    <div class="d-flex gap-3 mb-4 align-items-center p-3 rounded-3" style="background-color: #f8f9fa;">
-                        {% if announce.photos|length > 0 %}
-                            <img src="{{ announce.photos|first.contenu }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;" alt="Photo">
-                        {% endif %}
-                        <div>
-                            <h5 class="mb-1 fw-bold">{{ announce.titre }}</h5>
-                            <p class="mb-0 text-muted">{{ announce.ville }} &bull; <span class="text-primary fw-bold">{{ announce.prix }}€</span> / mois</p>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-info">
-                        <i class="bi bi-calendar-check"></i>
-                        Disponible du <strong>{{ announce.disponibiliteDebut|date('d/m/Y') }}</strong> au
-                        <strong>{{ announce.disponibiliteFin|date('d/m/Y') }}</strong>.
-                    </div>
-
-                    {{ form_start(form) }}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small">Date d'arrivée</label>
-                        {{ form_widget(form.dateDebut) }}
-                        <div class="text-danger small">{{ form_errors(form.dateDebut) }}</div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small">Date de départ</label>
-                        {{ form_widget(form.dateFin) }}
-                        <div class="text-danger small">{{ form_errors(form.dateFin) }}</div>
-                    </div>
-
-                    {{ form_row(form.submit) }}
-                    {{ form_end(form) }}
+            <div class="booking-header">
+                <div>
+                    <div class="booking-title">{{ announce.titre }}</div>
+                    <div class="booking-subtitle">Jusqu'au {{ announce.disponibiliteFin|date('d F Y') }}</div>
+                </div>
+                <div class="booking-price">
+                    ?? € <span>/ nuit</span>
                 </div>
             </div>
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="date-inputs-wrapper">
+                <div class="date-input-box active" id="box_start">
+                    <div class="input-label">ARRIVÉE</div>
+                    <div class="input-value" id="text_start">Ajouter une date</div>
+                </div>
+                <div class="date-input-box" id="box_end">
+                    <div class="input-label">DÉPART</div>
+                    <div class="input-value" id="text_end">Ajouter une date</div>
+                </div>
+            </div>
+
+            <div id="inline_calendar"></div>
+
+            <div style="display:none;">
+                {{ form_widget(form.dateDebut) }}
+                {{ form_widget(form.dateFin) }}
+            </div>
+
+            <div class="text-danger small mt-2 fw-bold">
+                {{ form_errors(form.dateDebut) }}
+                {{ form_errors(form.dateFin) }}
+            </div>
+
+            <div class="booking-footer">
+                <button type="button" class="btn-clear" id="btn_clear">Effacer les dates</button>
+                {{ form_widget(form.submit, {'attr': {'class': 'btn-submit'}, 'label': 'Confirmer la réservation'}) }}
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="text-center text-muted small mt-3 pb-5">
+            Votre réservation n'est pas encore confirmée. Vous ne serez débité qu'après validation.
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/fr.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données
+            const unavailableDates = {{ unavailableDates|default('[]')|raw }};
+            const minDate = "{{ minDateCalculated|default(announce.disponibiliteDebut)|date('Y-m-d') }}";
+            const maxDate = "{{ announce.disponibiliteFin|date('Y-m-d') }}";
+
+            // Éléments DOM
+            const startInput = document.getElementById('reservation_dateDebut') || document.querySelector('input[name*="dateDebut"]');
+            const endInput = document.getElementById('reservation_dateFin') || document.querySelector('input[name*="dateFin"]');
+
+            const boxStart = document.getElementById('box_start');
+            const boxEnd = document.getElementById('box_end');
+            const textStart = document.getElementById('text_start');
+            const textEnd = document.getElementById('text_end');
+            const btnClear = document.getElementById('btn_clear');
+
+            const fp = flatpickr("#inline_calendar", {
+                inline: true,
+                mode: "range",
+                locale: "fr",
+                minDate: minDate,
+                maxDate: maxDate,
+                disable: unavailableDates,
+                dateFormat: "Y-m-d",
+                showMonths: window.innerWidth < 768 ? 1 : 2,
+
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        textStart.textContent = instance.formatDate(selectedDates[0], "d M Y");
+                        textStart.classList.add('filled');
+                        if (startInput) startInput.value = instance.formatDate(selectedDates[0], "Y-m-d");
+                    } else {
+                        textStart.textContent = "Ajouter une date";
+                        textStart.classList.remove('filled');
+                        if (startInput) startInput.value = "";
+                    }
+
+                    if (selectedDates.length > 1) {
+                        textEnd.textContent = instance.formatDate(selectedDates[1], "d M Y");
+                        textEnd.classList.add('filled');
+                        if (endInput) endInput.value = instance.formatDate(selectedDates[1], "Y-m-d");
+                    } else {
+                        textEnd.textContent = "Ajouter une date";
+                        textEnd.classList.remove('filled');
+                        if (endInput) endInput.value = "";
+                    }
+
+                    if (selectedDates.length === 0 || selectedDates.length === 2) {
+                        if(selectedDates.length === 2) {
+                            boxStart.classList.remove('active');
+                            boxEnd.classList.add('active');
+                        } else {
+                            boxStart.classList.add('active');
+                            boxEnd.classList.remove('active');
+                        }
+                    } else if (selectedDates.length === 1) {
+                        boxStart.classList.remove('active');
+                        boxEnd.classList.add('active');
+                    }
+                }
+            });
+
+            btnClear.addEventListener('click', () => {
+                fp.clear();
+                boxStart.classList.add('active');
+                boxEnd.classList.remove('active');
+            });
+
+
+            boxStart.addEventListener('click', () => {
+                boxStart.classList.add('active');
+                boxEnd.classList.remove('active');
+                if(fp.selectedDates.length === 2) fp.clear();
+            });
+
+            boxEnd.addEventListener('click', () => {
+                if(fp.selectedDates.length === 0) {
+                    boxStart.classList.add('active');
+                } else {
+                    boxStart.classList.remove('active');
+                    boxEnd.classList.add('active');
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if(window.innerWidth < 768 && fp.config.showMonths !== 1) {
+                    fp.set('showMonths', 1);
+                } else if (window.innerWidth >= 768 && fp.config.showMonths !== 2) {
+                    fp.set('showMonths', 2);
+                }
+            });
+        });
+    </script>
 {% endblock %}
