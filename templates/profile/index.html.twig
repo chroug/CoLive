@@ -12,9 +12,8 @@
 
     <div class="colive-profile-page">
 
-        <!-- NAVBAR (Placeholder) -->
         <nav class="user-navbar">
-            <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:5px;">
+            <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:5px; text-decoration:none; color:black;">
                 <span style="background:black; color:white; padding:2px 8px; border-radius:6px;">C</span> CoLive
             </a>
             <div><a href="{{ path('app_logout') }}" class="logout-btn">Se déconnecter</a></div>
@@ -22,7 +21,6 @@
 
         <div class="container">
 
-            <!-- HEADER -->
             <div class="profile-header">
                 <h1>Mon Profil</h1>
                 <p class="subtitle">Gérez vos informations personnelles et vos préférences.</p>
@@ -30,10 +28,8 @@
 
             <div class="grid-layout">
 
-                <!-- SIDEBAR GAUCHE -->
                 <div class="sidebar">
                     <div class="card">
-                        <!-- Avatar -->
                         <div class="avatar-container">
                             {% if user.avatar %}
                                 <img src="{{ user.avatar }}" alt="Avatar" class="avatar-img">
@@ -42,7 +38,7 @@
                             {% endif %}
                         </div>
                         {% if nbNotes != 0 %}
-                            <a href="{{ path('app_host_reviews', {'id': user.id}) }}" class="note-info">
+                            <a href="{{ path('app_host_reviews', {'id': user.id}) }}" class="note-info" style="text-decoration: none; color: inherit;">
                                 <div class="rating-stars">
                                     {% for i in 1..5 %}
                                         {% if i <= averageRating %}
@@ -65,31 +61,21 @@
                         <div class="user-name">{{ user.prenom }} {{ user.nom }}</div>
                         <div class="user-meta">Membre depuis {{ user.dateCreationCompte|date('Y') }}</div>
 
-                        <!-- Contact (Email & Tel) -->
                         <div class="contact-section">
                             <div class="contact-row">
                                 <div class="contact-icon">
-                                    <svg  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                          fill="currentColor" viewBox="0 0 24 24" >
-                                        <!--Boxicons v3.0.5 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 2v.51l-8 6.22-8-6.22V6zM4 18V9.04l7.39 5.74c.18.14.4.21.61.21s.43-.07.61-.21L20 9.03v8.96H4Z"></path>
-                                    </svg>
+                                    <i class="bi bi-envelope"></i>
                                 </div>
                                 <span style="word-break: break-all;">{{ user.email }}</span>
                             </div>
                             <div class="contact-row">
                                 <div class="contact-icon">
-                                    <svg  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                          fill="currentColor" viewBox="0 0 24 24" >
-                                        <!--Boxicons v3.0.5 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                                        <path d="M18.07 22h.35c.47-.02.9-.26 1.17-.64l2.14-3.09c.23-.33.32-.74.24-1.14s-.31-.74-.64-.97l-4.64-3.09a1.47 1.47 0 0 0-.83-.25c-.41 0-.81.16-1.1.48l-1.47 1.59c-.69-.43-1.61-1.07-2.36-1.82-.72-.72-1.37-1.64-1.82-2.36l1.59-1.47c.54-.5.64-1.32.23-1.93L7.84 2.67c-.22-.33-.57-.57-.97-.64a1.455 1.455 0 0 0-1.13.24L2.65 4.41c-.39.27-.62.7-.64 1.17-.03.69-.16 6.9 4.68 11.74 4.35 4.35 9.81 4.69 11.38 4.69ZM6.88 10.05c-.16.15-.21.39-.11.59.05.09 1.15 2.24 2.74 3.84 1.6 1.6 3.75 2.7 3.84 2.75.2.1.44.06.59-.11l1.99-2.15 3.86 2.57-1.7 2.46c-1.16 0-6.13-.24-9.99-4.1S4 7.06 4 5.91l2.46-1.7 2.57 3.86-2.15 1.99Z"></path>
-                                    </svg>
+                                    <i class="bi bi-telephone"></i>
                                 </div>
                                 <span>{{ user.tel|default('Non renseigné') }}</span>
                             </div>
                         </div>
 
-                        <!-- Statistiques -->
                         <div class="stats-box">
                             <div class="stat-item">
                                 <span class="stat-number">{{ user.annonces|length }}</span>
@@ -104,23 +90,14 @@
                     </div>
                 </div>
 
-                <!-- CONTENU DROITE -->
                 <div class="content">
 
-                    <!-- MENU ONGLETS (JavaScript) -->
                     <div class="tabs-container">
                         <button class="tab-btn active" onclick="openTab(event, 'content-infos')">Informations</button>
                         <button class="tab-btn inactive" onclick="openTab(event, 'content-annonces')">Mes annonces ({{ user.annonces|length }})</button>
-                        <button class="tab-btn inactive" onclick="openTab(event, 'content-favoris')">Mes réservations et
-                            <svg  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                  fill="rgb(255 0 0 / 100%)" viewBox="0 0 24 24" >
-                                <!--Boxicons v3.0.5 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                                <path d="M11.29 20.69c.2.2.45.29.71.29s.51-.1.71-.29l7.5-7.5c2.35-2.35 2.35-6.05 0-8.41-2.29-2.29-5.84-2.35-8.21-.2-2.36-2.15-5.91-2.09-8.21.2-2.35 2.36-2.35 6.06 0 8.41z"></path>
-                            </svg>
-                        </button>
+                        <button class="tab-btn inactive" onclick="openTab(event, 'content-favoris')">Mes réservations et favoris</button>
                     </div>
 
-                    <!-- 1. SECTION INFORMATIONS -->
                     <div id="content-infos" class="tab-content active card">
                         <div class="header-section">
                             <h3>Informations personnelles</h3>
@@ -160,7 +137,6 @@
                         {{ form_end(form) }}
                     </div>
 
-                    <!-- 2. SECTION MES ANNONCES -->
                     <div id="content-annonces" class="tab-content card">
                         <div class="header-section">
                             <h3>Mes annonces</h3>
@@ -172,25 +148,14 @@
                         {% else %}
                             {% for annonce in user.annonces %}
                                 <div class="listing-card">
-
-                                    <!-- IMAGE -->
                                     <div class="listing-img-container">
                                         {% if annonce.photos is not empty %}
-{#                                            #}{# Si c'est une URL externe (http) #}
-{#                                            {% if 'http' in annonce.photos|first.contenu %}#}
-{#                                                <img src="{{ annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">#}
-{#                                            {% else %}#}
-{#                                                #}{# Si c'est un fichier local (dans public/uploads/annonces/) #}
-{#                                                <img src="{{ asset('uploads/annonces/' ~ annonce.photos|first.contenu) }}" alt="Photo" class="listing-thumb">#}
-{#                                            {% endif %}#}
                                             <img src="{{ annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
                                         {% else %}
-                                            <!-- Image par défaut si aucune photo -->
                                             <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
                                         {% endif %}
                                     </div>
 
-                                    <!-- INFO -->
                                     <div class="listing-info">
                                         <h4>{{ annonce.titre }}</h4>
                                         <div class="listing-details">
@@ -202,7 +167,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- ACTIONS -->
                                     <div class="listing-actions">
                                         <button class="btn-manage">Gérer</button>
                                         <button class="link-delete">Supprimer</button>
@@ -212,25 +176,79 @@
                         {% endif %}
                     </div>
 
-                    <!-- 3. SECTION MES FAVORIS & RESERVATIONS -->
                     <div id="content-favoris" class="tab-content card">
 
-                        <!-- Bloc Réservations (Simulé car entité Reservation non active) -->
                         <div style="margin-bottom: 2rem;">
                             <div class="header-section">
                                 <h3>Mes réservations</h3>
                             </div>
-                            <p style="color:#9ca3af; font-size:0.9rem; font-style:italic;">Aucune réservation en cours.</p>
+
+                            {% if user.reservations is defined and user.reservations is not empty %}
+                                {% for reservation in user.reservations %}
+                                    <div class="listing-card">
+
+                                        <div class="listing-img-container">
+                                            {# On utilise 'announce' car c'est le nom dans Reservation.php #}
+                                            {% if reservation.announce.photos is not empty %}
+                                                <img src="{{ reservation.announce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
+                                            {% else %}
+                                                <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="listing-info">
+                                            <a href="#" style="text-decoration:none; color:inherit;">
+                                                <h4>{{ reservation.announce.titre }}</h4>
+                                            </a>
+
+                                            <div class="listing-details">
+                                                <i class="bi bi-calendar-event"></i>
+                                                Du {{ reservation.dateDebut|date('d/m/Y') }} au {{ reservation.dateFin|date('d/m/Y') }}
+                                            </div>
+
+                                            <div style="display:flex; gap:10px; align-items:center; margin-top: 5px;">
+                                                {# Logique de couleur pour le statut #}
+                                                {% set statusColor = reservation.statut == 'PENDING' ? '#f59e0b' : (reservation.statut == 'CONFIRMED' ? '#10b981' : '#ef4444') %}
+                                                {% set statusText = reservation.statut == 'PENDING' ? 'En attente' : (reservation.statut == 'CONFIRMED' ? 'Confirmé' : reservation.statut) %}
+
+                                                <span class="badge" style="background: {{ statusColor }}20; color: {{ statusColor }}; border-color: {{ statusColor }}40;">
+                                                    {{ statusText }}
+                                                </span>
+
+                                                <span style="font-size:0.9rem; font-weight:600; color:#4b5563;">
+                                                    Loyer : {{ reservation.announce.prix }} €/mois
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="listing-actions">
+                                            <div class="boutons-container">
+                                                <button class="btn-contact">
+                                                    Contacter l'hôte
+                                                </button>
+
+                                                <button class="btn-annuler">
+                                                    Annuler ma réservation
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div style="text-align:center; padding: 2rem 0;">
+                                    <p style="color:#9ca3af; font-size:0.95rem; font-style:italic; margin-bottom:1rem;">
+                                        Vous n'avez aucune réservation en cours.
+                                    </p>
+                                    <a href="{{ path('app_home') }}" style="color:#000; font-weight:600; text-decoration:underline;">Explorer les logements</a>
+                                </div>
+                            {% endif %}
                         </div>
 
                         <hr style="border:0; border-top:1px solid #eee; margin: 2rem 0;">
 
-                        <!-- Bloc Favoris (Basé sur user.likes) -->
                         <div class="header-section">
                             <h3>Mes favoris
-                                <svg  xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                      fill="rgb(255 0 0 / 100%)" viewBox="0 0 24 24" >
-                                    <!--Boxicons v3.0.5 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="red" viewBox="0 0 24 24">
                                     <path d="M11.29 20.69c.2.2.45.29.71.29s.51-.1.71-.29l7.5-7.5c2.35-2.35 2.35-6.05 0-8.41-2.29-2.29-5.84-2.35-8.21-.2-2.36-2.15-5.91-2.09-8.21.2-2.35 2.36-2.35 6.06 0 8.41z"></path>
                                 </svg>
                             </h3>
@@ -241,22 +259,14 @@
                         {% else %}
                             {% for like in user.likes %}
                                 <div class="listing-card">
-
-                                    <!-- IMAGE -->
                                     <div class="listing-img-container">
                                         {% if like.annonce.photos is not empty %}
-{#                                            {% if 'http' in like.annonce.photos|first.contenu %}#}
-{#                                                <img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">#}
-{#                                            {% else %}#}
-{#                                                <img src="{{ asset('uploads/annonces/' ~ like.annonce.photos|first.contenu) }}" alt="Photo" class="listing-thumb">#}
-{#                                            {% endif %}#}
                                             <img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
                                         {% else %}
                                             <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
                                         {% endif %}
                                     </div>
 
-                                    <!-- INFO -->
                                     <div class="listing-info">
                                         <h4>{{ like.annonce.titre }}</h4>
                                         <div class="listing-details">
@@ -264,9 +274,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- ACTIONS -->
                                     <div class="listing-actions" style="display:flex; justify-content:center; align-items:center;">
-                                        <!-- Le bouton est en état "liked" par défaut car on est dans les favoris -->
                                         <button class="card-like-btn liked"
                                                 onclick="toggleLike(event, {{ like.annonce.id }})"
                                                 title="Retirer des favoris">
@@ -283,23 +291,17 @@
         </div>
     </div>
 
-    <!-- SCRIPT JAVASCRIPT POUR LES ONGLETS -->
     <script>
         function openTab(evt, tabName) {
-            // 1. Cacher tous les contenus
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].classList.remove("active");
             }
-
-            // 2. Désactiver tous les boutons
             tablinks = document.getElementsByClassName("tab-btn");
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", " inactive");
             }
-
-            // 3. Afficher le contenu demandé et activer le bouton cliqué
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.className = evt.currentTarget.className.replace(" inactive", " active");
         }
@@ -307,29 +309,24 @@
         async function toggleLike(event, announceId) {
             event.stopPropagation();
             event.preventDefault();
-
             const btn = event.currentTarget;
             const icon = btn.querySelector('i');
-
             try {
-                const response = await fetch('/announce/' + announceId + '/like', {
-                    method: 'POST'
-                });
-
+                // Assurez-vous que cette route existe dans votre controller
+                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
                 if (response.ok) {
                     const data = await response.json();
-
                     if (data.isLiked) {
-                        // Re-Liké
                         btn.classList.add('liked', 'animate');
                         icon.classList.remove('bi-heart');
                         icon.classList.add('bi-heart-fill');
                         setTimeout(() => btn.classList.remove('animate'), 400);
                     } else {
-                        // Unliké
                         btn.classList.remove('liked');
                         icon.classList.remove('bi-heart-fill');
                         icon.classList.add('bi-heart');
+                        // Optionnel : Retirer visuellement la carte si on est dans l'onglet favoris
+                        // btn.closest('.listing-card').remove();
                     }
                 }
             } catch (error) {
