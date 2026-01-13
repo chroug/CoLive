@@ -1,0 +1,96 @@
+:root {
+    --bg-color: #fcfcfc;
+    --black: #1a1a1a;
+    --beige: #efe5da;
+    --white: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--black);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+header {
+    padding: 30px 50px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+.bg-blob {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background-color: var(--beige);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -45%);
+    z-index: -1;
+}
+
+h2 {
+    font-size: 1.5rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: -15px;
+}
+
+h1 {
+    font-size: 14rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0;
+    color: var(--black);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 8rem; }
+    .bg-blob { width: 280px; height: 280px; }
+    header { padding: 20px; }
+}
