@@ -222,14 +222,28 @@
                                         </div>
 
                                         <div class="listing-actions">
-                                            <div class="boutons-container">
-                                                <button class="btn-contact">
-                                                    Contacter l'hôte
-                                                </button>
+                                            <div class="boutons-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
 
-                                                <button class="btn-annuler">
-                                                    Annuler ma réservation
-                                                </button>
+                                                <a href="#" class="btn-contact" style="text-decoration: none; text-align: center;">
+                                                    Contacter l'hôte
+                                                </a>
+
+                                                {% if reservation.statut != 'CANCELLED' %}
+                                                    {# Formulaire pour envoyer la requête d'annulation de façon sécurisée #}
+                                                    <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Cette action est irréversible.');" style="margin: 0;">
+
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+
+                                                        <button type="submit" class="btn-annuler">
+                                                            Annuler ma réservation
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    {# Si c'est déjà annulé, on ne montre pas le bouton mais un badge #}
+                                                    <span style="padding: 10px 20px; border: 1px solid #ccc; border-radius: 4px; color: #777; background: #f9f9f9; cursor: not-allowed;">
+                                                        <i class="bi bi-x-circle"></i> Annulée
+                                                    </span>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>

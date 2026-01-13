@@ -18,6 +18,7 @@ class ReservationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function reserve(Announce $announce, Request $request, EntityManagerInterface $em): Response
     {
+        // ... (Ton code existant pour la fonction reserve reste ici inchangé) ...
         $reservation = new Reservation();
         $reservation->setAnnounce($announce);
         $reservation->setLocataire($this->getUser());
@@ -45,10 +46,8 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             if ($reservation->getDateDebut() < $announce->getDisponibiliteDebut() ||
                 $reservation->getDateFin() > $announce->getDisponibiliteFin()) {
-
                 $this->addFlash('danger', 'Les dates choisies sont en dehors des disponibilités de l\'annonce.');
             }
             else {
@@ -61,6 +60,9 @@ class ReservationController extends AbstractController
                 if (count($overlaps) > 0) {
                     $this->addFlash('danger', 'Désolé, ces dates sont déjà réservées par un autre utilisateur.');
                 } else {
+                    // IMPORTANT: On définit le statut initial si ce n'est pas fait dans le constructeur
+                    // $reservation->setStatut('CONFIRMED');
+
                     $em->persist($reservation);
                     $em->flush();
 
@@ -76,5 +78,34 @@ class ReservationController extends AbstractController
             'unavailableDates' => $unavailableDatesJson,
             'minDateCalculated' => $minDate
         ]);
+    }
+
+    /**
+     * NOUVELLE MÉTHODE POUR ANNULER
+     */
+    #[Route('/reservation/{id}/cancel', name: 'app_reservation_cancel', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function cancel(Reservation $reservation, Request $request, EntityManagerInterface $em): Response
+    {
+        // 1. Sécurité : Vérifier que c'est bien le locataire qui annule
+        if ($reservation->getLocataire() !== $this->getUser()) {
+            throw $this->createAccessDeniedException("Vous ne pouvez pas annuler une réservation qui ne vous appartient pas.");
+        }
+
+        // 2. Sécurité : Vérifier le token CSRF pour éviter les fausses requêtes
+        if ($this->isCsrfTokenValid('cancel'.$reservation->getId(), $request->request->get('_token'))) {
+
+            // 3. On passe le statut à CANCELLED (Soft Delete)
+            // Cela permet de libérer les dates dans ta fonction 'reserve' plus haut
+            $reservation->setStatut('CANCELLED');
+
+            $em->flush();
+            $this->addFlash('success', 'La réservation a été annulée avec succès.');
+        } else {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+        }
+
+        // 4. Redirection vers la page de profil (change 'app_user_profile' par le vrai nom de ta route profil)
+        return $this->redirectToRoute('app_profile');
     }
 }

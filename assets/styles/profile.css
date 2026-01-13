@@ -320,7 +320,7 @@
     gap: 7px;
     flex-direction: column;
 }
-.boutons-container button {
+.boutons-container :is(button,a) {
     font-size: 0.75rem;
     padding: 4px 10px;
     border-radius: 20px;
