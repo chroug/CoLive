@@ -31,9 +31,9 @@
 
                 <a href="{{ path('app_profile') }}" class="nav-user-pill">
                     {% if app.user.avatar %}
-                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini-desktop">
+                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
                     {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini-desktop" alt="Avatar">
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini" alt="Avatar">
                     {% endif %}
                     <span>{{ app.user.prenom }}</span>
                 </a>
