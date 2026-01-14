@@ -90,6 +90,81 @@ final class AnnounceController extends AbstractController
 
         return $this->json(['isLiked' => true]);
     }
+    #[IsGranted('ROLE_USER')]
+    #[Route('/announce/{id}/edit', name: 'app_announce_edit')]
+    public function edit(Announce $annonce, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($annonce->getUtilisateur() !== $this->getUser()) {
+            $this->addFlash('danger', 'Vous ne pouvez pas modifier cette annonce.');
+            return $this->redirectToRoute('app_profile');
+        }
+
+        $form = $this->createForm(AnnounceType::class, $annonce);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $images = $form->get('images')->getData();
+            foreach ($images as $image) {
+                $fileContent = file_get_contents($image->getPathname());
+                $base64 = base64_encode($fileContent);
+                $mimeType = $image->getMimeType();
+                $dataUri = 'data:' . $mimeType . ';base64,' . $base64;
+
+                $picture = new AnnouncePicture();
+                $picture->setContenu($dataUri);
+                $picture->setAnnonce($annonce);
+                $em->persist($picture);
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Votre annonce a été mise à jour.');
+            return $this->redirectToRoute('app_profile');
+        }
+
+        return $this->render('announce/edit.html.twig', [
+            'formAnnonce' => $form->createView(),
+            'annonce' => $annonce
+        ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/announce/picture/{id}/delete', name: 'app_announce_picture_delete', methods: ['DELETE'])]
+    public function deletePicture(AnnouncePicture $picture, EntityManagerInterface $em): JsonResponse
+    {
+        $annonce = $picture->getAnnonce();
+
+        if ($annonce->getUtilisateur() !== $this->getUser()) {
+            return $this->json(['error' => 'Action non autorisée'], 403);
+        }
+
+        $em->remove($picture);
+        $em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/announce/{id}/delete', name: 'app_announce_delete', methods: ['POST'])]
+    public function delete(Announce $annonce, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($annonce->getUtilisateur() !== $this->getUser()) {
+            $this->addFlash('danger', 'Vous ne pouvez pas supprimer une annonce qui ne vous appartient pas.');
+            return $this->redirectToRoute('app_profile');
+        }
+        if ($this->isCsrfTokenValid('delete' . $annonce->getId(), $request->request->get('_token'))) {
+
+            $em->remove($annonce);
+            $em->flush();
+
+            $this->addFlash('success', 'L\'annonce a été supprimée avec succès.');
+        } else {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+        }
+
+        return $this->redirectToRoute('app_profile');
+    }
 
     #[Route('/announce/{id}', name: 'app_announce_show')]
     public function show(Announce $announce): Response

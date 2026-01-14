@@ -64,24 +64,20 @@ class Announce
     #[ORM\Column(type: "float", nullable: true)]
     private ?float $surface = null;
 
-    // --- RELATIONS ---
-
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'annonces')]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?User $utilisateur = null;
 
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Review::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $avis;
 
-    #[ORM\OneToMany(targetEntity: AnnouncePicture::class, mappedBy: 'annonce')]
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: AnnouncePicture::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $photos;
 
-    // Relation via l'entité UserLikes
-    #[ORM\OneToMany(targetEntity: UserLikes::class, mappedBy: 'annonce', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: UserLikes::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $likes;
 
-    // relation avec reservation
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'announce', cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'announce', targetEntity: Reservation::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $reservations;
 
     public function __construct()
@@ -95,7 +91,6 @@ class Announce
         $this->reservations = new ArrayCollection();
     }
 
-    // Getters / Setters simplifiés
     public function getId(): ?int { return $this->id; }
     public function getTitre(): ?string { return $this->titre; }
     public function setTitre(string $t): self { $this->titre = $t; return $this; }
@@ -125,25 +120,16 @@ class Announce
     public function setAdresse(string $a): self { $this->adresse = $a; return $this; }
     public function getVille(): ?string { return $this->ville; }
     public function setVille(string $v): self { $this->ville = $v; return $this; }
-
+    public function getCodePostal(): ?string { return $this->code_postal; }
+    public function setCodePostal(?string $cp): self { $this->code_postal = $cp; return $this; }
+    public function getSurface(): ?float { return $this->surface; }
+    public function setSurface(?float $s): self { $this->surface = $s; return $this; }
     public function getUtilisateur(): ?User { return $this->utilisateur; }
     public function setUtilisateur(?User $u): self { $this->utilisateur = $u; return $this; }
     public function getAvis(): Collection { return $this->avis; }
     public function getPhotos(): Collection { return $this->photos; }
     public function getLikes(): Collection { return $this->likes; }
-    public function getCodePostal(): ?string { return $this->code_postal; }
-    public function setCodePostal(?string $cp): self { $this->code_postal = $cp; return $this; }
-
-    public function getSurface(): ?float { return $this->surface; }
-    public function setSurface(?float $s): self { $this->surface = $s; return $this; }
-
-    /**
-     * @return Collection<int, Reservation>
-     */
-    public function getReservations(): Collection
-    {
-        return $this->reservations;
-    }
+    public function getReservations(): Collection { return $this->reservations; }
 
     public function addReservation(Reservation $reservation): self
     {

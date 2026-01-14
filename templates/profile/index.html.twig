@@ -145,7 +145,19 @@
                                         <div class="listing-details">{{ annonce.ville }} • {{ annonce.prix }}€/mois</div>
                                         <div><span class="badge">Actif</span><span class="badge" style="margin-left:5px;">{{ annonce.likes|length }} J'aime</span></div>
                                     </div>
-                                    <div class="listing-actions"><button class="btn-manage">Gérer</button><button class="link-delete">Supprimer</button></div>
+                                    <div class="listing-actions">
+                                        <a href="{{ path('app_announce_edit', {'id': annonce.id}) }}" class="btn-manage" style="text-decoration: none;">
+                                            Modifier l'annonce
+                                        </a>
+                                        <form method="post" action="{{ path('app_announce_delete', {'id': annonce.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce définitivement ? Cette action est irréversible.');" style="display:inline;">
+
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
+
+                                            <button type="submit" class="link-delete" style="background:none; border:none; padding:0; color:#dc3545; cursor:pointer; font:inherit;">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             {% endfor %}
                         {% endif %}
