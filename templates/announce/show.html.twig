@@ -154,7 +154,11 @@
                             <span class="card-date-val">{{ announce.disponibiliteFin|date('d/m/Y') }}</span>
                         </div>
                     </div>
-                    <a href="#" class="btn-card-action btn-reserve-desk">Réserver</a>
+                    {% if app.user %}
+                        <a href="{{ path('app_announce_reserve', {'id': announce.id}) }}" class="btn-card-action btn-reserve-desk">Réserver</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn-card-action btn-reserve-desk">Connexion requise</a>
+                    {% endif %}
                     <a href="mailto:{{ announce.utilisateur.email }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
                 </div>
             </div>

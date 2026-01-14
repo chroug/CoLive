@@ -1,0 +1,201 @@
+:root {
+    --primary-color: #E51D53; /* Rose Airbnb / CoLive */
+    --primary-hover: #D70466;
+    --text-main: #222222;
+    --text-light: #717171;
+    --bg-light: #F7F7F7;
+    --border-color: #B0B0B0;
+    --border-radius: 12px;
+    --shadow-card: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+    color: var(--text-main);
+}
+
+.container {
+    padding: 50px 0;
+}
+/* --- CONTENEUR PRINCIPAL --- */
+.booking-container {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    max-width: 850px;
+    margin: 40px auto;
+}
+
+/* --- HEADER (Titre + Prix) --- */
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+.booking-title { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+.booking-subtitle { font-size: 14px; color: var(--text-light); }
+.booking-price { font-size: 22px; font-weight: 800; text-align: right; }
+.booking-price span { font-size: 16px; font-weight: 400; color: var(--text-light); }
+
+/* --- INPUTS DATES (Style Pillule Fusionnée) --- */
+.date-inputs-wrapper {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
+    overflow: hidden;
+    position: relative;
+}
+
+.date-input-box {
+    flex: 1;
+    padding: 14px 20px;
+    cursor: pointer;
+    position: relative;
+    background: white;
+    transition: background 0.2s;
+}
+
+#box_start { border-right: 1px solid var(--border-color); }
+#box_start:hover {background: #f7f7f7;}
+.date-input-box:hover { background: #f7f7f7; }
+
+/* État Actif (Bordure Noire) */
+.date-input-box.active {
+    background: white;
+    border-color: transparent; /* Masque la bordure grise */
+    z-index: 10;
+}
+
+.input-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.input-value {
+    font-size: 15px;
+    color: var(--text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.input-value.filled { color: var(--text-main); font-weight: 500; }
+
+/* --- FLATPICKR PERSONNALISÉ --- */
+.flatpickr-calendar {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.flatpickr-months { align-items: center; margin-bottom: 20px; }
+.flatpickr-month { color: var(--text-main) !important; fill: var(--text-main) !important; }
+.flatpickr-current-month { font-size: 16px; font-weight: 600; padding-top: 0; }
+.flatpickr-weekdays { margin-top: 10px; }
+.flatpickr-weekday { color: var(--text-light) !important; font-size: 12px !important; font-weight: 600 !important; }
+
+.flatpickr-days { width: 100% !important; }
+.dayContainer { width: 100% !important; min-width: 300px; max-width: 100%; }
+
+.flatpickr-day {
+    border-radius: 50% !important;
+    font-weight: 600;
+    color: var(--text-main);
+    height: 44px; line-height: 44px; /* Plus grandes touches */
+    margin-top: 2px;
+    border: 1px solid transparent !important; /* Prévient le saut de pixel au hover */
+}
+
+/* Sélection (Rond Noir) */
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+    background: black !important;
+    color: white !important;
+    border-color: black !important;
+
+}
+.flatpickr-day.selected.startRange {
+    border-radius: 50px 0 0 50px !important;
+}
+
+.flatpickr-day.selected.endRange {
+    border-radius: 0 50px 50px 0 !important;
+}
+
+/* Plage (Gris) */
+.flatpickr-day.inRange {
+    background: #F2F2F2 !important;
+    border-color: #F2F2F2 !important;
+    box-shadow: -5px 0 0 #F2F2F2, 5px 0 0 #F2F2F2 !important;
+    color: var(--text-main) !important;
+    border-radius: 0 !important;
+}
+
+.flatpickr-day.startRange.inRange { box-shadow: none !important; border-top-left-radius: 50% !important; border-bottom-left-radius: 50% !important; }
+.flatpickr-day.endRange.inRange { box-shadow: none !important; border-top-right-radius: 50% !important; border-bottom-right-radius: 50% !important; }
+
+.flatpickr-day:hover:not(.selected):not(.inRange):not(.flatpickr-disabled) {
+    border: 1px solid black !important;
+    background: white !important;
+    color: black !important;
+}
+
+/* --- FOOTER & BOUTON --- */
+.booking-footer {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    gap: 20px;
+}
+
+.btn-clear {
+    text-decoration: underline;
+    color: var(--text-main);
+    font-weight: 600;
+    background: none; border: none; padding: 0;
+    font-size: 14px;
+}
+
+.btn-submit {
+    background: #000;
+    color: white;
+    padding: 14px 32px;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    fill: #333333 !important;
+}
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #000 !important;
+}
+.btn-submit:hover { background: #333;}
+.btn-submit:active { transform: scale(0.98); }
+
+.back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-main); text-decoration: none; font-weight: 600; margin-bottom: 20px; font-size: 14px; }
+.back-link:hover { text-decoration: underline; }
+
+@media(max-width: 768px) {
+    .booking-container { padding: 20px; margin: 10px; }
+    .booking-header { flex-direction: column; gap: 10px; }
+    .booking-price { text-align: left; }
+    .flatpickr-calendar { justify-content: center; }
+    .booking-footer { flex-direction: column-reverse; width: 100%; }
+    .btn-submit { width: 100%; }
+}

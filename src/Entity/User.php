@@ -50,12 +50,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Review::class)]
     private Collection $avis;
-
+    // relation
     #[ORM\ManyToMany(targetEntity: self::class)]
     #[ORM\JoinTable(name: "user_contacts")]
     #[ORM\JoinColumn(name: "user_source_id", referencedColumnName: "id_utilisateur")]
     #[ORM\InverseJoinColumn(name: "user_target_id", referencedColumnName: "id_utilisateur")]
     private Collection $contacts;
+
+    #[ORM\OneToMany(mappedBy: 'locataire', targetEntity: Reservation::class)]
+    private Collection $reservations;
 
     public function __construct()
     {
@@ -63,7 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->annonces = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->avis = new ArrayCollection();
-
+        $this->reservations = new ArrayCollection();
         $this->contacts = new ArrayCollection();
     }
 
@@ -113,5 +116,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->contacts->removeElement($contact);
         return $this;
+    }
+
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
     }
 }

@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver - {{ announce.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ asset('styles/book.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <a href="{{ path('app_announce_show', {'id': announce.id}) }}" class="back-link">
+            <svg width="12" height="12" viewBox="0 0 320 512" fill="currentColor"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+            Retour à l'annonce
+        </a>
+
+        <div class="booking-container">
+
+            <div class="booking-header">
+                <div>
+                    <div class="booking-title">{{ announce.titre }}</div>
+                    <div class="booking-subtitle">Jusqu'au {{ announce.disponibiliteFin|date('d F Y') }}</div>
+                </div>
+                <div class="booking-price">
+                    {{ announce.prix}} € <span>/ nuit</span>
+                </div>
+            </div>
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            <div class="date-inputs-wrapper">
+                <div class="date-input-box active" id="box_start">
+                    <div class="input-label">ARRIVÉE</div>
+                    <div class="input-value" id="text_start">Ajouter une date</div>
+                </div>
+                <div class="date-input-box" id="box_end">
+                    <div class="input-label">DÉPART</div>
+                    <div class="input-value" id="text_end">Ajouter une date</div>
+                </div>
+            </div>
+
+            <div id="inline_calendar"></div>
+
+            <div style="display:none;">
+                {{ form_widget(form.dateDebut) }}
+                {{ form_widget(form.dateFin) }}
+            </div>
+
+            <div class="text-danger small mt-2 fw-bold">
+                {{ form_errors(form.dateDebut) }}
+                {{ form_errors(form.dateFin) }}
+            </div>
+
+            <div class="booking-footer">
+                <button type="button" class="btn-clear" id="btn_clear">Effacer les dates</button>
+                {{ form_widget(form.submit, {'attr': {'class': 'btn-submit'}, 'label': 'Confirmer la réservation'}) }}
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="text-center text-muted small mt-3 pb-5">
+            Votre réservation n'est pas encore confirmée. Vous ne serez débité qu'après validation.
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/fr.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const unavailableDates = {{ unavailableDates|default('[]')|raw }};
+            const minDate = "{{ minDateCalculated|default(announce.disponibiliteDebut)|date('Y-m-d') }}";
+            const maxDate = "{{ announce.disponibiliteFin|date('Y-m-d') }}";
+
+            const startInput = document.getElementById('reservation_dateDebut') || document.querySelector('input[name*="dateDebut"]');
+            const endInput = document.getElementById('reservation_dateFin') || document.querySelector('input[name*="dateFin"]');
+
+            const boxStart = document.getElementById('box_start');
+            const boxEnd = document.getElementById('box_end');
+            const textStart = document.getElementById('text_start');
+            const textEnd = document.getElementById('text_end');
+            const btnClear = document.getElementById('btn_clear');
+
+            const fp = flatpickr("#inline_calendar", {
+                inline: true,
+                mode: "range",
+                locale: "fr",
+                minDate: minDate,
+                maxDate: maxDate,
+                disable: unavailableDates,
+                dateFormat: "Y-m-d",
+                showMonths: window.innerWidth < 768 ? 1 : 2,
+
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        textStart.textContent = instance.formatDate(selectedDates[0], "d M Y");
+                        textStart.classList.add('filled');
+                        if (startInput) startInput.value = instance.formatDate(selectedDates[0], "Y-m-d");
+                    } else {
+                        textStart.textContent = "Ajouter une date";
+                        textStart.classList.remove('filled');
+                        if (startInput) startInput.value = "";
+                    }
+
+                    if (selectedDates.length > 1) {
+                        textEnd.textContent = instance.formatDate(selectedDates[1], "d M Y");
+                        textEnd.classList.add('filled');
+                        if (endInput) endInput.value = instance.formatDate(selectedDates[1], "Y-m-d");
+                    } else {
+                        textEnd.textContent = "Ajouter une date";
+                        textEnd.classList.remove('filled');
+                        if (endInput) endInput.value = "";
+                    }
+
+                    if (selectedDates.length === 0 || selectedDates.length === 2) {
+                        if(selectedDates.length === 2) {
+                            boxStart.classList.remove('active');
+                            boxEnd.classList.add('active');
+                        } else {
+                            boxStart.classList.add('active');
+                            boxEnd.classList.remove('active');
+                        }
+                    } else if (selectedDates.length === 1) {
+                        boxStart.classList.remove('active');
+                        boxEnd.classList.add('active');
+                    }
+                }
+            });
+
+            btnClear.addEventListener('click', () => {
+                fp.clear();
+                boxStart.classList.add('active');
+                boxEnd.classList.remove('active');
+            });
+
+
+            boxStart.addEventListener('click', () => {
+                boxStart.classList.add('active');
+                boxEnd.classList.remove('active');
+                if(fp.selectedDates.length === 2) fp.clear();
+            });
+
+            boxEnd.addEventListener('click', () => {
+                if(fp.selectedDates.length === 0) {
+                    boxStart.classList.add('active');
+                } else {
+                    boxStart.classList.remove('active');
+                    boxEnd.classList.add('active');
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if(window.innerWidth < 768 && fp.config.showMonths !== 1) {
+                    fp.set('showMonths', 1);
+                } else if (window.innerWidth >= 768 && fp.config.showMonths !== 2) {
+                    fp.set('showMonths', 2);
+                }
+            });
+        });
+    </script>
+{% endblock %}

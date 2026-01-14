@@ -73,12 +73,16 @@ class Announce
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: Review::class)]
     private Collection $avis;
 
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: AnnouncePicture::class)]
+    #[ORM\OneToMany(targetEntity: AnnouncePicture::class, mappedBy: 'annonce')]
     private Collection $photos;
 
     // Relation via l'entité UserLikes
-    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: UserLikes::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: UserLikes::class, mappedBy: 'annonce', cascade: ['persist', 'remove'])]
     private Collection $likes;
+
+    // relation avec reservation
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'announce', cascade: ['remove'])]
+    private Collection $reservations;
 
     public function __construct()
     {
@@ -87,7 +91,8 @@ class Announce
         $this->disponibilite_fin = new \DateTime();
         $this->avis = new ArrayCollection();
         $this->photos = new ArrayCollection();
-        $this->likes = new ArrayCollection(); // Changé ici
+        $this->likes = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     // Getters / Setters simplifiés
@@ -131,4 +136,31 @@ class Announce
 
     public function getSurface(): ?float { return $this->surface; }
     public function setSurface(?float $s): self { $this->surface = $s; return $this; }
+
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
+
+    public function addReservation(Reservation $reservation): self
+    {
+        if (!$this->reservations->contains($reservation)) {
+            $this->reservations->add($reservation);
+            $reservation->setAnnounce($this);
+        }
+        return $this;
+    }
+
+    public function removeReservation(Reservation $reservation): self
+    {
+        if ($this->reservations->removeElement($reservation)) {
+            if ($reservation->getAnnounce() === $this) {
+                $reservation->setAnnounce(null);
+            }
+        }
+        return $this;
+    }
 }
