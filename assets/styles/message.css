@@ -325,4 +325,13 @@
     stroke-linecap: round;
     stroke-linejoin: round;
 }
+.reservation-request-card { background: #fff; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.res-badge { display: inline-flex; align-items: center; gap: 5px; background: #000; color: #fff; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; }
+.res-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-res { flex: 1; padding: 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; color: white; }
+.btn-accept { background: #10b981; } .btn-accept:hover { background: #059669; }
+.btn-reject { background: #ef4444; } .btn-reject:hover { background: #dc2626; }
+.info-msg-system { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.icon-accept { color: #10b981; font-size: 1.2rem; }
+.icon-reject { color: #ef4444; font-size: 1.2rem; }
 

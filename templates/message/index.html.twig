@@ -3,144 +3,110 @@
 {% block title %}Messagerie{% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/message.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 {% endblock %}
+
 {% block body %}
     <header class="top-bar">
-        <a href="{{ path('app_home') }}" style="text-decoration: none;">
-            <div class="logo">C</div>
-        </a>
-
+        <a href="{{ path('app_home') }}" style="text-decoration: none;"><div class="logo">C</div></a>
         <div class="nav-right-group">
             {% if app.user %}
                 <a href="{{ path('app_bot') }}" class="nav-icon-btn">
-                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          fill="currentColor" viewBox="0 0 24 24" >
-                        <!--Boxicons v3.0.7 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                        <path d="M8.5 10a1.5 2 0 1 0 0 4 1.5 2 0 1 0 0-4M15.5 10a1.5 2 0 1 0 0 4 1.5 2 0 1 0 0-4M8 16h8v2H8z"></path><path d="M21 11V8c0-1.1-.9-2-2-2h-6V4.61c.3-.27.5-.67.5-1.11 0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5c0 .44.2.84.5 1.11V6H5c-1.1 0-2 .9-2 2v3c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1v3c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-3c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1M5 20V8h14v12z"></path>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 10a1.5 2 0 1 0 0 4 1.5 2 0 1 0 0-4M15.5 10a1.5 2 0 1 0 0 4 1.5 2 0 1 0 0-4M8 16h8v2H8z"></path><path d="M21 11V8c0-1.1-.9-2-2-2h-6V4.61c.3-.27.5-.67.5-1.11 0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5c0 .44.2.84.5 1.11V6H5c-1.1 0-2 .9-2 2v3c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1v3c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-3c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1M5 20V8h14v12z"></path></svg>
                 </a>
                 <a href="{{ path('app_message') }}" class="nav-icon-btn" title="Mes messages">
-                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                          fill="#000000" viewBox="0 0 24 24" >
-                        <!--Boxicons v3.0.6 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                        <path d="m21.55,8.17l-2.55-1.7v-1.46c0-.55-.45-1-1-1h-2.7l-2.75-1.83c-.34-.22-.77-.22-1.11,0l-2.75,1.83h-2.7c-.55,0-1,.45-1,1v1.46l-2.55,1.7c-.28.19-.45.5-.45.83v11c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2v-11c0-.33-.17-.65-.45-.83Zm-14.55-2.17h10v4.46l-5,3.33-5-3.33v-4.46Zm-3,14v-9.13l1.45.96,6,4c.17.11.36.17.55.17s.39-.06.55-.17l6-4,1.45-.96v9.13H4Z"></path>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 24 24"><path d="m21.55,8.17l-2.55-1.7v-1.46c0-.55-.45-1-1-1h-2.7l-2.75-1.83c-.34-.22-.77-.22-1.11,0l-2.75,1.83h-2.7c-.55,0-1,.45-1,1v1.46l-2.55,1.7c-.28.19-.45.5-.45.83v11c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2v-11c0-.33-.17-.65-.45-.83Zm-14.55-2.17h10v4.46l-5,3.33-5-3.33v-4.46Zm-3,14v-9.13l1.45.96,6,4c.17.11.36.17.55.17s.39-.06.55-.17l6-4,1.45-.96v9.13H4Z"></path></svg>
                 </a>
-
                 <a href="{{ path('app_profile') }}" class="nav-user-pill">
-                    {% if app.user.avatar %}
-                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini-desktop">
-                    {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini-desktop" alt="Avatar">
-                    {% endif %}
+                    {% if app.user.avatar %}<img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini-desktop">{% else %}<img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini-desktop" alt="Avatar">{% endif %}
                     <span>{{ app.user.prenom }}</span>
                 </a>
-            {% else %}
-                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
-            {% endif %}
+            {% else %}<a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>{% endif %}
         </div>
     </header>
 
     <div class="messagerie-wrapper">
         <div class="messagerie-container">
             <div class="messagerie-sidebar">
-                <div class="sidebar-header">
-                    <h2>Messagerie</h2>
-                </div>
+                <div class="sidebar-header"><h2>Messagerie</h2></div>
                 <div class="search-box">
                     <form action="{{ path('app_message') }}" method="get">
-                        <input type="text"
-                               name="q"
-                               value="{{ searchTerm }}"
-                               placeholder="Rechercher un contact"
-                               autocomplete="off">
-                        <button type="submit" style="display: none;"></button>
+                        <input type="text" name="q" value="{{ searchTerm }}" placeholder="Rechercher un contact" autocomplete="off">
                     </form>
                 </div>
                 <div class="contact-list">
                     <h3>Mes Discussions ({{ users|length }})</h3>
                     <div class="list-scroll" id="contactListContainer">
                         {% for user in users %}
-                            <div class="contact-item-wrapper" style="position: relative;">
-                                <a href="{{ path('app_message_conversation', {id: user.id}) }}"
-                                   class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}"
-                                   data-name="{{ user.prenom|lower }} {{ user.nom|lower }}">
+                            <div class="contact-item-wrapper">
+                                <a href="{{ path('app_message_conversation', {id: user.id}) }}" class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}">
                                     <div class="avatar">{{ user.prenom|first|upper }}</div>
-                                    <div class="info">
-                                        <span class="name">{{ user.prenom }} {{ user.nom }}</span>
-                                        <span class="sub-text">Voir la conversation</span>
-                                    </div>
+                                    <div class="info"><span class="name">{{ user.prenom }} {{ user.nom }}</span><span class="sub-text">Voir la conversation</span></div>
                                 </a>
-                            </div>
-                        {% else %}
-                            <div style="padding: 20px; text-align: center; color: #777;">
-                                <p>Aucune discussion en cours.</p>
-                                <small>Contactez un membre via une annonce pour démarrer une discussion.</small>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
+
             <div class="messagerie-content">
                 {% if selectedUser %}
                     <div class="chat-header">
                         <div class="avatar">{{ selectedUser.prenom|first|upper }}</div>
                         <h3>{{ selectedUser.prenom }} {{ selectedUser.nom }}</h3>
-                        <a href="{{ path('app_contact_remove', {id: selectedUser.id}) }}" class="btn-delete-contact" title="Supprimer la conversation">
-                            <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                   viewBox="0 0 24 24" >
-                                <!--Boxicons v3.0.7 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                                <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
-                            </svg>
-                        </a>
+                        <a href="{{ path('app_contact_remove', {id: selectedUser.id}) }}" class="btn-delete-contact"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path></svg></a>
                     </div>
 
                     <div class="messages-area" id="messagesArea">
                         {% for message in messages %}
                             <div class="message-row {{ message.sender.id == app.user.id ? 'sent' : 'received' }}">
-                                {% if message.sender.id != app.user.id %}
-                                    <div class="message-avatar">{{ message.sender.prenom|first }}</div>
-                                {% endif %}
-
+                                {% if message.sender.id != app.user.id %}<div class="message-avatar">{{ message.sender.prenom|first }}</div>{% endif %}
                                 <div class="message-bubble">
-                                    {% if message.attachment %}
-                                        <div class="message-image">
-                                            <img src="{{ asset('uploads/' ~ message.attachment) }}" alt="Pièce jointe">
-                                        </div>
-                                    {% endif %}
+                                    {% if message.attachment %}<div class="message-image"><img src="{{ asset('uploads/' ~ message.attachment) }}"></div>{% endif %}
 
-                                    {% if message.content %}
+                                    {% if "[RES_ID:" in message.content %}
+                                        {% set resId = message.content|split('[RES_ID:')[1]|split(']')[0] %}
+                                        {% set cleanContent = message.content|split(']')|last %}
+                                        {% if message.sender.id == app.user.id %}
+                                            <div class="info-msg-system"><i class="bi bi-send-check"></i> Demande de réservation envoyée.</div>
+                                            <p>{{ cleanContent }}</p>
+                                        {% else %}
+                                            <div class="reservation-request-card">
+                                                <span class="res-badge"><i class="bi bi-megaphone"></i> Demande reçue</span>
+                                                <p>{{ cleanContent }}</p>
+                                                <div class="res-actions">
+                                                    <a href="{{ path('app_reservation_accept', {id: resId}) }}" class="btn-res btn-accept">Accepter</a>
+                                                    <a href="{{ path('app_reservation_reject', {id: resId}) }}" class="btn-res btn-reject" onclick="return confirm('Refuser cette demande ?')">Refuser</a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% elseif "[RES_ACCEPT]" in message.content %}
+                                        <div class="info-msg-system"><i class="bi bi-check-circle-fill icon-accept"></i> {{ message.content|replace({'[RES_ACCEPT]': ''}) }}</div>
+                                    {% elseif "[RES_REJECT]" in message.content %}
+                                        <div class="info-msg-system"><i class="bi bi-x-circle-fill icon-reject"></i> {{ message.content|replace({'[RES_REJECT]': ''}) }}</div>
+                                    {% else %}
                                         <p>{{ message.content }}</p>
                                     {% endif %}
-
                                     <small class="message-time">{{ message.createdAt|date('H:i') }}</small>
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="empty-chat">Nouvelle discussion. Dites bonjour !</div>
                         {% endfor %}
                     </div>
+
                     <div class="input-area">
                         <form method="post" class="input-form" enctype="multipart/form-data">
-                            <label for="file-upload" class="btn-attachment" title="Ajouter une image"><svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                                                                            fill="#000000" viewBox="0 0 24 24" >
-                                    <!--Boxicons v3.0.6 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                                    <path d="m20,4h-8.59l-1.41-1.41c-.38-.38-.88-.59-1.41-.59h-4.59c-1.1,0-2,.9-2,2v14c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2V6c0-1.1-.9-2-2-2Zm0,2v3H4v-3h16ZM4,18v-7h16v7H4Z"></path>
-                                </svg></label>
+                            <label for="file-upload" class="btn-attachment"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 24 24"><path d="m20,4h-8.59l-1.41-1.41c-.38-.38-.88-.59-1.41-.59h-4.59c-1.1,0-2,.9-2,2v14c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2V6c0-1.1-.9-2-2-2Zm0,2v3H4v-3h16ZM4,18v-7h16v7H4Z"></path></svg></label>
                             <input id="file-upload" type="file" name="file_upload" style="display: none;" accept="image/*">
-
                             <input type="text" name="content" placeholder="Écrivez votre message..." autocomplete="off">
                             <button type="submit" class="btn-send">Envoyer</button>
                         </form>
-                        <div id="file-name-display" style="font-size: 0.8rem; color: #666; margin-top: 5px; margin-left: 10px;"></div>
                     </div>
-
-                {% else %}
-                    <div class="no-selection">
-                        <p>Sélectionnez une discussion à gauche.</p>
-                    </div>
-                {% endif %}
+                {% else %}<div class="no-selection"><p>Sélectionnez une discussion à gauche.</p></div>{% endif %}
             </div>
         </div>
     </div>
+    <script>
+        const messagesArea = document.getElementById('messagesArea');
+        if (messagesArea) messagesArea.scrollTop = messagesArea.scrollHeight;
+    </script>
 {% endblock %}

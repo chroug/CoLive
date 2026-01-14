@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Announce;
 use App\Entity\Reservation;
+use App\Entity\Message;
 use App\Form\ReservationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,9 @@ class ReservationController extends AbstractController
     {
         $reservation = new Reservation();
         $reservation->setAnnounce($announce);
-        $reservation->setLocataire($this->getUser());
+        $tenant = $this->getUser();
+        $reservation->setLocataire($tenant);
+        $host = $announce->getUtilisateur();
 
         $unavailableDates = [];
         foreach ($announce->getReservations() as $res) {
@@ -43,10 +46,31 @@ class ReservationController extends AbstractController
             );
 
             if (count($overlaps) > 0) {
-                $this->addFlash('danger', 'Désolé, ces dates viennent d’être réservées.');
+                $this->addFlash('danger', 'Désolé, ces dates sont déjà réservées.');
             } else {
                 $em->persist($reservation);
                 $em->flush();
+
+                if ($host && $host !== $tenant) {
+                    if (!$tenant->getContacts()->contains($host)) $tenant->addContact($host);
+                    if (!$host->getContacts()->contains($tenant)) $host->addContact($tenant);
+
+                    $autoMessage = new Message();
+                    $autoMessage->setSender($tenant);
+                    $autoMessage->setRecipient($host);
+
+                    $autoMessage->setContent(sprintf(
+                        "[RES_ID:%d] Nouvelle demande de réservation pour '%s' du %s au %s.",
+                        $reservation->getId(),
+                        $announce->getTitre(),
+                        $reservation->getDateDebut()->format('d/m/Y'),
+                        $reservation->getDateFin()->format('d/m/Y')
+                    ));
+
+                    $em->persist($autoMessage);
+                    $em->flush();
+                }
+
                 $this->addFlash('success', 'Votre demande de réservation a bien été envoyée !');
                 return $this->redirectToRoute('app_announce_show', ['id' => $announce->getId()]);
             }
@@ -60,6 +84,9 @@ class ReservationController extends AbstractController
         ]);
     }
 
+    /**
+     * ROUTE D'ANNULATION
+     */
     #[Route('/reservation/{id}/cancel', name: 'app_reservation_cancel', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function cancel(Reservation $reservation, Request $request, EntityManagerInterface $em): Response
@@ -71,9 +98,61 @@ class ReservationController extends AbstractController
         if ($this->isCsrfTokenValid('cancel'.$reservation->getId(), $request->request->get('_token'))) {
             $reservation->setStatut('CANCELLED');
             $em->flush();
-            $this->addFlash('success', 'La réservation a été annulée. Les dates sont à nouveau disponibles.');
+            $this->addFlash('success', 'La réservation a été annulée avec succès.');
         }
 
         return $this->redirectToRoute('app_profile');
+    }
+
+    /**
+     * ACCEPTER DEPUIS LA MESSAGERIE
+     */
+    #[Route('/reservation/{id}/accept', name: 'app_reservation_accept')]
+    #[IsGranted('ROLE_USER')]
+    public function accept(Reservation $reservation, EntityManagerInterface $em): Response
+    {
+        if ($reservation->getAnnounce()->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $reservation->setStatut('CONFIRMED');
+
+        $msg = new Message();
+        $msg->setSender($this->getUser());
+        $msg->setRecipient($reservation->getLocataire());
+
+        $msg->setContent("[RES_ACCEPT] J'ai accepté votre réservation pour '" . $reservation->getAnnounce()->getTitre() . "'. À bientôt !");
+
+        $em->persist($msg);
+        $em->flush();
+
+        $this->addFlash('success', 'Réservation confirmée.');
+        return $this->redirectToRoute('app_message_conversation', ['id' => $reservation->getLocataire()->getId()]);
+    }
+
+    /**
+     * REFUSER DEPUIS LA MESSAGERIE
+     */
+    #[Route('/reservation/{id}/reject', name: 'app_reservation_reject')]
+    #[IsGranted('ROLE_USER')]
+    public function reject(Reservation $reservation, EntityManagerInterface $em): Response
+    {
+        if ($reservation->getAnnounce()->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $reservation->setStatut('CANCELLED');
+
+        $msg = new Message();
+        $msg->setSender($this->getUser());
+        $msg->setRecipient($reservation->getLocataire());
+
+        $msg->setContent("[RES_REJECT] Désolé, je ne peux pas accepter votre réservation pour '" . $reservation->getAnnounce()->getTitre() . "'.");
+
+        $em->persist($msg);
+        $em->flush();
+
+        $this->addFlash('danger', 'Réservation refusée.');
+        return $this->redirectToRoute('app_message_conversation', ['id' => $reservation->getLocataire()->getId()]);
     }
 }
