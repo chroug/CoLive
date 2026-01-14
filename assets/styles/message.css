@@ -162,19 +162,26 @@ body {
 }
 
 .list-scroll {
-    flex: 1; overflow-y: auto; padding: 0 10px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 15px;
 }
 
 .contact-card {
     display: flex;
     align-items: center;
     padding: 12px 15px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    box-shadow: none;
+    border: 1px solid transparent;
+
     border-radius: 12px;
     text-decoration: none;
     color: #333;
-    border: 1px solid transparent;
-    transition: 0.2s;
+    transition: all 0.2s ease;
+    width: auto;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
 .contact-card:hover {
@@ -182,7 +189,9 @@ body {
 }
 
 .contact-card.active {
-    background-color: #f0f0f0; border-color: #eee; font-weight: 600;
+    background-color: #f0f0f0;
+    font-weight: 600;
+    border-color: #e0e0e0;
 }
 
 .avatar {
@@ -385,3 +394,85 @@ body {
     font-size: 1.1rem;
 }
 
+@media (max-width: 768px) {
+
+    .top-bar {
+        padding: 0 15px;
+        height: 60px;
+    }
+
+    .nav-user-pill span {
+        display: none;
+    }
+
+    .nav-user-pill {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .messagerie-wrapper {
+        padding: 0;
+        height: calc(100vh - 60px);
+        background: white;
+    }
+
+    .messagerie-container {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        max-width: 100%;
+    }
+
+    .messagerie-sidebar {
+        width: 100%;
+        display: flex;
+        border-right: none;
+    }
+    .messagerie-content {
+        display: none;
+        width: 100%;
+    }
+
+    .messagerie-container.mobile-chat-active .messagerie-sidebar {
+        display: none;
+    }
+
+    .messagerie-container.mobile-chat-active .messagerie-content {
+        display: flex;
+    }
+
+    .chat-header {
+        padding: 0 15px;
+        gap: 10px;
+    }
+
+    .mobile-back-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        margin-right: 5px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        color: #333;
+        text-decoration: none;
+        font-size: 1.2rem;
+    }
+
+    .messages-area {
+        padding: 15px;
+    }
+
+    .input-area {
+        padding: 10px 15px;
+        position: sticky;
+        bottom: 0;
+    }
+
+    .input-form input[type="text"] {
+        font-size: 16px;
+    }
+}
