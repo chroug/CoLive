@@ -38,37 +38,17 @@ class Reservation
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?User $locataire = null;
 
-    public function __construct()
-    {
-        $this->createdAt = new \DateTimeImmutable();
-    }
-
+    public function __construct() { $this->createdAt = new \DateTimeImmutable(); }
     public function getId(): ?int { return $this->id; }
-
     public function getDateDebut(): ?\DateTimeInterface { return $this->dateDebut; }
-
-    public function setDateDebut(?\DateTimeInterface $dateDebut): static
-    {
-        $this->dateDebut = $dateDebut;
-        return $this;
-    }
-
+    public function setDateDebut(?\DateTimeInterface $dateDebut): self { $this->dateDebut = $dateDebut; return $this; }
     public function getDateFin(): ?\DateTimeInterface { return $this->dateFin; }
-
-    public function setDateFin(?\DateTimeInterface $dateFin): static
-    {
-        $this->dateFin = $dateFin;
-        return $this;
-    }
-
+    public function setDateFin(?\DateTimeInterface $dateFin): self { $this->dateFin = $dateFin; return $this; }
     public function getStatut(): ?string { return $this->statut; }
-    public function setStatut(string $statut): static { $this->statut = $statut; return $this; }
-
+    public function setStatut(string $statut): self { $this->statut = $statut; return $this; }
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
-
     public function getAnnounce(): ?Announce { return $this->announce; }
-    public function setAnnounce(?Announce $announce): static { $this->announce = $announce; return $this; }
-
+    public function setAnnounce(?Announce $announce): self { $this->announce = $announce; return $this; }
     public function getLocataire(): ?User { return $this->locataire; }
-    public function setLocataire(?User $locataire): static { $this->locataire = $locataire; return $this; }
+    public function setLocataire(?User $locataire): self { $this->locataire = $locataire; return $this; }
 }
