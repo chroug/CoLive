@@ -6,6 +6,40 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .reservation-meta-info {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .date-info-label {
+            color: #6b7280;
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        .listing-card.is-inactive {
+            opacity: 0.7;
+            background-color: #fafafa;
+            border: 1px dashed #d1d5db;
+        }
+
+        .status-badge-info {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: uppercase;
+        }
+
+        .status-cancelled { color: #ef4444; }
+        .status-finished { color: #6b7280; }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -42,50 +76,31 @@
                                 <div class="rating-stars">
                                     {% for i in 1..5 %}
                                         {% if i <= averageRating %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 fill="#FFB400" viewBox="0 0 24 24">
-                                                <path d="m6.87 14.33-1.83 6.4c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02L12 18.2l5.45 3.63a.988.988 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1.83-6.4 4.54-4.08c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-5.7-.45-2.47-5.46a.998.998 0 0 0-1.82 0L8.62 8.06l-5.7.45c-.4.03-.74.3-.87.68s-.02.8.28 1.06z"></path>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#FFB400" viewBox="0 0 24 24"><path d="m6.87 14.33-1.83 6.4c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02L12 18.2l5.45 3.63a.988.988 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1.83-6.4 4.54-4.08c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-5.7-.45-2.47-5.46a.998.998 0 0 0-1.82 0L8.62 8.06l-5.7.45c-.4.03-.74.3-.87.68s-.02.8.28 1.06z"></path></svg>
                                         {% else %}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 fill="#D1D5DB" viewBox="0 0 24 24">
-                                                <path d="m4.83 12.49 2.04 1.83-.83 2.9-1 3.5c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02l3-2L12 18.19l2.45 1.63 3 2a.988.988 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1-3.5-.83-2.9 2.04-1.83 2.5-2.25c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-3.15-.25-2.56-.2-2.47-5.46a.998.998 0 0 0-1.82 0L8.61 8.05l-2.56.2-3.15.25c-.4.03-.74.3-.87.68s-.02.8.28 1.06l2.5 2.25Zm1.39-2.25 2.52-.2.62-.05.59-.05.84-1.86 1.2-2.66 1.2 2.66.84 1.86.59.05.62.05 2.52.2.83.07-.77.69-2.5 2.25-.46.42.17.6 1.25 4.38-3.74-2.49-.55-.37-.55.37-3.74 2.49 1.25-4.38.17-.6-.46-.42L6.16 11l-.77-.69z"></path>
-                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#D1D5DB" viewBox="0 0 24 24"><path d="m4.83 12.49 2.04 1.83-.83 2.9-1 3.5c-.12.4.03.84.37 1.08.34.25.8.26 1.14.02l3-2L12 18.19l2.45 1.63 3 2a.988.988 0 0 0 1.14-.02c.34-.25.49-.68.37-1.08l-1-3.5-.83-2.9 2.04-1.83 2.5-2.25c.3-.27.41-.69.28-1.06-.13-.38-.47-.64-.87-.68l-3.15-.25-2.56-.2-2.47-5.46a.998.998 0 0 0-1.82 0L8.61 8.05l-2.56.2-3.15.25c-.4.03-.74.3-.87.68s-.02.8.28 1.06l2.5 2.25Zm1.39-2.25 2.52-.2.62-.05.59-.05.84-1.86 1.2-2.66 1.2 2.66.84 1.86.59.05.62.05 2.52.2.83.07-.77.69-2.5 2.25-.46.42.17.6 1.25 4.38-3.74-2.49-.55-.37-.55.37-3.74 2.49 1.25-4.38.17-.6-.46-.42L6.16 11l-.77-.69z"></path></svg>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
                                 <span>({{ nbNotes }} avis)</span>
                             </a>
                         {% endif %}
-
                         <div class="user-name">{{ user.prenom }} {{ user.nom }}</div>
                         <div class="user-meta">Membre depuis {{ user.dateCreationCompte|date('Y') }}</div>
-
                         <div class="contact-section">
                             <div class="contact-row">
-                                <div class="contact-icon">
-                                    <i class="bi bi-envelope"></i>
-                                </div>
+                                <div class="contact-icon"><i class="bi bi-envelope"></i></div>
                                 <span style="word-break: break-all;">{{ user.email }}</span>
                             </div>
                             <div class="contact-row">
-                                <div class="contact-icon">
-                                    <i class="bi bi-telephone"></i>
-                                </div>
+                                <div class="contact-icon"><i class="bi bi-telephone"></i></div>
                                 <span>{{ user.tel|default('Non renseigné') }}</span>
                             </div>
                         </div>
-
                         <div class="stats-box">
-                            <div class="stat-item">
-                                <span class="stat-number">{{ user.annonces|length }}</span>
-                                <span class="stat-label">Annonces</span>
-                            </div>
+                            <div class="stat-item"><span class="stat-number">{{ user.annonces|length }}</span><span class="stat-label">Annonces</span></div>
                             <div class="stat-divider"></div>
-                            <div class="stat-item">
-                                <span class="stat-number">{{ user.likes|length }}</span>
-                                <span class="stat-label">Favoris</span>
-                            </div>
+                            <div class="stat-item"><span class="stat-number">{{ user.likes|length }}</span><span class="stat-label">Favoris</span></div>
                         </div>
                     </div>
                 </div>
@@ -99,78 +114,38 @@
                     </div>
 
                     <div id="content-infos" class="tab-content active card">
-                        <div class="header-section">
-                            <h3>Informations personnelles</h3>
-                        </div>
-
+                        <div class="header-section"><h3>Informations personnelles</h3></div>
                         {{ form_start(form) }}
-
                         <div style="margin-bottom: 1.5rem; background: #f9fafb; padding: 1rem; border-radius: 8px; border: 1px dashed #d1d5db;">
                             {{ form_label(form.avatarFile, 'Changer ma photo de profil', {'label_attr': {'style': 'display:block; margin-bottom:0.5rem; font-weight:600;'}}) }}
                             {{ form_widget(form.avatarFile, {'attr': {'class': 'form-control', 'style': 'width:100%'}}) }}
-                            <div style="color:red; font-size:0.85rem; margin-top:0.25rem;">
-                                {{ form_errors(form.avatarFile) }}
-                            </div>
+                            <div style="color:red; font-size:0.85rem; margin-top:0.25rem;">{{ form_errors(form.avatarFile) }}</div>
                         </div>
                         <div class="form-grid">
-                            <div>
-                                {{ form_label(form.prenom) }}
-                                {{ form_widget(form.prenom) }}
-                            </div>
-                            <div>
-                                {{ form_label(form.nom) }}
-                                {{ form_widget(form.nom) }}
-                            </div>
+                            <div>{{ form_label(form.prenom) }}{{ form_widget(form.prenom) }}</div>
+                            <div>{{ form_label(form.nom) }}{{ form_widget(form.nom) }}</div>
                         </div>
-                        <div style="margin-bottom:1.5rem;">
-                            {{ form_label(form.email) }}
-                            {{ form_widget(form.email) }}
-                        </div>
-                        <div style="margin-bottom:1.5rem;">
-                            {{ form_label(form.tel) }}
-                            {{ form_widget(form.tel) }}
-                        </div>
-
-                        <div style="margin-top:2rem; overflow:hidden;">
-                            <button type="submit" class="btn-save">Enregistrer</button>
-                        </div>
+                        <div style="margin-bottom:1.5rem;">{{ form_label(form.email) }}{{ form_widget(form.email) }}</div>
+                        <div style="margin-bottom:1.5rem;">{{ form_label(form.tel) }}{{ form_widget(form.tel) }}</div>
+                        <div style="margin-top:2rem; overflow:hidden;"><button type="submit" class="btn-save">Enregistrer</button></div>
                         {{ form_end(form) }}
                     </div>
 
                     <div id="content-annonces" class="tab-content card">
-                        <div class="header-section">
-                            <h3>Mes annonces</h3>
-                            <a href="{{ path('app_announce_create') }}" class="btn-new">Nouvelle annonce +</a>
-                        </div>
-
-                        {% if user.annonces is empty %}
-                            <p style="color:#6b7280; text-align:center; padding:2rem;">Vous n'avez posté aucune annonce.</p>
+                        <div class="header-section"><h3>Mes annonces</h3><a href="{{ path('app_announce_create') }}" class="btn-new">Nouvelle annonce +</a></div>
+                        {% if user.annonces is empty %}<p style="color:#6b7280; text-align:center; padding:2rem;">Vous n'avez posté aucune annonce.</p>
                         {% else %}
                             {% for annonce in user.annonces %}
                                 <div class="listing-card">
                                     <div class="listing-img-container">
-                                        {% if annonce.photos is not empty %}
-                                            <img src="{{ annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
-                                        {% else %}
-                                            <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
-                                        {% endif %}
+                                        {% if annonce.photos is not empty %}<img src="{{ annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">{% else %}<img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">{% endif %}
                                     </div>
-
                                     <div class="listing-info">
                                         <h4>{{ annonce.titre }}</h4>
-                                        <div class="listing-details">
-                                            {{ annonce.ville }} • {{ annonce.prix }}€/mois
-                                        </div>
-                                        <div>
-                                            <span class="badge">Actif</span>
-                                            <span class="badge" style="margin-left:5px;">{{ annonce.likes|length }} J'aime</span>
-                                        </div>
+                                        <div class="listing-details">{{ annonce.ville }} • {{ annonce.prix }}€/mois</div>
+                                        <div><span class="badge">Actif</span><span class="badge" style="margin-left:5px;">{{ annonce.likes|length }} J'aime</span></div>
                                     </div>
-
-                                    <div class="listing-actions">
-                                        <button class="btn-manage">Gérer</button>
-                                        <button class="link-delete">Supprimer</button>
-                                    </div>
+                                    <div class="listing-actions"><button class="btn-manage">Gérer</button><button class="link-delete">Supprimer</button></div>
                                 </div>
                             {% endfor %}
                         {% endif %}
@@ -179,16 +154,15 @@
                     <div id="content-favoris" class="tab-content card">
 
                         <div style="margin-bottom: 2rem;">
-                            <div class="header-section">
-                                <h3>Mes réservations</h3>
-                            </div>
+                            <div class="header-section"><h3>Mes réservations</h3></div>
 
                             {% if user.reservations is defined and user.reservations is not empty %}
                                 {% for reservation in user.reservations %}
-                                    <div class="listing-card">
+                                    {% set isFinished = reservation.dateFin < date() and reservation.statut == 'CONFIRMED' %}
+
+                                    <div class="listing-card {{ (reservation.statut == 'CANCELLED' or isFinished) ? 'is-inactive' : '' }}">
 
                                         <div class="listing-img-container">
-                                            {# On utilise 'announce' car c'est le nom dans Reservation.php #}
                                             {% if reservation.announce.photos is not empty %}
                                                 <img src="{{ reservation.announce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
                                             {% else %}
@@ -197,24 +171,21 @@
                                         </div>
 
                                         <div class="listing-info">
-                                            <a href="#" style="text-decoration:none; color:inherit;">
+                                            <a href="{{ path('app_announce_show', {'id': reservation.announce.id}) }}" style="text-decoration:none; color:inherit;">
                                                 <h4>{{ reservation.announce.titre }}</h4>
                                             </a>
-
                                             <div class="listing-details">
                                                 <i class="bi bi-calendar-event"></i>
                                                 Du {{ reservation.dateDebut|date('d/m/Y') }} au {{ reservation.dateFin|date('d/m/Y') }}
                                             </div>
 
                                             <div style="display:flex; gap:10px; align-items:center; margin-top: 5px;">
-                                                {# Logique de couleur pour le statut #}
-                                                {% set statusColor = reservation.statut == 'PENDING' ? '#f59e0b' : (reservation.statut == 'CONFIRMED' ? '#10b981' : '#ef4444') %}
-                                                {% set statusText = reservation.statut == 'PENDING' ? 'En attente' : (reservation.statut == 'CONFIRMED' ? 'Confirmé' : reservation.statut) %}
+                                                {% set statusColor = reservation.statut == 'PENDING' ? '#f59e0b' : (reservation.statut == 'CONFIRMED' ? (isFinished ? '#6b7280' : '#10b981') : '#ef4444') %}
+                                                {% set statusText = reservation.statut == 'PENDING' ? 'En attente' : (reservation.statut == 'CONFIRMED' ? (isFinished ? 'Terminée' : 'Confirmée') : 'Annulée') %}
 
                                                 <span class="badge" style="background: {{ statusColor }}20; color: {{ statusColor }}; border-color: {{ statusColor }}40;">
                                                     {{ statusText }}
                                                 </span>
-
                                                 <span style="font-size:0.9rem; font-weight:600; color:#4b5563;">
                                                     Loyer : {{ reservation.announce.prix }} €/mois
                                                 </span>
@@ -222,37 +193,43 @@
                                         </div>
 
                                         <div class="listing-actions">
-                                            <div class="boutons-container" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                            <div class="boutons-container" style="display: flex; flex-direction: column; align-items: flex-end; width: 100%;">
 
-                                                <a href="#" class="btn-contact" style="text-decoration: none; text-align: center;">
-                                                    Contacter l'hôte
-                                                </a>
-
-                                                {% if reservation.statut != 'CANCELLED' %}
-                                                    {# Formulaire pour envoyer la requête d'annulation de façon sécurisée #}
-                                                    <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Cette action est irréversible.');" style="margin: 0;">
-
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
-
-                                                        <button type="submit" class="btn-annuler">
-                                                            Annuler ma réservation
-                                                        </button>
-                                                    </form>
-                                                {% else %}
-                                                    {# Si c'est déjà annulé, on ne montre pas le bouton mais un badge #}
-                                                    <span style="padding: 10px 20px; border: 1px solid #ccc; border-radius: 4px; color: #777; background: #f9f9f9; cursor: not-allowed;">
-                                                        <i class="bi bi-x-circle"></i> Annulée
+                                                <div class="reservation-meta-info">
+                                                    <span class="date-info-label">
+                                                        Chambre réservée le {{ reservation.createdAt|date('d/m/Y') }}
                                                     </span>
-                                                {% endif %}
+                                                </div>
+
+                                                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
+                                                    {% if reservation.statut == 'CANCELLED' %}
+                                                        <span class="status-badge-info status-cancelled">
+                                                            <i class="bi bi-calendar-x"></i> Réservation Annulée
+                                                        </span>
+                                                    {% elseif isFinished %}
+                                                        <span class="status-badge-info status-finished">
+                                                            <i class="bi bi-check-circle"></i> Séjour terminé
+                                                        </span>
+                                                    {% else %}
+                                                        <a href="#" class="btn-contact" style="text-decoration: none; text-align: center;">
+                                                            Contacter l'hôte
+                                                        </a>
+
+                                                        <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');" style="margin: 0;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+                                                            <button type="submit" class="btn-annuler">
+                                                                Annuler ma réservation
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 {% endfor %}
                             {% else %}
                                 <div style="text-align:center; padding: 2rem 0;">
-                                    <p style="color:#9ca3af; font-size:0.95rem; font-style:italic; margin-bottom:1rem;">
-                                        Vous n'avez aucune réservation en cours.
-                                    </p>
+                                    <p style="color:#9ca3af; font-size:0.95rem; font-style:italic; margin-bottom:1rem;">Vous n'avez aucune réservation en cours.</p>
                                     <a href="{{ path('app_home') }}" style="color:#000; font-weight:600; text-decoration:underline;">Explorer les logements</a>
                                 </div>
                             {% endif %}
@@ -262,44 +239,25 @@
 
                         <div class="header-section">
                             <h3>Mes favoris
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="red" viewBox="0 0 24 24">
-                                    <path d="M11.29 20.69c.2.2.45.29.71.29s.51-.1.71-.29l7.5-7.5c2.35-2.35 2.35-6.05 0-8.41-2.29-2.29-5.84-2.35-8.21-.2-2.36-2.15-5.91-2.09-8.21.2-2.35 2.36-2.35 6.06 0 8.41z"></path>
-                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="red" viewBox="0 0 24 24"><path d="M11.29 20.69c.2.2.45.29.71.29s.51-.1.71-.29l7.5-7.5c2.35-2.35 2.35-6.05 0-8.41-2.29-2.29-5.84-2.35-8.21-.2-2.36-2.15-5.91-2.09-8.21.2-2.35 2.36-2.35 6.06 0 8.41z"></path></svg>
                             </h3>
                         </div>
 
-                        {% if user.likes is empty %}
-                            <p style="color:#6b7280; text-align:center;">Aucun coup de cœur pour le moment.</p>
+                        {% if user.likes is empty %}<p style="color:#6b7280; text-align:center;">Aucun coup de cœur pour le moment.</p>
                         {% else %}
                             {% for like in user.likes %}
                                 <div class="listing-card">
                                     <div class="listing-img-container">
-                                        {% if like.annonce.photos is not empty %}
-                                            <img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
-                                        {% else %}
-                                            <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
-                                        {% endif %}
+                                        {% if like.annonce.photos is not empty %}<img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">{% else %}<img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">{% endif %}
                                     </div>
-
-                                    <div class="listing-info">
-                                        <h4>{{ like.annonce.titre }}</h4>
-                                        <div class="listing-details">
-                                            {{ like.annonce.ville }} • {{ like.annonce.prix }}€/mois
-                                        </div>
-                                    </div>
-
+                                    <div class="listing-info"><h4>{{ like.annonce.titre }}</h4><div class="listing-details">{{ like.annonce.ville }} • {{ like.annonce.prix }}€/mois</div></div>
                                     <div class="listing-actions" style="display:flex; justify-content:center; align-items:center;">
-                                        <button class="card-like-btn liked"
-                                                onclick="toggleLike(event, {{ like.annonce.id }})"
-                                                title="Retirer des favoris">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </button>
+                                        <button class="card-like-btn liked" onclick="toggleLike(event, {{ like.annonce.id }})" title="Retirer des favoris"><i class="bi bi-heart-fill"></i></button>
                                     </div>
                                 </div>
                             {% endfor %}
                         {% endif %}
                     </div>
-
                 </div>
             </div>
         </div>
@@ -309,13 +267,9 @@
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].classList.remove("active"); }
             tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", " inactive");
-            }
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", " inactive"); }
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.className = evt.currentTarget.className.replace(" inactive", " active");
         }
@@ -326,27 +280,19 @@
             const btn = event.currentTarget;
             const icon = btn.querySelector('i');
             try {
-                // Assurez-vous que cette route existe dans votre controller
                 const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
                 if (response.ok) {
                     const data = await response.json();
                     if (data.isLiked) {
                         btn.classList.add('liked', 'animate');
-                        icon.classList.remove('bi-heart');
-                        icon.classList.add('bi-heart-fill');
+                        icon.classList.remove('bi-heart'); icon.classList.add('bi-heart-fill');
                         setTimeout(() => btn.classList.remove('animate'), 400);
                     } else {
                         btn.classList.remove('liked');
-                        icon.classList.remove('bi-heart-fill');
-                        icon.classList.add('bi-heart');
-                        // Optionnel : Retirer visuellement la carte si on est dans l'onglet favoris
-                        // btn.closest('.listing-card').remove();
+                        icon.classList.remove('bi-heart-fill'); icon.classList.add('bi-heart');
                     }
                 }
-            } catch (error) {
-                console.error('Erreur', error);
-            }
+            } catch (error) { console.error('Erreur', error); }
         }
     </script>
-
 {% endblock %}
