@@ -145,6 +145,27 @@ final class AnnounceController extends AbstractController
         return $this->json(['success' => true]);
     }
 
+    #[IsGranted('ROLE_USER')]
+    #[Route('/announce/{id}/delete', name: 'app_announce_delete', methods: ['POST'])]
+    public function delete(Announce $annonce, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($annonce->getUtilisateur() !== $this->getUser()) {
+            $this->addFlash('danger', 'Vous ne pouvez pas supprimer une annonce qui ne vous appartient pas.');
+            return $this->redirectToRoute('app_profile');
+        }
+        if ($this->isCsrfTokenValid('delete' . $annonce->getId(), $request->request->get('_token'))) {
+
+            $em->remove($annonce);
+            $em->flush();
+
+            $this->addFlash('success', 'L\'annonce a été supprimée avec succès.');
+        } else {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+        }
+
+        return $this->redirectToRoute('app_profile');
+    }
+
     #[Route('/announce/{id}', name: 'app_announce_show')]
     public function show(Announce $announce): Response
     {

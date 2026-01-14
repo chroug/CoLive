@@ -149,7 +149,14 @@
                                         <a href="{{ path('app_announce_edit', {'id': annonce.id}) }}" class="btn-manage" style="text-decoration: none;">
                                             Modifier l'annonce
                                         </a>
-                                        <button class="link-delete">Supprimer</button>
+                                        <form method="post" action="{{ path('app_announce_delete', {'id': annonce.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce définitivement ? Cette action est irréversible.');" style="display:inline;">
+
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ annonce.id) }}">
+
+                                            <button type="submit" class="link-delete" style="background:none; border:none; padding:0; color:#dc3545; cursor:pointer; font:inherit;">
+                                                Supprimer
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             {% endfor %}
