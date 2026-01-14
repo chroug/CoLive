@@ -1,0 +1,194 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'annonce - {{ annonce.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('styles/editannounce.css') }}">
+
+{% endblock %}
+
+{% block body %}
+    <div style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('img/home.png') }}') no-repeat center center fixed; background-size: cover; min-height: 100vh; padding-top: 3rem; padding-bottom: 5rem;">
+        <div class="container" style="max-width: 53rem;">
+
+            <div class="mb-4 d-flex justify-content-between align-items-center">
+                <a href="{{ path('app_profile') }}" class="text-decoration-none">
+                    <span class="bg-black text-white d-inline-flex align-items-center justify-content-center rounded-3 fw-bold" style="width: 2.5rem; height: 2.5rem; font-size: 1.2rem;">C</span>
+                </a>
+                <h2 class="text-white fw-bold m-0">Modifier l'annonce</h2>
+            </div>
+
+            {{ form_start(formAnnonce) }}
+
+            <div class="card rounded-4 mb-4 p-4">
+                <h5 class="fw-bold mb-1">Informations de base</h5>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Titre</label>
+                            {{ form_widget(formAnnonce.titre, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">Type</label>
+                            {{ form_widget(formAnnonce.type, {'attr': {'class': 'form-select'}}) }}
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label fw-bold small">Nombre de pièces</label>
+                            {{ form_widget(formAnnonce.nb_pieces, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Description</label>
+                        {{ form_widget(formAnnonce.description, {'attr': {'class': 'form-control', 'style': 'height: 14rem; resize: none;'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-4 mb-4 p-4">
+                <h5 class="fw-bold mb-1">Photos</h5>
+                <p class="text-muted small mb-2">Photos enregistrées:</p>
+                <div class="d-flex gap-3 flex-wrap mb-4" id="existing-photos">
+                    {% for photo in annonce.photos %}
+                        <div class="image-wrapper" id="photo-{{ photo.id }}">
+                            <img src="{{ photo.contenu }}">
+                            <button type="button" class="btn-delete-existing" onclick="deleteExistingPhoto({{ photo.id }})">
+                                &times;
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <p class="text-muted small mb-2">Ajouter de nouvelles photos :</p>
+                <div class="d-none">{{ form_widget(formAnnonce.images) }}</div>
+                <div class="upload-area rounded-4 p-4 text-center bg-white" id="drop-zone">
+                    <p class="text-muted small mb-0">Cliquez ici pour sélectionner des images</p>
+                    <div id="preview-container" class="preview-container"></div>
+                </div>
+            </div>
+
+            <div class="card rounded-4 mb-4 p-4">
+                <h5 class="fw-bold mb-1">Localisation</h5>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Adresse</label>
+                    {{ form_widget(formAnnonce.adresse, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Ville</label>
+                        {{ form_widget(formAnnonce.ville, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Code postal</label>
+                        {{ form_widget(formAnnonce.code_postal, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Latitude</label>
+                        {{ form_widget(formAnnonce.latitude, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Longitude</label>
+                        {{ form_widget(formAnnonce.longitude, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-4 mb-4 p-4">
+                <h5 class="fw-bold mb-1">Tarification & Surface</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Surface (m²)</label>
+                        {{ form_widget(formAnnonce.surface, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Prix par mois (€)</label>
+                        {{ form_widget(formAnnonce.prix, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-4 mb-4 p-4">
+                <h5 class="fw-bold mb-1">Détails supplémentaires</h5>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">Équipements</label>
+                    {{ form_widget(formAnnonce.equipements, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-0">
+                    <label class="form-label fw-bold small">Règles</label>
+                    {{ form_widget(formAnnonce.regle, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <div class="card rounded-4 mb-4 p-4">
+                <h5 class="fw-bold mb-1">Disponibilité</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Du</label>
+                        {{ form_widget(formAnnonce.disponibilite_debut, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small">Au</label>
+                        {{ form_widget(formAnnonce.disponibilite_fin, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center pb-5">
+                <button type="submit" class="btn btn-light bg-white fw-bold px-5 py-3 rounded-pill shadow-lg border-0" style="font-size: 1.1rem;">
+                    Enregistrer les modifications
+                </button>
+            </div>
+
+            {{ form_end(formAnnonce) }}
+        </div>
+    </div>
+
+    <script>
+        function deleteExistingPhoto(photoId) {
+            if (confirm('Voulez-vous vraiment supprimer cette photo ?')) {
+                fetch('/announce/picture/' + photoId + '/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Supprimer l'élément du DOM
+                            document.getElementById('photo-' + photoId).remove();
+                        } else {
+                            alert('Erreur lors de la suppression');
+                        }
+                    })
+                    .catch(error => console.error('Erreur:', error));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('announce_images');
+            const previewContainer = document.getElementById('preview-container');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', function() {
+                previewContainer.innerHTML = '';
+                Array.from(this.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'preview-image';
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        });
+    </script>
+{% endblock %}

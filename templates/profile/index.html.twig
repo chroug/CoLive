@@ -145,7 +145,12 @@
                                         <div class="listing-details">{{ annonce.ville }} • {{ annonce.prix }}€/mois</div>
                                         <div><span class="badge">Actif</span><span class="badge" style="margin-left:5px;">{{ annonce.likes|length }} J'aime</span></div>
                                     </div>
-                                    <div class="listing-actions"><button class="btn-manage">Gérer</button><button class="link-delete">Supprimer</button></div>
+                                    <div class="listing-actions">
+                                        <a href="{{ path('app_announce_edit', {'id': annonce.id}) }}" class="btn-manage" style="text-decoration: none;">
+                                            Modifier l'annonce
+                                        </a>
+                                        <button class="link-delete">Supprimer</button>
+                                    </div>
                                 </div>
                             {% endfor %}
                         {% endif %}
