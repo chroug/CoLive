@@ -58,7 +58,7 @@ body {
 }
 
 .nav-icon-btn svg {
-     fill: currentColor;
+    fill: currentColor;
 }
 
 .nav-user-pill {
@@ -88,6 +88,7 @@ body {
     height: 35px;
     border-radius: 50%;
     object-fit: cover;
+    display: block;
 }
 
 .login-btn {
@@ -174,7 +175,6 @@ body {
     margin-bottom: 8px;
     box-shadow: none;
     border: 1px solid transparent;
-
     border-radius: 12px;
     text-decoration: none;
     color: #333;
@@ -206,6 +206,7 @@ body {
     margin-right: 15px;
     font-weight: 600;
     flex-shrink: 0;
+    font-size: 1.1rem;
 }
 
 .info {
@@ -237,18 +238,6 @@ body {
     gap: 15px;
 }
 
-.avatar-small {
-    width: 35px;
-    height: 35px;
-    background: #000;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-}
-
 .chat-header h3 {
     margin: 0; font-size: 1.1rem; flex: 1;
 }
@@ -261,10 +250,12 @@ body {
     justify-content: center;
     border-radius: 50%;
     transition: 0.2s;
+    color: #333;
 }
 
 .btn-delete-contact:hover {
     background: #fee2e2;
+    color: #dc2626;
 }
 
 .messages-area {
@@ -280,7 +271,25 @@ body {
 .message-row {
     display: flex;
     max-width: 70%;
+    gap: 10px;
 }
+
+.message-avatar {
+    width: 35px;
+    height: 35px;
+    background: #e0e0e0;
+    color: #555;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    align-self: flex-end;
+    margin-bottom: 5px;
+}
+
 .message-bubble {
     padding: 12px 18px;
     border-radius: 18px;
@@ -324,7 +333,6 @@ body {
 .message-image img {
     max-width: 100%; border-radius: 10px; margin-bottom: 5px;
 }
-
 
 .input-area {
     padding: 20px 25px;
@@ -394,85 +402,31 @@ body {
     font-size: 1.1rem;
 }
 
+.reservation-request-card { background: #fff; border-radius: 12px; padding: 15px; margin: 10px 0; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.res-badge { display: inline-flex; align-items: center; gap: 5px; background: #000; color: #fff; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; }
+.res-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-res { flex: 1; padding: 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; text-decoration: none; transition: 0.2s; border: none; cursor: pointer; color: white; }
+.btn-accept { background: #10b981; } .btn-accept:hover { background: #059669; }
+.btn-reject { background: #ef4444; } .btn-reject:hover { background: #dc2626; }
+.info-msg-system { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.icon-accept { color: #10b981; font-size: 1.2rem; }
+.icon-reject { color: #ef4444; font-size: 1.2rem; }
+
 @media (max-width: 768px) {
+    .top-bar { padding: 0 15px; height: 60px; }
+    .nav-user-pill span { display: none; }
+    .nav-user-pill { width: 40px; height: 40px; padding: 0; justify-content: center; }
 
-    .top-bar {
-        padding: 0 15px;
-        height: 60px;
-    }
+    .messagerie-wrapper { padding: 0; height: calc(100vh - 60px); background: white; }
+    .messagerie-container { border-radius: 0; border: none; box-shadow: none; max-width: 100%; }
+    .messagerie-sidebar { width: 100%; display: flex; border-right: none; }
+    .messagerie-content { display: none; width: 100%; }
+    .messagerie-container.mobile-chat-active .messagerie-sidebar { display: none; }
+    .messagerie-container.mobile-chat-active .messagerie-content { display: flex; }
 
-    .nav-user-pill span {
-        display: none;
-    }
+    .chat-header { padding: 0 15px; gap: 10px; }
+    .messages-area { padding: 15px; }
+    .input-area { padding: 10px 15px; position: sticky; bottom: 0; }
 
-    .nav-user-pill {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        justify-content: center;
-    }
-
-    .messagerie-wrapper {
-        padding: 0;
-        height: calc(100vh - 60px);
-        background: white;
-    }
-
-    .messagerie-container {
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-        max-width: 100%;
-    }
-
-    .messagerie-sidebar {
-        width: 100%;
-        display: flex;
-        border-right: none;
-    }
-    .messagerie-content {
-        display: none;
-        width: 100%;
-    }
-
-    .messagerie-container.mobile-chat-active .messagerie-sidebar {
-        display: none;
-    }
-
-    .messagerie-container.mobile-chat-active .messagerie-content {
-        display: flex;
-    }
-
-    .chat-header {
-        padding: 0 15px;
-        gap: 10px;
-    }
-
-    .mobile-back-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 35px;
-        height: 35px;
-        margin-right: 5px;
-        background: #f4f4f4;
-        border-radius: 50%;
-        color: #333;
-        text-decoration: none;
-        font-size: 1.2rem;
-    }
-
-    .messages-area {
-        padding: 15px;
-    }
-
-    .input-area {
-        padding: 10px 15px;
-        position: sticky;
-        bottom: 0;
-    }
-
-    .input-form input[type="text"] {
-        font-size: 16px;
-    }
+    .message-row { max-width: 90%; }
 }
