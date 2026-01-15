@@ -12,7 +12,9 @@ final class MessageCest
 {
     private int $myId;
     private int $friendId;
-
+    /*
+     * Creation of 2 persons to test the messaging webpage
+     */
     public function _before(ControllerTester $I): void
     {
         $this->myId = $I->haveInRepository(User::class, [
@@ -33,11 +35,17 @@ final class MessageCest
             'dateCreationCompte' => new \DateTime(),
         ]);
     }
+    /*
+     * Verify that the user can't use the messaging and that he is redirected on login webpage
+     */
     public function testAccessDeniedForAnonymous(ControllerTester $I): void
     {
         $I->amOnPage('/message');
         $I->seeCurrentUrlEquals('/login');
     }
+    /*
+     * Verify if browser send back a code 200, if there is the sidebar and if the h2 is present
+     */
     public function testPageLoadsForAuthenticatedUser(ControllerTester $I): void
     {
         $user = $I->grabEntityFromRepository(User::class, ['id' => $this->myId]);
