@@ -55,4 +55,24 @@ final class MessageCest
         $I->see('Messagerie', 'h2');
         $I->seeElement('.messagerie-sidebar');
     }
+    /*
+     * Verify if the user can send a message and if the receiver can see the message / can respond
+     */
+    public function testSendMessage(ControllerTester $I): void
+    {
+        $user = $I->grabEntityFromRepository(User::class, ['id' => $this->myId]);
+        $I->amLoggedInAs($user);
+        $I->amOnPage('/message/' . $this->friendId);
+        $I->seeResponseCodeIs(200);
+        $I->see('Paul Ami');
+        $I->fillField('content', 'Salut Paul, ceci est un test Codeception !');
+        $I->click('Envoyer');
+        $I->seeCurrentUrlEquals('/message/' . $this->friendId);
+        $I->see('Salut Paul, ceci est un test Codeception !', '.message-bubble');
+        $I->seeInRepository(Message::class, [
+            'content' => 'Salut Paul, ceci est un test Codeception !',
+            'sender' => $this->myId,
+            'recipient' => $this->friendId
+        ]);
+    }
 }
