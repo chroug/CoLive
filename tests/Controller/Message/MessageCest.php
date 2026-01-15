@@ -15,7 +15,6 @@ final class MessageCest
 
     public function _before(ControllerTester $I): void
     {
-        // 1. On crée l'utilisateur principal (Moi)
         $this->myId = $I->haveInRepository(User::class, [
             'prenom' => 'Jean',
             'nom' => 'Messagerie',
@@ -38,5 +37,14 @@ final class MessageCest
     {
         $I->amOnPage('/message');
         $I->seeCurrentUrlEquals('/login');
+    }
+    public function testPageLoadsForAuthenticatedUser(ControllerTester $I): void
+    {
+        $user = $I->grabEntityFromRepository(User::class, ['id' => $this->myId]);
+        $I->amLoggedInAs($user);
+        $I->amOnPage('/message');
+        $I->seeResponseCodeIs(200);
+        $I->see('Messagerie', 'h2');
+        $I->seeElement('.messagerie-sidebar');
     }
 }
