@@ -44,4 +44,24 @@ final class ContactCest
         $I->amOnPage('/message');
         $I->see('Futur Ami', '.contact-card .name');
     }
+    /*
+     * Verify if the user is correctly deleted when the bin is clicked
+     */
+    public function testRemoveContact(ControllerTester $I): void
+    {
+        $me = $I->grabEntityFromRepository(User::class, ['id' => $this->myId]);
+        $other = $I->grabEntityFromRepository(User::class, ['id' => $this->otherUserId]);
+        $em = $I->grabService('doctrine.orm.entity_manager');
+        $meManaged = $em->getRepository(User::class)->find($this->myId);
+        $otherManaged = $em->getRepository(User::class)->find($this->otherUserId);
+        $meManaged->addContact($otherManaged);
+        $otherManaged->addContact($meManaged);
+        $em->flush();
+        $I->amLoggedInAs($me);
+        $I->amOnPage('/message');
+        $I->see('Futur Ami');
+        $I->amOnPage('/contact/supprimer/' . $this->otherUserId);
+        $I->seeCurrentUrlEquals('/message');
+        $I->dontSee('Futur Ami', '.contact-card .name');
+    }
 }
