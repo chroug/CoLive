@@ -7,17 +7,20 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BotController extends AbstractController
 {
     #[Route('/bot', name: 'app_bot')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         return $this->render('bot/index.html.twig');
     }
 
     #[Route('/bot/ask', name: 'app_bot_ask', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function ask(Request $request, HttpClientInterface $client): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -28,7 +31,7 @@ class BotController extends AbstractController
 
         Ta base de données :
         - Prix : Inscription 100% gratuite.
-        - Recherche : Barre de recherche permettant de choisir la ville / durée ou date / type
+        - Recherche : Barre de recherche permettant de choisir  la ville / durée ou date / type
         - Annonces : Cliquer sur 'Proposer mon logement'.
         - Contact : support@colive.com.
         - Concept : Mise en relation étudiants / propriétaires.
