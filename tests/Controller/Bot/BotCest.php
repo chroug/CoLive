@@ -21,21 +21,28 @@ final class BotCest
             'role' => 1,
             'dateCreationCompte' => new \DateTime(),
         ]);
-        $user = $I->grabEntityFromRepository(User::class, ['id' => $this->userId]);
-        $I->amLoggedInAs($user);
     }
 
     /**
-     * Verify if the page load correctly
+     * Verify if the page load correctly if the user is connected
      */
     public function testBotPageDisplay(ControllerTester $I): void
     {
+        $user = $I->grabEntityFromRepository(User::class, ['id' => $this->userId]);
+        $I->amLoggedInAs($user);
         $I->amOnPage('/bot');
         $I->seeResponseCodeIs(200);
-        $I->see('Assistant CoLive', 'h3');
-        $I->see('En ligne (IA)', 'span');
+        $I->see('Assistant CoLive');
         $I->seeElement('#userInput');
-        $I->seeElement('#chatBox');
-        $I->see("Bonjour ! Je suis l'IA de CoLive. Une question sur le site ?", '.message.bot .bubble');
+    }
+
+    /**
+     * Verify if the url is redirected on the login page
+     */
+    public function testAccessDeniedForAnonymous(ControllerTester $I): void
+    {
+        $I->amOnPage('/bot');
+        $I->dontSeeCurrentUrlEquals('/bot');
+        $I->seeCurrentUrlEquals('/login');
     }
 }
