@@ -2,7 +2,7 @@
 :root {
     --gap-size: 10px;
     --mobile-padding: 15px;
-    --header-height: 200px;
+    --header-height: 80px;
 }
 
 body {
@@ -33,8 +33,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
-    margin-bottom: 100px;
+    padding: 0 20px;
+    margin-bottom: 30px;
     margin-left: -15px;
     margin-right: -15px;
     width: calc(100% + 30px);
@@ -43,7 +43,7 @@ body {
 .header-logo {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    font-size: 4rem;
+    font-size: 1.8rem;
     color: #000;
     text-decoration: none;
     display: flex;
@@ -56,24 +56,25 @@ body {
 .nav-user-pill {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     background: #fff;
-    border: 2px solid #f0f0f0;
-    padding: 6px 25px 6px 6px;
+    border: 1px solid #f0f0f0;
+    padding: 4px 15px 4px 4px;
     border-radius: 100px;
     text-decoration: none;
     color: #222;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     transition: transform 0.2s;
 }
+
 .nav-user-pill:active { transform: scale(0.95); background: #fafafa; }
 
 /* AVATAR */
 .nav-avatar-mini {
-    width: 55px;
-    height: 55px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -83,10 +84,10 @@ body {
     text-decoration: none;
     color: #fff;
     background: #000;
-    padding: 18px 35px;
+    padding: 10px 20px;
     border-radius: 50px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
@@ -94,16 +95,16 @@ body {
 .page-header-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 60px;
+    align-items: center;
+    margin-bottom: 30px;
     padding: 0 5px;
 }
 
 .page-title {
     font-weight: 900;
-    font-size: 3rem;
-    line-height: 1;
-    letter-spacing: -1px;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
     margin: 0;
     color: #000;
     max-width: 70%;
@@ -116,7 +117,7 @@ body {
     padding: 0;
     margin: 0;
     cursor: pointer;
-    font-size: 2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #666666;
     display: flex;
@@ -128,15 +129,17 @@ body {
     text-decoration-color: transparent;
     transition: text-decoration-color 0.2s;
 }
+
 .btn-filter-text:hover {
     text-decoration-color: #000;
 }
+
 .btn-filter-text:active {
     opacity: 0.7;
 }
 
 .btn-filter-text i {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     display: flex;
 }
 
@@ -148,9 +151,9 @@ body {
     height: 100vh;
     background: white;
     z-index: 1000;
-    width: 50vw;
-    min-width: 320px;
-    padding: 40px 30px;
+    width: 80vw;
+    min-width: 300px;
+    padding: 30px 20px;
     box-shadow: 5px 0 25px rgba(0,0,0,0.15);
     overflow-y: auto;
     transform: translateX(-100%);
@@ -172,6 +175,7 @@ body {
     visibility: hidden;
     transition: all 0.3s;
 }
+
 .filter-overlay.active {
     opacity: 1; visibility: visible;
 }
@@ -180,23 +184,24 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
-    padding-bottom: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
     border-bottom: 2px solid #f0f0f0;
 }
+
 .sidebar-title {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     font-weight: 900;
 }
 
 .btn-close {
     background: #f5f5f5;
     border: none;
-    width: 60px;
-    height: 60px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -208,48 +213,52 @@ body {
 /****** FILTER FORM ******/
 .form-label {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.1rem;
     font-weight: 900;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #000;
 }
 
 .form-input {
     width: 100%;
-    padding: 25px;
-    font-size: 1.5rem;
+    padding: 15px;
+    font-size: 1rem;
     font-weight: 600;
-    border: 3px solid #eee;
-    border-radius: 15px;
+    border: 2px solid #eee;
+    border-radius: 12px;
     background-color: #fcfcfc;
     box-sizing: border-box;
     outline: none;
 }
-.form-input:focus { border-color: #000; }
+
+.form-input:focus {
+    border-color: #000;
+}
 
 .form-fieldset {
     border: none;
     padding: 0;
     margin: 0;
 }
+
 .form-legend {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     font-weight: 900;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     display: block;
 }
 
 .btn-submit {
     width: 100%;
-    padding: 30px;
+    padding: 18px;
     background-color: #000;
     color: #fff;
-    font-size: 1.8rem;
+    font-size: 1.1rem;
     font-weight: 900;
     border: none;
-    border-radius: 20px;
+    border-radius: 15px;
     cursor: pointer;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 /****** GRID LAYOUT ******/
@@ -272,6 +281,7 @@ body {
     cursor: pointer;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
+
 .card-img {
     width: 100%;
     height: 100%;
@@ -281,13 +291,14 @@ body {
     left: 0;
     z-index: 1;
 }
+
 .card-content {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: 12px;
-    gap: 10px;
+    padding: 10px;
+    gap: 5px;
     z-index: 2;
     color: white;
     background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
@@ -296,28 +307,32 @@ body {
     justify-content: flex-end;
     height: 60%;
 }
+
 .card-title {
-    font-size: 2.5rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    margin: 0 0 2px 0;
+    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
+
 .card-location {
-    font-size: 1.5rem;
-    margin-bottom: 6px;
+    font-size: 0.75rem;
+    margin-bottom: 2px;
     opacity: 0.95;
     font-weight: 500;
 }
+
 .card-price {
-    font-size: 2rem;
+    font-size: 1rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.2px;
 }
+
 .card-price small {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 500;
     opacity: 0.9;
 }
@@ -328,13 +343,13 @@ body {
 
 .radio-text-label {
     display: block;
-    font-size: 1.8rem;
+    font-size: 1.3rem;
     font-weight: 900;
     color: #d6d6d6;
     cursor: pointer;
     transition: color 0.3s ease, transform 0.2s;
-    padding: 10px 0;
-    margin-bottom: 5px;
+    padding: 8px 0;
+    margin-bottom: 2px;
 }
 
 .radio-text-label:hover {
@@ -343,16 +358,16 @@ body {
 
 .radio-hidden:checked + .radio-text-label {
     color: #000000;
-    transform: translateX(10px);
+    transform: translateX(8px);
 }
 
 .btn-reset-filters {
     display: block;
     width: 100%;
     text-align: center;
-    margin-top: 25px;
-    margin-bottom: 40px;
-    font-size: 1.4rem;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #999;
     text-decoration: underline;
@@ -372,8 +387,8 @@ body {
     top: 5px;
     right: 5px;
     z-index: 10;
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
     background: transparent;
     border: none;
     display: flex;
@@ -389,7 +404,7 @@ body {
 
 /* ICON */
 .card-like-btn i {
-    font-size: 2.5rem;
+    font-size: 1.4rem;
     color: #fff;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     display: flex;
@@ -414,8 +429,8 @@ body {
 }
 
 .card-date {
-    font-size: 1rem;
-    margin-bottom: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 2px;
     font-weight: 500;
     opacity: 0.9;
 }

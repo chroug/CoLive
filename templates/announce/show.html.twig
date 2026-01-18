@@ -170,14 +170,19 @@
     </div>
 
     <!-- FOOTER MOBILE -->
+
     <aside class="fixed-bottom-bar">
         <div class="price-row">
             <span class="price-amount">{{ announce.prix }}€</span>
             <span class="price-label">/ mois</span>
         </div>
         <div class="buttons-row">
-            <a href="mailto:{{ announce.utilisateur.email }}" class="btn-action btn-contact">Contacter</a>
-            <a href="#" class="btn-action btn-reserve">Réserver</a>
+            <a href="{{ path('app_contact_add', {'id': announce.utilisateur.id}) }}" class="btn-action btn-contact">Contacter</a>
+            {% if app.user %}
+                <a href="{{ path('app_announce_reserve', {'id': announce.id}) }}" class="btn-action btn-reserve">Réserver</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn-action btn-reserve">Réserver</a>
+            {% endif %}
         </div>
     </aside>
 
