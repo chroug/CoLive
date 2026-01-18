@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Review::class)]
     private Collection $avis;
-    // relation
+
     #[ORM\ManyToMany(targetEntity: self::class)]
     #[ORM\JoinTable(name: "user_contacts")]
     #[ORM\JoinColumn(name: "user_source_id", referencedColumnName: "id_utilisateur")]
@@ -71,7 +71,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getUserIdentifier(): string { return $this->email; }
-    public function getRoles(): array { return ['ROLE_USER']; }
+
+    public function getRoles(): array
+    {
+        $roles = ['ROLE_USER'];
+
+        if ($this->role === 2) {
+            $roles[] = 'ROLE_ADMIN';
+        }
+        return array_unique($roles);
+    }
+
     public function eraseCredentials(): void {}
 
     public function getId(): ?int { return $this->id; }
@@ -91,18 +101,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateCreationCompte(\DateTimeInterface $d): self { $this->dateCreationCompte = $d; return $this; }
     public function getRole(): int { return $this->role; }
     public function setRole(int $role): self { $this->role = $role; return $this; }
-
     public function getAnnonces(): Collection { return $this->annonces; }
     public function getLikes(): Collection { return $this->likes; }
     public function getAvis(): Collection { return $this->avis; }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getContacts(): Collection
-    {
-        return $this->contacts;
-    }
+    public function getContacts(): Collection { return $this->contacts; }
 
     public function addContact(self $contact): self
     {
@@ -118,8 +120,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getReservations(): Collection
-    {
-        return $this->reservations;
-    }
+    public function getReservations(): Collection { return $this->reservations; }
 }
