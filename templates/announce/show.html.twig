@@ -159,7 +159,7 @@
                     {% else %}
                         <a href="{{ path('app_login') }}" class="btn-card-action btn-reserve-desk">Connexion requise</a>
                     {% endif %}
-                    <a href="mailto:{{ announce.utilisateur.email }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
+                    <a href="{{ path('app_contact_add', {'id': announce.utilisateur.id}) }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
                 </div>
             </div>
 
