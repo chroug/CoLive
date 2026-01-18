@@ -11,16 +11,27 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         UserFactory::createOne([
+            'email' => 'admin@colive.com',
+            'prenom' => 'Admin',
+            'nom' => 'CoLive',
+            'password' => 'admin',
+            'role' => 2
+        ]);
+
+        UserFactory::createOne([
             'email' => 'test@example.com',
             'prenom' => 'Jean',
             'nom' => 'Test',
-            'password' => 'password'
+            'password' => 'password',
+            'role' => 1
         ]);
+
         UserFactory::createOne([
             'email' => 'bot@colive.com',
-            'prenom' => 'Assitant',
+            'prenom' => 'Assistant',
             'nom' => 'FAQ',
-            'password' => 'password'
+            'password' => 'password',
+            'role' => 1
         ]);
 
         UserFactory::createMany(15);
