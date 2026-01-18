@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Admin - CoLive{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container admin-container">
+
+        <div class="dashboard-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1>Espace Admin</h1>
+                <p class="text-muted">Gérez les annonces et la communauté CoLive.</p>
+            </div>
+            <a href="{{ path('app_home') }}" class="btn btn-colive-outline">Retour au site</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <span class="stat-label">Annonces en attente</span>
+                    <span class="stat-number">{{ pendingAnnounces|length }}</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <span class="stat-label">Total Avis</span>
+                    <span class="stat-number">{{ reviews|length }}</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <span class="stat-label">Statut Système</span>
+                    <span class="stat-number text-success" style="font-size: 1.2rem; margin-top: 15px;">● Opérationnel</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h2>Modération des annonces</h2>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                    <tr>
+                        <th>Logement</th>
+                        <th>Localisation</th>
+                        <th>Prix</th>
+                        <th>Propriétaire</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for announce in pendingAnnounces %}
+                        <tr>
+                            <td class="fw-bold">{{ announce.titre }}</td>
+                            <td>{{ announce.ville }}</td>
+                            <td><span class="badge-price">{{ announce.prix }}€</span></td>
+                            <td>{{ announce.utilisateur.email }}</td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ path('app_admin_announce_validate', {id: announce.id}) }}" class="btn btn-colive-black">Valider</a>
+                                    <a href="{{ path('app_admin_announce_delete', {id: announce.id}) }}" class="btn btn-colive-outline btn-sm" onclick="return confirm('Supprimer ?')">Refuser</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Aucune annonce en attente de validation.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h2>Derniers commentaires</h2>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                    <tr>
+                        <th>Auteur</th>
+                        <th>Commentaire</th>
+                        <th>Note</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for review in reviews %}
+                        <tr>
+                            <td><strong>{{ review.utilisateur.prenom }}</strong></td>
+                            <td class="text-muted italic">"{{ review.commentaire }}"</td>
+                            <td>
+                                {% for i in 1..5 %}
+                                    <span style="color: {{ i <= review.note ? 'black' : '#ddd' }};">★</span>
+                                {% endfor %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{{ path('app_admin_review_delete', {id: review.id}) }}" class="btn btn-colive-outline btn-sm" onclick="return confirm('Supprimer cet avis ?')">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

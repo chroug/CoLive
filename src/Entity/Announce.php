@@ -64,6 +64,9 @@ class Announce
     #[ORM\Column(type: "float", nullable: true)]
     private ?float $surface = null;
 
+    #[ORM\Column(type: "boolean", options: ["default" => false])]
+    private bool $isValidated = false;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'annonces')]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?User $utilisateur = null;
@@ -89,6 +92,7 @@ class Announce
         $this->photos = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->reservations = new ArrayCollection();
+        $this->isValidated = false;
     }
 
     public function getId(): ?int { return $this->id; }
@@ -124,6 +128,8 @@ class Announce
     public function setCodePostal(?string $cp): self { $this->code_postal = $cp; return $this; }
     public function getSurface(): ?float { return $this->surface; }
     public function setSurface(?float $s): self { $this->surface = $s; return $this; }
+    public function isValidated(): bool { return $this->isValidated; }
+    public function setIsValidated(bool $isValidated): self { $this->isValidated = $isValidated; return $this; }
     public function getUtilisateur(): ?User { return $this->utilisateur; }
     public function setUtilisateur(?User $u): self { $this->utilisateur = $u; return $this; }
     public function getAvis(): Collection { return $this->avis; }

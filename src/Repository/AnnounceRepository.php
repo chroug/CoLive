@@ -15,9 +15,14 @@ class AnnounceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Announce::class);
     }
+
     public function findByFilters(?string $location, ?string $type, ?string $dateStart, ?string $dateEnd): array
     {
         $qb = $this->createQueryBuilder('a');
+
+        $qb->andWhere('a.isValidated = :valid')
+            ->setParameter('valid', true);
+
         if ($location) {
             $qb->andWhere('a.ville LIKE :location')
                 ->setParameter('location', '%' . $location . '%');
@@ -37,5 +42,4 @@ class AnnounceRepository extends ServiceEntityRepository
         $qb->orderBy('a.dateCreation', 'DESC');
         return $qb->getQuery()->getResult();
     }
-
 }
