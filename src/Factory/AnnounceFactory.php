@@ -29,6 +29,7 @@ final class AnnounceFactory extends PersistentProxyObjectFactory
             'disponibilite_debut' => self::faker()->dateTimeBetween('now', '+1 month'),
             'disponibilite_fin' => self::faker()->dateTimeBetween('+6 months', '+1 year'),
             'utilisateur' => UserFactory::new(),
+            'isValidated' => self::faker()->boolean(),
         ];
     }
 }
