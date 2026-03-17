@@ -47,9 +47,12 @@
     <div class="colive-profile-page">
 
         <nav class="user-navbar">
-            <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:5px; text-decoration:none; color:black;">
-                <span style="background:black; color:white; padding:2px 8px; border-radius:6px;">C</span> CoLive
-            </a>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <a href="javascript:history.back()" style="color:black; font-size:1.5rem; text-decoration:none;" title="Retour"><i class="bi bi-arrow-left"></i></a>
+                <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:5px; text-decoration:none; color:black;">
+                    <span style="background:black; color:white; padding:2px 8px; border-radius:6px;">C</span> CoLive
+                </a>
+            </div>
             <div><a href="{{ path('app_logout') }}" class="logout-btn">Se déconnecter</a></div>
         </nav>
 
