@@ -13,7 +13,8 @@ class AnnounceFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         AnnounceFactory::createMany(20, function() {
-            return ['utilisateur' => UserFactory::random()];
+            return ['utilisateur' => UserFactory::random(),
+            'isValidated' => true];
         });
     }
 
