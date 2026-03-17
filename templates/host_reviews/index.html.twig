@@ -8,25 +8,34 @@
 
 {% block body %}
 
-    <nav class="user-navbar">
+    <nav style="display:flex; justify-content:space-between; align-items:center; padding:15px 5%; background:white; border-bottom:1px solid #eaeaea; position:sticky; top:0; z-index:1000; height: 75px;">
         <div style="display:flex; align-items:center; gap:15px;">
             <a href="javascript:history.back()" style="color:black; font-size:1.5rem; text-decoration:none;" title="Retour"><i class="bi bi-arrow-left"></i></a>
-            <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:5px; text-decoration:none; color:black;">
-                <span style="background:black; color:white; padding:2px 8px; border-radius:6px;">C</span> CoLive
+            <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:8px; text-decoration:none; color:black;">
+                <span style="background:black; color:white; padding:2px 8px; border-radius:6px; font-weight:900;">C</span> CoLive
             </a>
         </div>
-        <div>
+
+        <div style="display:flex; align-items:center; gap:15px;">
             {% if app.user %}
-                <a href="{{ path('app_profile') }}" class="nav-user-pill">
+                <a href="{{ path('app_bot') }}" style="color:black; text-decoration:none; display:flex; align-items:center; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'" title="Assistant Bot">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M8.5 10a1.5 2 0 1 0 0 4 1.5 2 0 1 0 0-4M15.5 10a1.5 2 0 1 0 0 4 1.5 2 0 1 0 0-4M8 16h8v2H8z"></path><path d="M21 11V8c0-1.1-.9-2-2-2h-6V4.61c.3-.27.5-.67.5-1.11 0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5c0 .44.2.84.5 1.11V6H5c-1.1 0-2 .9-2 2v3c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1v3c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-3c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1M5 20V8h14v12z"></path></svg>
+                </a>
+
+                <a href="{{ path('app_message') }}" style="color:black; text-decoration:none; display:flex; align-items:center; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'" title="Mes messages">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="m21.55,8.17l-2.55-1.7v-1.46c0-.55-.45-1-1-1h-2.7l-2.75-1.83c-.34-.22-.77-.22-1.11,0l-2.75,1.83h-2.7c-.55,0-1,.45-1,1v1.46l-2.55,1.7c-.28.19-.45.5-.45.83v11c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2v-11c0-.33-.17-.65-.45-.83Zm-14.55-2.17h10v4.46l-5,3.33-5-3.33v-4.46Zm-3,14v-9.13l1.45.96,6,4c.17.11.36.17.55.17s.39-.06.55-.17l6-4,1.45-.96v9.13H4Z"></path></svg>
+                </a>
+
+                <a href="{{ path('app_profile') }}" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:black; background:#f9fafb; padding:5px 15px 5px 5px; border-radius:50px; font-weight:600; border: 1px solid #eaeaea; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f9fafb'">
                     {% if app.user.avatar %}
-                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
+                        <img src="{{ app.user.avatar }}" alt="Avatar" style="width:34px; height:34px; border-radius:50%; object-fit:cover;">
                     {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" alt="Avatar" style="width:34px; height:34px; border-radius:50%;">
                     {% endif %}
                     <span>{{ app.user.prenom }}</span>
                 </a>
             {% else %}
-                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
+                <a href="{{ path('app_login') }}" style="background:black; color:white; padding:8px 20px; border-radius:50px; text-decoration:none; font-weight:bold; font-size: 0.95rem; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Se connecter</a>
             {% endif %}
         </div>
     </nav>
