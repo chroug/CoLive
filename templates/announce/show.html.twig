@@ -13,7 +13,10 @@
 
     <!-- HEADER DESKTOP -->
     <header class="desktop-header">
-        <a href="{{ path('app_home') }}" class="header-logo">CoLive</a>
+        <div style="display:flex; gap:15px; align-items:center;">
+            <a href="javascript:history.back()" style="color:black; font-size:1.5rem; text-decoration:none;" title="Retour"><i class="bi bi-arrow-left"></i></a>
+            <a href="{{ path('app_home') }}" class="header-logo">CoLive</a>
+        </div>
         {% if app.user %}
             <a href="{{ path('app_profile') }}" class="nav-user-pill">
                 {% if app.user.avatar %}
@@ -34,7 +37,7 @@
         <div class="hero-wrapper" id="heroWrapper">
 
             <!-- BOUTONS MOBILE -->
-            <a href="{{ path('app_announce') }}" class="btn-back-floating" onclick="event.stopPropagation()">
+            <a href="javascript:history.back()" class="btn-back-floating" onclick="event.stopPropagation()">
                 <i class="bi bi-arrow-left"></i>
             </a>
             {% if app.user %}

@@ -8,7 +8,10 @@
 
 {% block body %}
     <header class="top-bar">
-        <a href="{{ path('app_home') }}" style="text-decoration: none;"><div class="logo">C</div></a>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <a href="javascript:history.back()" style="color:black; font-size:1.5rem; text-decoration:none;" title="Retour"><i class="bi bi-arrow-left"></i></a>
+            <a href="{{ path('app_home') }}" style="text-decoration: none;"><div class="logo">C</div></a>
+        </div>
         <div class="nav-right-group">
             {% if app.user %}
                 <a href="{{ path('app_bot') }}" class="nav-icon-btn">
