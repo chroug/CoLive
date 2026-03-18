@@ -195,8 +195,9 @@
                         {{ form_widget(formAnnonce.disponibilite_debut, {'attr': {'class': 'form-control'}}) }}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small">Disponible jusqu'au <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold small">Disponible jusqu'au <span style="font-weight: normal; font-size: 0.85em; color: #6b7280;">(Optionnel)</span></label>
                         {{ form_widget(formAnnonce.disponibilite_fin, {'attr': {'class': 'form-control'}}) }}
+                        <div style="font-size: 0.8rem; color: #6b7280; font-style: italic; margin-top: 4px;">Laissez vide pour une durée indéterminée.</div>
                     </div>
                 </div>
             </div>
