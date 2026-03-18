@@ -8,28 +8,7 @@
 
 {% block body %}
 
-    <nav class="user-navbar">
-        <div style="display:flex; align-items:center; gap:15px;">
-            <a href="javascript:history.back()" style="color:black; font-size:1.5rem; text-decoration:none;" title="Retour"><i class="bi bi-arrow-left"></i></a>
-            <a href="{{ path('app_home') }}" style="font-weight:bold; font-size:1.2rem; display:flex; align-items:center; gap:5px; text-decoration:none; color:black;">
-                <span style="background:black; color:white; padding:2px 8px; border-radius:6px;">C</span> CoLive
-            </a>
-        </div>
-        <div>
-            {% if app.user %}
-                <a href="{{ path('app_profile') }}" class="nav-user-pill">
-                    {% if app.user.avatar %}
-                        <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
-                    {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
-                    {% endif %}
-                    <span>{{ app.user.prenom }}</span>
-                </a>
-            {% else %}
-                <a href="{{ path("app_login") }}" class="login-btn">Se connecter</a>
-            {% endif %}
-        </div>
-    </nav>
+    {% include '_navbar.html.twig' %}
 
     <div class="page-container">
 

@@ -11,25 +11,7 @@
 
 {% block body %}
 
-    <!-- HEADER DESKTOP -->
-    <header class="desktop-header">
-        <div style="display:flex; gap:15px; align-items:center;">
-            <a href="javascript:history.back()" style="color:black; font-size:1.5rem; text-decoration:none;" title="Retour"><i class="bi bi-arrow-left"></i></a>
-            <a href="{{ path('app_home') }}" class="header-logo">CoLive</a>
-        </div>
-        {% if app.user %}
-            <a href="{{ path('app_profile') }}" class="nav-user-pill">
-                {% if app.user.avatar %}
-                    <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini-desktop">
-                {% else %}
-                    <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini-desktop" alt="Avatar">
-                {% endif %}
-                <span>{{ app.user.prenom }}</span>
-            </a>
-        {% else %}
-            <a href="{{ path('app_login') }}" class="nav-login-btn">Se connecter</a>
-        {% endif %}
-    </header>
+    {% include '_navbar.html.twig' %}
 
     <div class="main-desktop-wrapper">
 
