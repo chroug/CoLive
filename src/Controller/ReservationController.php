@@ -30,7 +30,7 @@ class ReservationController extends AbstractController
             if ($res->getStatut() !== 'CANCELLED') {
                 $unavailableDates[] = [
                     'from' => $res->getDateDebut()->format('Y-m-d'),
-                    'to'   => $res->getDateFin()->format('Y-m-d'),
+                    'to'   => $res->getDateFin() ? $res->getDateFin()->format('Y-m-d') : '2099-12-31',
                 ];
             }
         }
