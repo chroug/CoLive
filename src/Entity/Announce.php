@@ -118,8 +118,6 @@ class Announce
     public function getDisponibiliteDebut(): \DateTimeInterface { return $this->disponibilite_debut; }
     public function setDisponibiliteDebut(\DateTimeInterface $d): self { $this->disponibilite_debut = $d; return $this; }
     public function getDisponibiliteFin(): ?\DateTimeInterface { return $this->disponibilite_fin; }
-    public function setDisponibiliteFin(?\DateTimeInterface $d): self { $this->disponibilite_fin = $d; return $this; }
-    public function getDisponibiliteFin(): ?\DateTimeInterface { return $this->disponibilite_fin; }
     public function setDisponibiliteFin(?\DateTimeInterface $d): self
     {
         $this->disponibilite_fin = $d;

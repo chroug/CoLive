@@ -35,7 +35,7 @@ class AnnounceType extends AbstractType
                 'label' => 'Type de bien',
                 'choices'  => [
                     'Chambre' => 'Chambre',
-                    'Collocation' => 'Collocation',
+                    'Colocation' => 'Colocation',
                     'Studio' => 'Studio',
                 ],
             ])
