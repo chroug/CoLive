@@ -61,7 +61,8 @@ class AnnounceType extends AbstractType
             ])
             ->add('disponibilite_fin', DateType::class, [
                 'widget' => 'single_text',
-                'label' => 'Au'
+                'label' => 'Au',
+                'required' => false,
             ])
             ->add('adresse')
             ->add('ville')

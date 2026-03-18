@@ -19,8 +19,7 @@ class Reservation
     #[Assert\NotBlank(message: "La date de début est obligatoire.")]
     private ?\DateTimeInterface $dateDebut = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: "La date de fin est obligatoire.")]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Assert\GreaterThan(propertyPath: "dateDebut", message: "La date de fin doit être après le début.")]
     private ?\DateTimeInterface $dateFin = null;
 

@@ -21,7 +21,7 @@
             <div class="booking-header">
                 <div>
                     <div class="booking-title">{{ announce.titre }}</div>
-                    <div class="booking-subtitle">Jusqu'au {{ announce.disponibiliteFin|date('d F Y') }}</div>
+                    <div class="booking-subtitle">{{ announce.disponibiliteFin ? "Jusqu'au " ~ announce.disponibiliteFin|date('d F Y') : "Durée indéterminée possible" }}</div>
                 </div>
                 <div class="booking-price">
                     {{ announce.prix}} € <span>/ nuit</span>
@@ -73,7 +73,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const unavailableDates = {{ unavailableDates|default('[]')|raw }};
             const minDate = "{{ minDateCalculated|default(announce.disponibiliteDebut)|date('Y-m-d') }}";
-            const maxDate = "{{ announce.disponibiliteFin|date('Y-m-d') }}";
+            const maxDate = "{{ announce.disponibiliteFin ? announce.disponibiliteFin|date('Y-m-d') : '' }}";
 
             const startInput = document.getElementById('reservation_dateDebut') || document.querySelector('input[name*="dateDebut"]');
             const endInput = document.getElementById('reservation_dateFin') || document.querySelector('input[name*="dateFin"]');

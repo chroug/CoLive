@@ -125,9 +125,14 @@
                         <div class="card-content">
                             <h2 class="card-title">{{ announce.titre }}</h2>
                             <p class="card-location"><i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}</p>
-                            {% if announce.disponibiliteDebut and announce.disponibiliteFin %}
+                            {% if announce.disponibiliteDebut %}
                                 <p class="card-date">
-                                    {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M') }}
+                                    À partir du {{ announce.disponibiliteDebut|date('d M') }}
+                                    {% if announce.disponibiliteFin %}
+                                        - {{ announce.disponibiliteFin|date('d M') }}
+                                    {% else %}
+                                        (Durée indéterminée)
+                                    {% endif %}
                                 </p>
                             {% endif %}
                             <div class="card-price">{{ announce.prix }}€ <small>/mois</small></div>

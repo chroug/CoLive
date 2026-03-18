@@ -165,7 +165,7 @@
 
                             {% if user.reservations is defined and user.reservations is not empty %}
                                 {% for reservation in user.reservations %}
-                                    {% set isFinished = reservation.dateFin < date() and reservation.statut == 'CONFIRMED' %}
+                                    {% set isFinished = reservation.dateFin and reservation.dateFin < date() and reservation.statut == 'CONFIRMED' %}
 
                                     <div class="listing-card {{ (reservation.statut == 'CANCELLED' or isFinished) ? 'is-inactive' : '' }}">
 
@@ -183,7 +183,7 @@
                                             </a>
                                             <div class="listing-details">
                                                 <i class="bi bi-calendar-event"></i>
-                                                Du {{ reservation.dateDebut|date('d/m/Y') }} au {{ reservation.dateFin|date('d/m/Y') }}
+                                                Du {{ reservation.dateDebut|date('d/m/Y') }} au {{ reservation.dateFin ? reservation.dateFin|date('d/m/Y') : 'Indéterminé' }}
                                             </div>
 
                                             <div style="display:flex; gap:10px; align-items:center; margin-top: 5px;">
