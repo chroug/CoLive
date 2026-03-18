@@ -119,6 +119,12 @@ class Announce
     public function setDisponibiliteDebut(\DateTimeInterface $d): self { $this->disponibilite_debut = $d; return $this; }
     public function getDisponibiliteFin(): ?\DateTimeInterface { return $this->disponibilite_fin; }
     public function setDisponibiliteFin(?\DateTimeInterface $d): self { $this->disponibilite_fin = $d; return $this; }
+    public function getDisponibiliteFin(): ?\DateTimeInterface { return $this->disponibilite_fin; }
+    public function setDisponibiliteFin(?\DateTimeInterface $d): self
+    {
+        $this->disponibilite_fin = $d;
+        return $this;
+    }
     public function getAdresse(): ?string { return $this->adresse; }
     public function setAdresse(string $a): self { $this->adresse = $a; return $this; }
     public function getVille(): ?string { return $this->ville; }

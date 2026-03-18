@@ -20,18 +20,20 @@ class ReservationRepository extends ServiceEntityRepository
     /**
      * Cherche s'il existe une réservation ACTIVE (non annulée) qui chevauche les dates
      */
-    public function findOverlappingReservations(Announce $announce, \DateTimeInterface $start, \DateTimeInterface $end): array
+    public function findOverlappingReservations(Announce $announce, \DateTimeInterface $start, ?\DateTimeInterface $end): array
     {
-        return $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r')
             ->andWhere('r.announce = :announce')
             ->andWhere('r.statut != :cancelled')
-            ->andWhere('r.dateDebut < :end')
-            ->andWhere('r.dateFin > :start')
             ->setParameter('announce', $announce)
             ->setParameter('cancelled', 'CANCELLED')
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('start', $start);
+        $qb->andWhere('r.dateFin IS NULL OR r.dateFin > :start');
+        if ($end !== null) {
+            $qb->andWhere('r.dateDebut < :end')
+                ->setParameter('end', $end);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
