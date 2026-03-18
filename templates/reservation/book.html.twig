@@ -1,3 +1,4 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Réserver - {{ announce.titre }}{% endblock %}
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('styles/book.css') }}">
+
 {% endblock %}
 
 {% block body %}
@@ -71,7 +73,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const unavailableDates = {{ unavailableDates|default('[]')|raw }};
+            const bookedRanges = {{ bookedDates|json_encode|raw }};
+
             const minDate = "{{ minDateCalculated|default(announce.disponibiliteDebut)|date('Y-m-d') }}";
             const maxDate = "{{ announce.disponibiliteFin ? announce.disponibiliteFin|date('Y-m-d') : '' }}";
 
@@ -90,7 +93,7 @@
                 locale: "fr",
                 minDate: minDate,
                 maxDate: maxDate,
-                disable: unavailableDates,
+                disable: bookedRanges,
                 dateFormat: "Y-m-d",
                 showMonths: window.innerWidth < 768 ? 1 : 2,
 
@@ -135,7 +138,6 @@
                 boxStart.classList.add('active');
                 boxEnd.classList.remove('active');
             });
-
 
             boxStart.addEventListener('click', () => {
                 boxStart.classList.add('active');

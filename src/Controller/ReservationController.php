@@ -26,9 +26,15 @@ class ReservationController extends AbstractController
         $host = $announce->getUtilisateur();
 
         $unavailableDates = [];
+
+        $bookedDates = [];
+        $pendingDates = [];
+
+        $bookedDates = [];
+
         foreach ($announce->getReservations() as $res) {
-            if ($res->getStatut() !== 'CANCELLED') {
-                $unavailableDates[] = [
+            if ($res->getStatut() === 'CONFIRMED') {
+                $bookedDates[] = [
                     'from' => $res->getDateDebut()->format('Y-m-d'),
                     'to'   => $res->getDateFin() ? $res->getDateFin()->format('Y-m-d') : '2099-12-31',
                 ];
@@ -77,10 +83,9 @@ class ReservationController extends AbstractController
         }
 
         return $this->render('reservation/book.html.twig', [
-            'form' => $form->createView(),
             'announce' => $announce,
-            'unavailableDates' => json_encode($unavailableDates),
-            'minDateCalculated' => new \DateTime() > $announce->getDisponibiliteDebut() ? new \DateTime() : $announce->getDisponibiliteDebut()
+            'form' => $form->createView(),
+            'bookedDates' => $bookedDates,
         ]);
     }
 
