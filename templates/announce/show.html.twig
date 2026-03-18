@@ -117,7 +117,7 @@
                     <h2 class="section-title">Dates</h2>
                     <div class="tag-pill" style="display:inline-flex;">
                         <i class="bi bi-calendar3"></i>
-                        {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin|date('d M Y') }}
+                        {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin ? announce.disponibiliteFin|date('d M Y') : 'Indéterminée' }}
                     </div>
                 </section>
             </div>
@@ -136,7 +136,7 @@
                         </div>
                         <div class="card-date-line">
                             <span>Départ</span>
-                            <span class="card-date-val">{{ announce.disponibiliteFin|date('d/m/Y') }}</span>
+                            <span class="card-date-val">{{ announce.disponibiliteFin ? announce.disponibiliteFin|date('d/m/Y') : 'Indéterminée' }}</span>
                         </div>
                     </div>
                     {% if app.user %}
