@@ -22,7 +22,8 @@ class ReservationType extends AbstractType
             ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de départ',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control'],
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Confirmer la réservation',

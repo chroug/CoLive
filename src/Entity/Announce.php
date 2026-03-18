@@ -49,8 +49,8 @@ class Announce
     #[ORM\Column(type: "date")]
     private \DateTimeInterface $disponibilite_debut;
 
-    #[ORM\Column(type: "date")]
-    private \DateTimeInterface $disponibilite_fin;
+    #[ORM\Column(type: "date", nullable: true)]
+    private ?\DateTimeInterface $disponibilite_fin = null;
 
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
@@ -87,7 +87,6 @@ class Announce
     {
         $this->dateCreation = new \DateTime();
         $this->disponibilite_debut = new \DateTime();
-        $this->disponibilite_fin = new \DateTime();
         $this->avis = new ArrayCollection();
         $this->photos = new ArrayCollection();
         $this->likes = new ArrayCollection();
@@ -118,8 +117,8 @@ class Announce
     public function setDateCreation(\DateTimeInterface $d): self { $this->dateCreation = $d; return $this; }
     public function getDisponibiliteDebut(): \DateTimeInterface { return $this->disponibilite_debut; }
     public function setDisponibiliteDebut(\DateTimeInterface $d): self { $this->disponibilite_debut = $d; return $this; }
-    public function getDisponibiliteFin(): \DateTimeInterface { return $this->disponibilite_fin; }
-    public function setDisponibiliteFin(\DateTimeInterface $d): self { $this->disponibilite_fin = $d; return $this; }
+    public function getDisponibiliteFin(): ?\DateTimeInterface { return $this->disponibilite_fin; }
+    public function setDisponibiliteFin(?\DateTimeInterface $d): self { $this->disponibilite_fin = $d; return $this; }
     public function getAdresse(): ?string { return $this->adresse; }
     public function setAdresse(string $a): self { $this->adresse = $a; return $this; }
     public function getVille(): ?string { return $this->ville; }
