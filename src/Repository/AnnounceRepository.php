@@ -24,7 +24,7 @@ class AnnounceRepository extends ServiceEntityRepository
             ->setParameter('valid', true);
 
         if ($location) {
-            $qb->andWhere('a.ville LIKE :location')
+            $qb->andWhere('a.ville LIKE :location OR a.titre LIKE :location')
                 ->setParameter('location', '%' . $location . '%');
         }
         if ($type && $type !== 'all') {
