@@ -55,6 +55,8 @@
 
     <div class="colive-nav-right">
         {% if app.user %}
+
+            <a href="{{ path('app_dashboard') }}" class="colive-nav-link" style="margin-right: 15px;">📊 Dashboard</a>
             <a href="{{ path('app_announce_create') }}" class="colive-btn-publish">+ Publier</a>
 
             <a href="{{ path('app_bot') }}" class="colive-nav-icon" title="Assistant Bot">
