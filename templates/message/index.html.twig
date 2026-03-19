@@ -87,7 +87,10 @@
                                                             <input type="hidden" name="_token" value="{{ csrf_token('accept' ~ resId) }}">
                                                             <button type="submit" class="btn-res btn-accept" style="border: none; cursor: pointer; padding: 5px 10px;">Accepter</button>
                                                         </form>
-                                                        <a href="{{ path('app_reservation_reject', {id: resId}) }}" class="btn-res btn-reject" onclick="return confirm('Refuser cette demande ?')">Refuser</a>
+                                                        <form action="{{ path('app_reservation_reject', {'id': resId}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir refuser cette demande ?');" style="margin: 0;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ resId) }}">
+                                                            <button type="submit" class="btn-res btn-reject" style="border: none; cursor: pointer; padding: 5px 10px;">Refuser</button>
+                                                        </form>
                                                     </div>
                                                 {% else %}
                                                     <div class="mt-2">
