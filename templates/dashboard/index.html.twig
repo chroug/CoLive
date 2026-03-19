@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Tableau de Bord - CoLive{% endblock %}
+
+{% block body %}
+    {% include '_navbar.html.twig' %}
+
+    <div class="container mt-5 mb-5" style="font-family: 'Poppins', sans-serif;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>👋 Bonjour, {{ app.user.prenom }} !</h2>
+            <a href="{{ path('app_announce_create') }}" class="btn btn-dark rounded-pill px-4">+ Ajouter un logement</a>
+        </div>
+
+        <p class="text-muted mb-5">Bienvenue sur votre espace propriétaire. Voici l'état de vos locations.</p>
+
+        <div class="row">
+            <div class="col-lg-5 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 p-4" style="background-color: #f8fafc;">
+                    <h4 class="mb-4">🏠 Actuellement dans vos logements</h4>
+
+                    {% if reservations_en_cours is empty %}
+                        <p class="text-muted">Personne n'occupe vos logements en ce moment.</p>
+                    {% else %}
+                        <div class="d-flex flex-column gap-3">
+                            {% for res in reservations_en_cours %}
+                                <div class="p-3 bg-white rounded-3 shadow-sm border" style="border-left: 4px solid #10b981 !important;">
+                                    <strong>{{ res.announce.titre }}</strong><br>
+                                    <span class="text-muted small">
+                                        Occupé par <b>{{ res.locataire.prenom }} {{ res.locataire.nom }}</b><br>
+                                        Jusqu'au {{ res.dateFin|date('d/m/Y') }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-7 mb-4">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <h4 class="mb-4">📅 Planning des réservations à venir</h4>
+
+                    {% if reservations_a_venir is empty %}
+                        <p class="text-muted">Aucune réservation à venir pour le moment.</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                <tr>
+                                    <th>Logement</th>
+                                    <th>Locataire</th>
+                                    <th>Arrivée</th>
+                                    <th>Départ</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for res in reservations_a_venir %}
+                                    <tr>
+                                        <td class="fw-bold">{{ res.announce.titre }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="bg-light rounded-circle p-1 px-2 border">{{ res.locataire.prenom|slice(0,1) }}</span>
+                                                {{ res.locataire.prenom }}
+                                            </div>
+                                        </td>
+                                        <td class="text-success fw-semibold">{{ res.dateDebut|date('d/m/Y') }}</td>
+                                        <td class="text-danger">{{ res.dateFin|date('d/m/Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
