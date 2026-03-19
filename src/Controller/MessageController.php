@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Message;
 use App\Entity\User;
 use App\Repository\MessageRepository;
+use App\Repository\ReservationRepository; // NOUVEAU : On importe le repository des réservations
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ class MessageController extends AbstractController
 {
     #[Route('/message', name: 'app_message')]
     #[Route('/message/{id}', name: 'app_message_conversation')]
-    public function index(?int $id, MessageRepository $messageRepository, EntityManagerInterface $entityManager, Request $request): Response
+    public function index(?int $id, MessageRepository $messageRepository, ReservationRepository $reservationRepository, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -36,8 +37,10 @@ class MessageController extends AbstractController
         } else {
             $users = $allContacts;
         }
+
         $selectedUser = null;
         $messages = [];
+        $activeReservation = null;
 
         if ($id) {
             $selectedUser = $entityManager->getRepository(User::class)->find($id);
@@ -70,7 +73,19 @@ class MessageController extends AbstractController
                         return $this->redirectToRoute('app_message_conversation', ['id' => $selectedUser->getId()]);
                     }
                 }
+
                 $messages = $messageRepository->findConversation($currentUser, $selectedUser);
+
+                $latestResId = null;
+                foreach ($messages as $msg) {
+                    if (preg_match('/\[RES_ID:(\d+)\]/', $msg->getContent(), $matches)) {
+                        $latestResId = (int) $matches[1];
+                    }
+                }
+
+                if ($latestResId) {
+                    $activeReservation = $reservationRepository->find($latestResId);
+                }
             }
         }
 
@@ -79,6 +94,7 @@ class MessageController extends AbstractController
             'selectedUser' => $selectedUser,
             'messages' => $messages,
             'searchTerm' => $searchTerm,
+            'activeReservation' => $activeReservation,
         ]);
     }
 }
