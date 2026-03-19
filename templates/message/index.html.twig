@@ -41,6 +41,28 @@
                         <a href="{{ path('app_contact_remove', {id: selectedUser.id}) }}" class="btn-delete-contact"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path></svg></a>
                     </div>
 
+                    {% if activeReservation %}
+                        {% set isHost = (app.user == activeReservation.announce.utilisateur) %}
+                        <div class="card m-3 shadow-sm border-0 bg-light">
+                            <div class="card-body p-3 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1"><i class="bi bi-calendar-event"></i> Demande pour : <strong>{{ activeReservation.announce.titre }}</strong></h6>
+                                    <span class="small text-muted">
+                                        Du {{ activeReservation.dateDebut|date('d/m/Y') }} au {{ activeReservation.dateFin ? activeReservation.dateFin|date('d/m/Y') : 'Indéterminé' }}
+                                    </span>
+                                </div>
+                                <div>
+                                    {% if activeReservation.statut == 'PENDING' %}
+                                        <span class="badge bg-warning text-dark">En attente</span>
+                                    {% elseif activeReservation.statut == 'CONFIRMED' %}
+                                        <span class="badge bg-success">Confirmée</span>
+                                    {% elseif activeReservation.statut == 'CANCELLED' %}
+                                        <span class="badge bg-secondary">Annulée</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="messages-area" id="messagesArea">
                         {% for message in messages %}
                             <div class="message-row {{ message.sender.id == app.user.id ? 'sent' : 'received' }}">
@@ -58,10 +80,21 @@
                                             <div class="reservation-request-card">
                                                 <span class="res-badge"><i class="bi bi-megaphone"></i> Demande reçue</span>
                                                 <p>{{ cleanContent }}</p>
-                                                <div class="res-actions">
-                                                    <a href="{{ path('app_reservation_accept', {id: resId}) }}" class="btn-res btn-accept">Accepter</a>
-                                                    <a href="{{ path('app_reservation_reject', {id: resId}) }}" class="btn-res btn-reject" onclick="return confirm('Refuser cette demande ?')">Refuser</a>
-                                                </div>
+
+                                                {% if activeReservation and resId == activeReservation.id and activeReservation.statut == 'PENDING' %}
+                                                    <div class="res-actions" style="display: flex; gap: 8px;">
+                                                        <form action="{{ path('app_reservation_accept', {'id': resId}) }}" method="post" onsubmit="return confirm('Accepter cette demande ? Les autres sur ces dates seront annulées.');" style="margin: 0;">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('accept' ~ resId) }}">
+                                                            <button type="submit" class="btn-res btn-accept" style="border: none; cursor: pointer; padding: 5px 10px;">Accepter</button>
+                                                        </form>
+                                                        <a href="{{ path('app_reservation_reject', {id: resId}) }}" class="btn-res btn-reject" onclick="return confirm('Refuser cette demande ?')">Refuser</a>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="mt-2">
+                                                        <span class="badge bg-light text-secondary border">Demande obsolète ou traitée</span>
+                                                    </div>
+                                                {% endif %}
+
                                             </div>
                                         {% endif %}
                                     {% elseif "[RES_ACCEPT]" in message.content %}

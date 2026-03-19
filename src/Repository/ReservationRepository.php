@@ -43,4 +43,28 @@ class ReservationRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findPendingOverlaps(Reservation $acceptedReservation): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->andWhere('r.announce = :announce')
+            ->andWhere('r.id != :acceptedId')
+            ->andWhere('r.statut = :pending')
+            ->setParameter('announce', $acceptedReservation->getAnnounce())
+            ->setParameter('acceptedId', $acceptedReservation->getId())
+            ->setParameter('pending', 'PENDING');
+
+        $start = $acceptedReservation->getDateDebut();
+        $end = $acceptedReservation->getDateFin();
+
+        $qb->andWhere('r.dateFin IS NULL OR r.dateFin > :start')
+            ->setParameter('start', $start);
+
+        if ($end !== null) {
+            $qb->andWhere('r.dateDebut < :end')
+                ->setParameter('end', $end);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
