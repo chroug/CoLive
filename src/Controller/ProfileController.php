@@ -16,12 +16,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\File;
 use App\Entity\Announce;
 use App\Entity\UserLikes;
+use App\Repository\ReservationRepository;
 
 #[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
 {
     #[Route('/profil', name: 'app_profile')]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -65,7 +66,7 @@ class ProfileController extends AbstractController
                 'required' => false,
                 'constraints' => [
                     new File([
-                        'maxSize' => '4096k', // 4 Mo max
+                        'maxSize' => '4096k',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
@@ -98,11 +99,35 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile');
         }
 
+        $allReservations = $reservationRepository->findBy(
+            ['locataire' => $user],
+            ['dateDebut' => 'DESC']
+        );
+
+        $upcomingReservations = [];
+        $pastReservations = [];
+        $now = new \DateTime();
+
+        foreach ($allReservations as $reservation) {
+            if ($reservation->getStatut() === 'CANCELLED') {
+                $pastReservations[] = $reservation;
+                continue;
+            }
+
+            if ($reservation->getDateFin() === null || $reservation->getDateFin() >= $now) {
+                $upcomingReservations[] = $reservation;
+            } else {
+                $pastReservations[] = $reservation;
+            }
+        }
+
         return $this->render('profile/index.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
             'averageRating' => $averageRating,
             'nbNotes' => $countNotes,
+            'upcomingReservations' => $upcomingReservations,
+            'pastReservations' => $pastReservations,
         ]);
     }
 

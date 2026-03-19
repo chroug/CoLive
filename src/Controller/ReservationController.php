@@ -125,33 +125,43 @@ class ReservationController extends AbstractController
     /**
      * REFUSER DEPUIS LA MESSAGERIE
      */
-    #[Route('/reservation/{id}/reject', name: 'app_reservation_reject')]
+    #[Route('/reservation/{id}/reject', name: 'app_reservation_reject', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function reject(Reservation $reservation, EntityManagerInterface $em): Response
+    public function reject(Request $request, Reservation $reservation, EntityManagerInterface $em): Response
     {
         if ($reservation->getAnnounce()->getUtilisateur() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        $reservation->setStatut('CANCELLED');
+        if ($this->isCsrfTokenValid('reject'.$reservation->getId(), $request->request->get('_token'))) {
 
-        $msg = new Message();
-        $msg->setSender($this->getUser());
-        $msg->setRecipient($reservation->getLocataire());
+            if ($reservation->getStatut() !== 'PENDING') {
+                $this->addFlash('danger', 'Erreur : Cette demande a déjà été traitée.');
+                return $this->redirect($request->headers->get('referer'));
+            }
 
-        $msg->setContent("[RES_REJECT] Désolé, je ne peux pas accepter votre réservation pour '" . $reservation->getAnnounce()->getTitre() . "'.");
+            $reservation->setStatut('CANCELLED');
 
-        $em->persist($msg);
-        $em->flush();
+            $msg = new Message();
+            $msg->setSender($this->getUser());
+            $msg->setRecipient($reservation->getLocataire());
 
-        $this->addFlash('danger', 'Réservation refusée.');
-        return $this->redirectToRoute('app_message_conversation', ['id' => $reservation->getLocataire()->getId()]);
+            $msg->setContent("[RES_REJECT] Désolé, je ne peux pas accepter votre réservation pour '" . $reservation->getAnnounce()->getTitre() . "'.");
+
+            $em->persist($msg);
+            $em->flush();
+
+            $this->addFlash('success', 'La réservation a été refusée.');
+        } else {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+        }
+
+        return $this->redirect($request->headers->get('referer'));
     }
 
     #[Route('/reservation/{id}/accept', name: 'app_reservation_accept', methods: ['POST'])]
     public function accept(Request $request, Reservation $reservation, EntityManagerInterface $em, ReservationRepository $repo): Response
     {
-        // 1. Sécurité : on vérifie le token CSRF et que c'est bien le proprio de l'annonce
         $host = $reservation->getAnnounce()->getUtilisateur();
 
         if ($host !== $this->getUser()) {
