@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\Notification;
 
 class ReservationController extends AbstractController
 {
@@ -86,6 +87,16 @@ class ReservationController extends AbstractController
                 ));
 
                 $em->persist($autoMessage);
+                $notification = new Notification();
+                $notification->setRecipient($host);
+                $notification->setContent(sprintf(
+                    "Nouvelle demande de réservation de %s pour votre annonce '%s'.",
+                    $tenant->getPrenom(),
+                    $announce->getTitre()
+                ));
+                $notification->setType('RESERVATION');
+
+                $em->persist($notification);
                 $em->flush();
             }
 
@@ -149,6 +160,15 @@ class ReservationController extends AbstractController
             $msg->setContent("[RES_REJECT] Désolé, je ne peux pas accepter votre réservation pour '" . $reservation->getAnnounce()->getTitre() . "'.");
 
             $em->persist($msg);
+
+            $notifReject = new Notification();
+            $notifReject->setRecipient($reservation->getLocataire());
+            $notifReject->setContent(sprintf(
+                "Votre demande de réservation pour '%s' a été refusée par le propriétaire.",
+                $reservation->getAnnounce()->getTitre()
+            ));
+            $notifReject->setType('RESERVATION');
+            $em->persist($notifReject);
             $em->flush();
 
             $this->addFlash('success', 'La réservation a été refusée.');
@@ -196,6 +216,16 @@ class ReservationController extends AbstractController
             ));
 
             $em->persist($acceptMessage);
+
+
+            $notifAccept = new Notification();
+            $notifAccept->setRecipient($tenant);
+            $notifAccept->setContent(sprintf(
+                "Bonne nouvelle ! Votre réservation pour '%s' a été acceptée.",
+                $reservation->getAnnounce()->getTitre()
+            ));
+            $notifAccept->setType('RESERVATION');
+            $em->persist($notifAccept);
 
             $overlaps = $repo->findPendingOverlaps($reservation);
 
@@ -254,6 +284,15 @@ class ReservationController extends AbstractController
 
                     $em->persist($autoMessage);
                 }
+
+                $notifCancel = new Notification();
+                $notifCancel->setRecipient($tenant);
+                $notifCancel->setContent(sprintf(
+                    "Votre demande pour '%s' a été annulée car le logement a été réservé par quelqu'un d'autre à ces dates.",
+                    $reservation->getAnnounce()->getTitre()
+                ));
+                $notifCancel->setType('RESERVATION');
+                $em->persist($notifCancel);
             }
 
             $em->flush();
