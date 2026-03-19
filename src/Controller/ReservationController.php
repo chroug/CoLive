@@ -6,6 +6,7 @@ use App\Entity\Announce;
 use App\Entity\Reservation;
 use App\Entity\Message;
 use App\Form\ReservationType;
+use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,8 @@ class ReservationController extends AbstractController
 {
     #[Route('/announce/{id}/reserve', name: 'app_announce_reserve')]
     #[IsGranted('ROLE_USER')]
-    public function reserve(Announce $announce, Request $request, EntityManagerInterface $em): Response
+    #[Route('/announce/{id}/reserve', name: 'app_reservation_reserve', methods: ['GET', 'POST'])]
+    public function reserve(Announce $announce, Request $request, EntityManagerInterface $em, ReservationRepository $reservationRepository): Response
     {
         $reservation = new Reservation();
         $reservation->setAnnounce($announce);
@@ -25,13 +27,23 @@ class ReservationController extends AbstractController
         $reservation->setLocataire($tenant);
         $host = $announce->getUtilisateur();
 
-        $unavailableDates = [];
+        $bookedDates = [];
+
         foreach ($announce->getReservations() as $res) {
-            if ($res->getStatut() !== 'CANCELLED') {
-                $unavailableDates[] = [
+            if ($res->getStatut() === 'CONFIRMED') {
+                $bookedDates[] = [
                     'from' => $res->getDateDebut()->format('Y-m-d'),
                     'to'   => $res->getDateFin() ? $res->getDateFin()->format('Y-m-d') : '2099-12-31',
                 ];
+            }
+        }
+
+        $myReservations = [];
+        if ($tenant) {
+            foreach ($announce->getReservations() as $res) {
+                if ($res->getLocataire() === $tenant && $res->getStatut() !== 'CANCELLED') {
+                    $myReservations[] = $res;
+                }
             }
         }
 
@@ -39,48 +51,53 @@ class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $overlaps = $em->getRepository(Reservation::class)->findOverlappingReservations(
+            $userOverlaps = $reservationRepository->findUserOverlappingReservations(
                 $announce,
+                $tenant,
                 $reservation->getDateDebut(),
                 $reservation->getDateFin()
             );
 
-            if (count($overlaps) > 0) {
-                $this->addFlash('danger', 'Désolé, ces dates sont déjà réservées.');
-            } else {
-                $em->persist($reservation);
-                $em->flush();
-
-                if ($host && $host !== $tenant) {
-                    if (!$tenant->getContacts()->contains($host)) $tenant->addContact($host);
-                    if (!$host->getContacts()->contains($tenant)) $host->addContact($tenant);
-
-                    $autoMessage = new Message();
-                    $autoMessage->setSender($tenant);
-                    $autoMessage->setRecipient($host);
-
-                    $autoMessage->setContent(sprintf(
-                        "[RES_ID:%d] Nouvelle demande de réservation pour '%s' du %s au %s.",
-                        $reservation->getId(),
-                        $announce->getTitre(),
-                        $reservation->getDateDebut()->format('d/m/Y'),
-                        $reservation->getDateFin()->format('d/m/Y')
-                    ));
-
-                    $em->persist($autoMessage);
-                    $em->flush();
-                }
-
-                $this->addFlash('success', 'Votre demande de réservation a bien été envoyée !');
-                return $this->redirectToRoute('app_announce_show', ['id' => $announce->getId()]);
+            if (count($userOverlaps) > 0) {
+                $this->addFlash('danger', 'Vous avez déjà une demande de réservation en cours pour ces dates.');
+                return $this->redirect($request->headers->get('referer'));
             }
+
+            $em->persist($reservation);
+            $em->flush();
+
+            if ($host && $host !== $tenant) {
+                if (!$tenant->getContacts()->contains($host)) $tenant->addContact($host);
+                if (!$host->getContacts()->contains($tenant)) $host->addContact($tenant);
+
+                $autoMessage = new Message();
+                $autoMessage->setSender($tenant);
+                $autoMessage->setRecipient($host);
+
+
+                $dateFinString = $reservation->getDateFin() ? $reservation->getDateFin()->format('d/m/Y') : 'une durée indéterminée';
+
+                $autoMessage->setContent(sprintf(
+                    "[RES_ID:%d] Nouvelle demande de réservation pour '%s' du %s au %s.",
+                    $reservation->getId(),
+                    $announce->getTitre(),
+                    $reservation->getDateDebut()->format('d/m/Y'),
+                    $dateFinString
+                ));
+
+                $em->persist($autoMessage);
+                $em->flush();
+            }
+
+            $this->addFlash('success', 'Votre demande de réservation a bien été envoyée !');
+            return $this->redirectToRoute('app_announce_show', ['id' => $announce->getId()]);
         }
 
         return $this->render('reservation/book.html.twig', [
-            'form' => $form->createView(),
             'announce' => $announce,
-            'unavailableDates' => json_encode($unavailableDates),
-            'minDateCalculated' => new \DateTime() > $announce->getDisponibiliteDebut() ? new \DateTime() : $announce->getDisponibiliteDebut()
+            'form' => $form->createView(),
+            'bookedDates' => $bookedDates,
+            'myReservations' => $myReservations,
         ]);
     }
 
