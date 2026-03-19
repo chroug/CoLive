@@ -18,14 +18,22 @@ class DashboardController extends AbstractController
         }
 
         $mesAnnonces = $announceRepo->findBy(['utilisateur' => $user]);
+
         $reservationsEnCours = [];
         $reservationsAVenir = [];
         $aujourdhui = new \DateTime();
 
+        $totalReservations = 0;
+        $revenusMensuels = 0;
+
         foreach ($mesAnnonces as $annonce) {
-            foreach ($annonce->getReservations() as $reservation) {
+            $reservations = $annonce->getReservations();
+            $totalReservations += count($reservations);
+
+            foreach ($reservations as $reservation) {
                 if ($reservation->getDateDebut() <= $aujourdhui && $reservation->getDateFin() >= $aujourdhui) {
                     $reservationsEnCours[] = $reservation;
+                    $revenusMensuels += $annonce->getPrix();
                 }
                 elseif ($reservation->getDateDebut() > $aujourdhui) {
                     $reservationsAVenir[] = $reservation;
@@ -41,6 +49,9 @@ class DashboardController extends AbstractController
             'mes_annonces' => $mesAnnonces,
             'reservations_en_cours' => $reservationsEnCours,
             'reservations_a_venir' => $reservationsAVenir,
+            'total_annonces' => count($mesAnnonces),
+            'total_reservations' => $totalReservations,
+            'revenus_mensuels' => $revenusMensuels,
         ]);
     }
 }

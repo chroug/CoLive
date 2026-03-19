@@ -13,6 +13,36 @@
 
         <p class="text-muted mb-5">Bienvenue sur votre espace propriétaire. Voici l'état de vos locations.</p>
 
+        <div class="row mb-5">
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 rounded-4 p-3 text-center" style="background: #f8fafc;">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Mes Logements</div>
+                    <h3 class="mb-0 fw-bolder">{{ total_annonces }}</h3>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 rounded-4 p-3 text-center" style="background: #eff6ff;">
+                    <div class="text-primary small fw-bold text-uppercase mb-2">Locataires Actuels</div>
+                    <h3 class="mb-0 fw-bolder text-primary">{{ reservations_en_cours|length }}</h3>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 rounded-4 p-3 text-center" style="background: #f0fdf4;">
+                    <div class="text-success small fw-bold text-uppercase mb-2">Réservations (Total)</div>
+                    <h3 class="mb-0 fw-bolder text-success">{{ total_reservations }}</h3>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm border-0 rounded-4 p-3 text-center" style="background: #fffbeb;">
+                    <div class="text-warning small fw-bold text-uppercase mb-2">Revenus Actuels</div>
+                    <h3 class="mb-0 fw-bolder text-warning">{{ revenus_mensuels }} € <span class="fs-6 text-muted">/mois</span></h3>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-5 mb-4">
                 <div class="card shadow-sm border-0 rounded-4 p-4" style="background-color: #f8fafc;">
