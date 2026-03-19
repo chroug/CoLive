@@ -162,18 +162,23 @@
                             {% endfor %}
                         {% endif %}
                     </div>
-
                     <div id="content-favoris" class="tab-content card">
 
                         <div style="margin-bottom: 2rem;">
                             <div class="header-section"><h3>Mes réservations</h3></div>
 
-                            {% if user.reservations is defined and user.reservations is not empty %}
-                                {% for reservation in user.reservations %}
-                                    {% set isFinished = reservation.dateFin and reservation.dateFin < date() and reservation.statut == 'CONFIRMED' %}
+                            <h4 style="margin-top: 1rem; margin-bottom: 1.5rem; font-size: 1.1rem; color: #2563eb;">
+                                <i class="bi bi-calendar-check"></i> Voyages prévus
+                            </h4>
 
-                                    <div class="listing-card {{ (reservation.statut == 'CANCELLED' or isFinished) ? 'is-inactive' : '' }}">
-
+                            {% if upcomingReservations is empty %}
+                                <div style="text-align:center; padding: 1rem 0 2rem 0;">
+                                    <p style="color:#9ca3af; font-size:0.95rem; font-style:italic; margin-bottom:0.5rem;">Vous n'avez aucun voyage prévu pour le moment.</p>
+                                    <a href="{{ path('app_home') }}" style="color:#000; font-weight:600; text-decoration:underline;">Explorer les logements</a>
+                                </div>
+                            {% else %}
+                                {% for reservation in upcomingReservations %}
+                                    <div class="listing-card">
                                         <div class="listing-img-container">
                                             {% if reservation.announce.photos is not empty %}
                                                 <img src="{{ reservation.announce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
@@ -192,8 +197,8 @@
                                             </div>
 
                                             <div style="display:flex; gap:10px; align-items:center; margin-top: 5px;">
-                                                {% set statusColor = reservation.statut == 'PENDING' ? '#f59e0b' : (reservation.statut == 'CONFIRMED' ? (isFinished ? '#6b7280' : '#10b981') : '#ef4444') %}
-                                                {% set statusText = reservation.statut == 'PENDING' ? 'En attente' : (reservation.statut == 'CONFIRMED' ? (isFinished ? 'Terminée' : 'Confirmée') : 'Annulée') %}
+                                                {% set statusColor = reservation.statut == 'PENDING' ? '#f59e0b' : '#10b981' %}
+                                                {% set statusText = reservation.statut == 'PENDING' ? 'En attente' : 'Confirmée' %}
 
                                                 <span class="badge" style="background: {{ statusColor }}20; color: {{ statusColor }}; border-color: {{ statusColor }}40;">
                                                     {{ statusText }}
@@ -206,44 +211,83 @@
 
                                         <div class="listing-actions">
                                             <div class="boutons-container" style="display: flex; flex-direction: column; align-items: flex-end; width: 100%;">
-
                                                 <div class="reservation-meta-info">
                                                     <span class="date-info-label">
-                                                        Chambre réservée le {{ reservation.createdAt|date('d/m/Y') }}
+                                                        Demande envoyée le {{ reservation.createdAt|date('d/m/Y') }}
                                                     </span>
                                                 </div>
 
                                                 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;">
-                                                    {% if reservation.statut == 'CANCELLED' %}
-                                                        <span class="status-badge-info status-cancelled">
-                                                            <i class="bi bi-calendar-x"></i> Réservation Annulée
-                                                        </span>
-                                                    {% elseif isFinished %}
-                                                        <span class="status-badge-info status-finished">
-                                                            <i class="bi bi-check-circle"></i> Séjour terminé
-                                                        </span>
-                                                    {% else %}
-                                                        <a href="#" class="btn-contact" style="text-decoration: none; text-align: center;">
-                                                            Contacter l'hôte
-                                                        </a>
+                                                    <a href="{{ path('app_message_conversation', {'id': reservation.announce.utilisateur.id}) }}" class="btn-contact" style="text-decoration: none; text-align: center;">
+                                                        Contacter l'hôte
+                                                    </a>
 
-                                                        <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');" style="margin: 0;">
-                                                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
-                                                            <button type="submit" class="btn-annuler">
-                                                                Annuler ma réservation
-                                                            </button>
-                                                        </form>
-                                                    {% endif %}
+                                                    <form method="post" action="{{ path('app_reservation_cancel', {'id': reservation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');" style="margin: 0;">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ reservation.id) }}">
+                                                        <button type="submit" class="btn-annuler">
+                                                            Annuler ma réservation
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 {% endfor %}
+                            {% endif %}
+
+                            <h4 style="margin-top: 3rem; margin-bottom: 1.5rem; font-size: 1.1rem; color: #6b7280;">
+                                <i class="bi bi-clock-history"></i> Historique
+                            </h4>
+
+                            {% if pastReservations is empty %}
+                                <p style="color:#9ca3af; font-size:0.95rem; font-style:italic; text-align:center;">Aucun historique de réservation.</p>
                             {% else %}
-                                <div style="text-align:center; padding: 2rem 0;">
-                                    <p style="color:#9ca3af; font-size:0.95rem; font-style:italic; margin-bottom:1rem;">Vous n'avez aucune réservation en cours.</p>
-                                    <a href="{{ path('app_home') }}" style="color:#000; font-weight:600; text-decoration:underline;">Explorer les logements</a>
-                                </div>
+                                {% for reservation in pastReservations %}
+                                    {% set isFinished = reservation.dateFin and reservation.dateFin < date() and reservation.statut == 'CONFIRMED' %}
+
+                                    <div class="listing-card is-inactive">
+                                        <div class="listing-img-container">
+                                            {% if reservation.announce.photos is not empty %}
+                                                <img src="{{ reservation.announce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
+                                            {% else %}
+                                                <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="listing-info">
+                                            <a href="{{ path('app_announce_show', {'id': reservation.announce.id}) }}" style="text-decoration:none; color:inherit;">
+                                                <h4>{{ reservation.announce.titre }}</h4>
+                                            </a>
+                                            <div class="listing-details">
+                                                <i class="bi bi-calendar-event"></i>
+                                                Du {{ reservation.dateDebut|date('d/m/Y') }} au {{ reservation.dateFin ? reservation.dateFin|date('d/m/Y') : 'Indéterminé' }}
+                                            </div>
+
+                                            <div style="display:flex; gap:10px; align-items:center; margin-top: 5px;">
+                                                {% set statusColor = reservation.statut == 'CANCELLED' ? '#ef4444' : '#6b7280' %}
+                                                {% set statusText = reservation.statut == 'CANCELLED' ? 'Annulée' : 'Terminée' %}
+
+                                                <span class="badge" style="background: {{ statusColor }}20; color: {{ statusColor }}; border-color: {{ statusColor }}40;">
+                                                    {{ statusText }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="listing-actions">
+                                            <div class="boutons-container" style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; height: 100%;">
+                                                {% if reservation.statut == 'CANCELLED' %}
+                                                    <span class="status-badge-info status-cancelled">
+                                                        <i class="bi bi-calendar-x"></i> Réservation Annulée
+                                                    </span>
+                                                {% else %}
+                                                    <span class="status-badge-info status-finished">
+                                                        <i class="bi bi-check-circle"></i> Séjour terminé
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             {% endif %}
                         </div>
 
@@ -270,6 +314,7 @@
                             {% endfor %}
                         {% endif %}
                     </div>
+
                 </div>
             </div>
         </div>
