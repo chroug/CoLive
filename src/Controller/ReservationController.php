@@ -121,31 +121,6 @@ class ReservationController extends AbstractController
         return $this->redirectToRoute('app_profile');
     }
 
-    /**
-     * ACCEPTER DEPUIS LA MESSAGERIE
-     */
-    #[Route('/reservation/{id}/accept', name: 'app_reservation_accept')]
-    #[IsGranted('ROLE_USER')]
-    public function accept(Reservation $reservation, EntityManagerInterface $em): Response
-    {
-        if ($reservation->getAnnounce()->getUtilisateur() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $reservation->setStatut('CONFIRMED');
-
-        $msg = new Message();
-        $msg->setSender($this->getUser());
-        $msg->setRecipient($reservation->getLocataire());
-
-        $msg->setContent("[RES_ACCEPT] J'ai accepté votre réservation pour '" . $reservation->getAnnounce()->getTitre() . "'. À bientôt !");
-
-        $em->persist($msg);
-        $em->flush();
-
-        $this->addFlash('success', 'Réservation confirmée.');
-        return $this->redirectToRoute('app_message_conversation', ['id' => $reservation->getLocataire()->getId()]);
-    }
 
     /**
      * REFUSER DEPUIS LA MESSAGERIE
@@ -171,5 +146,112 @@ class ReservationController extends AbstractController
 
         $this->addFlash('danger', 'Réservation refusée.');
         return $this->redirectToRoute('app_message_conversation', ['id' => $reservation->getLocataire()->getId()]);
+    }
+
+    #[Route('/reservation/{id}/accept', name: 'app_reservation_accept', methods: ['POST'])]
+    public function accept(Request $request, Reservation $reservation, EntityManagerInterface $em, ReservationRepository $repo): Response
+    {
+        // 1. Sécurité : on vérifie le token CSRF et que c'est bien le proprio de l'annonce
+        $host = $reservation->getAnnounce()->getUtilisateur();
+
+        if ($host !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas le propriétaire de cette annonce.');
+        }
+
+        if ($this->isCsrfTokenValid('accept'.$reservation->getId(), $request->request->get('_token'))) {
+            if ($reservation->getStatut() !== 'PENDING') {
+                $this->addFlash('danger', 'Erreur : Cette demande a déjà été traitée (acceptée ou annulée suite à une autre réservation).');
+                return $this->redirect($request->headers->get('referer'));
+            }
+
+            $reservation->setStatut('CONFIRMED');
+
+            $tenant = $reservation->getLocataire();
+
+
+            if (!$tenant->getContacts()->contains($host)) $tenant->addContact($host);
+            if (!$host->getContacts()->contains($tenant)) $host->addContact($tenant);
+
+            $acceptMessage = new Message();
+            $acceptMessage->setSender($host);
+            $acceptMessage->setRecipient($tenant);
+
+            $dateFinStr = $reservation->getDateFin() ? $reservation->getDateFin()->format('d/m/Y') : 'une durée indéterminée';
+
+            $acceptMessage->setContent(sprintf(
+                "[RES_ACCEPT] Bonne nouvelle ! J'ai accepté votre demande de réservation pour '%s' du %s au %s.",
+                $reservation->getAnnounce()->getTitre(),
+                $reservation->getDateDebut()->format('d/m/Y'),
+                $dateFinStr
+            ));
+
+            $em->persist($acceptMessage);
+
+            $overlaps = $repo->findPendingOverlaps($reservation);
+
+            $aStart = $reservation->getDateDebut();
+            $aEnd = $reservation->getDateFin();
+
+            foreach ($overlaps as $pending) {
+                $pending->setStatut('CANCELLED');
+
+                $tenant = $pending->getLocataire();
+                $pStart = $pending->getDateDebut();
+                $pEnd = $pending->getDateFin();
+
+                $messageContent = "";
+                $propStart = null;
+                $propEnd = null;
+
+                if ($pStart >= $aStart && ($aEnd === null || ($pEnd !== null && $pEnd <= $aEnd))) {
+                    $messageContent = "Bonjour. Malheureusement, j'ai accepté une autre réservation qui couvre exactement vos dates. Votre demande a donc été annulée.";
+                } elseif ($pStart < $aStart && $pEnd <= $aEnd) {
+                    $propStart = $pStart;
+                    $propEnd = $aStart;
+                } elseif ($pStart >= $aStart && $pStart < $aEnd && ($pEnd > $aEnd || $pEnd === null)) {
+                    $propStart = $aEnd;
+                    $propEnd = $pEnd;
+                } elseif ($pStart < $aStart && ($pEnd > $aEnd || $pEnd === null)) {
+                    $propStart = $pStart;
+                    $propEnd = $aStart;
+                }
+
+                if ($propStart && $propEnd) {
+                    $messageContent = sprintf(
+                        "Bonjour. J'ai accepté une autre demande du %s au %s. Cependant, mon logement reste disponible du %s au %s ! Si cela vous convient, n'hésitez pas à refaire une demande pour ces nouvelles dates.",
+                        $aStart->format('d/m/Y'),
+                        $aEnd ? $aEnd->format('d/m/Y') : 'une durée indéterminée',
+                        $propStart->format('d/m/Y'),
+                        $propEnd->format('d/m/Y')
+                    );
+                } elseif ($propStart && !$propEnd) {
+                    $messageContent = sprintf(
+                        "Bonjour. J'ai accepté une autre demande du %s au %s. Cependant, mon logement est disponible à partir du %s pour une durée indéterminée ! Si cela vous convient, refaites une demande.",
+                        $aStart->format('d/m/Y'),
+                        $aEnd ? $aEnd->format('d/m/Y') : 'une durée indéterminée',
+                        $propStart->format('d/m/Y')
+                    );
+                }
+
+                if ($messageContent !== "") {
+                    if (!$tenant->getContacts()->contains($host)) $tenant->addContact($host);
+                    if (!$host->getContacts()->contains($tenant)) $host->addContact($tenant);
+
+                    $autoMessage = new Message();
+                    $autoMessage->setSender($host);
+                    $autoMessage->setRecipient($tenant);
+                    $autoMessage->setContent($messageContent);
+
+                    $em->persist($autoMessage);
+                }
+            }
+
+            $em->flush();
+            $this->addFlash('success', 'La réservation a été acceptée avec succès. Les autres demandes ont été annulées et les clients prévenus.');
+        } else {
+            $this->addFlash('danger', 'Token de sécurité invalide.');
+        }
+
+        return $this->redirect($request->headers->get('referer'));
     }
 }
