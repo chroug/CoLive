@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Message;
 use App\Entity\User;
 use App\Repository\MessageRepository;
-use App\Repository\ReservationRepository; // NOUVEAU : On importe le repository des réservations
+use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,9 +20,11 @@ class MessageController extends AbstractController
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+
         if (!$currentUser) {
             return $this->redirectToRoute('app_login');
         }
+
         $allContacts = $currentUser->getContacts();
         $searchTerm = $request->query->get('q');
         $users = [];
@@ -46,6 +48,7 @@ class MessageController extends AbstractController
             $selectedUser = $entityManager->getRepository(User::class)->find($id);
 
             if ($selectedUser) {
+
                 if ($request->isMethod('POST')) {
                     $content = $request->request->get('content');
                     $file = $request->files->get('file_upload');
@@ -64,6 +67,7 @@ class MessageController extends AbstractController
                                 $file->move($uploadDir, $fileName);
                                 $message->setAttachment($fileName);
                             } catch (\Exception $e) {
+                                $this->addFlash('danger', 'Erreur lors de l\'envoi du fichier.');
                             }
                         }
 
@@ -76,9 +80,22 @@ class MessageController extends AbstractController
 
                 $messages = $messageRepository->findConversation($currentUser, $selectedUser);
 
+                $hasUnread = false;
+                foreach ($messages as $msg) {
+                    if ($msg->getRecipient()->getId() === $currentUser->getId() && !$msg->isRead()) {
+                        $msg->setIsRead(true);
+                        $hasUnread = true;
+                    }
+                }
+
+                if ($hasUnread) {
+                    $entityManager->flush();
+                }
+
+
                 $latestResId = null;
                 foreach ($messages as $msg) {
-                    if (preg_match('/\[RES_ID:(\d+)\]/', $msg->getContent(), $matches)) {
+                    if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)\]/', $msg->getContent(), $matches)) {
                         $latestResId = (int) $matches[1];
                     }
                 }
@@ -95,6 +112,24 @@ class MessageController extends AbstractController
             'messages' => $messages,
             'searchTerm' => $searchTerm,
             'activeReservation' => $activeReservation,
+        ]);
+    }
+
+    public function unreadCount(EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return new Response('');
+        }
+
+        $count = $em->getRepository(Message::class)->count([
+            'recipient' => $user,
+            'isRead' => false
+        ]);
+
+        return $this->render('message/_badge.html.twig', [
+            'count' => $count
         ]);
     }
 }
