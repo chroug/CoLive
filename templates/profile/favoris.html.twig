@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Favoris - CoLive{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {# On importe le CSS du profil pour garder le même style de cartes #}
+    <link rel="stylesheet" href="{{ asset('styles/profile.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block body %}
+    <div class="colive-profile-page">
+        {% include '_navbar.html.twig' %}
+
+        <div class="container mt-5">
+            <div class="profile-header mb-5">
+                <h1>Mes logements favoris</h1>
+                <p class="subtitle">Retrouvez ici toutes les annonces que vous avez aimées.</p>
+            </div>
+
+            <div class="card p-4">
+                {% if user.likes is empty %}
+                    <div style="text-align:center; padding: 2rem 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d1d5db" class="mb-3" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        <p style="color:#6b7280; font-size:1.1rem;">Aucun coup de cœur pour le moment.</p>
+                        <a href="{{ path('app_announcegit commit -m "fix(favorites): correct link to explore listings"') }}" class="btn btn-dark mt-2">Explorer les logements</a>
+                    </div>
+                {% else %}
+                    {% for like in user.likes %}
+                        <div class="listing-card">
+                            <div class="listing-img-container">
+                                {% if like.annonce.photos is not empty %}
+                                    <img src="{{ like.annonce.photos|first.contenu }}" alt="Photo" class="listing-thumb">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/150?text=No+Image" alt="Pas de photo" class="listing-thumb">
+                                {% endif %}
+                            </div>
+
+                            <div class="listing-info">
+                                <a href="{{ path('app_announce_show', {'id': like.annonce.id}) }}" style="text-decoration:none; color:inherit;">
+                                    <h4>{{ like.annonce.titre }}</h4>
+                                </a>
+                                <div class="listing-details">{{ like.annonce.ville }} • {{ like.annonce.prix }}€/mois</div>
+                            </div>
+
+                            <div class="listing-actions" style="display:flex; justify-content:center; align-items:center;">
+                                <button class="card-like-btn liked" onclick="toggleLike(event, {{ like.annonce.id }}, this)" title="Retirer des favoris">
+                                    <i class="bi bi-heart-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function toggleLike(event, announceId, btn) {
+            event.stopPropagation();
+            event.preventDefault();
+            const icon = btn.querySelector('i');
+
+            try {
+                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (!data.isLiked) {
+                        const card = btn.closest('.listing-card');
+                        card.style.opacity = '0';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur', error);
+            }
+        }
+    </script>
+{% endblock %}

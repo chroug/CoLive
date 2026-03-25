@@ -150,4 +150,18 @@ class ProfileController extends AbstractController
 
         return $this->redirectToRoute('app_profile');
     }
+
+    #[Route('/mes-favoris', name: 'app_favoris')]
+    public function mesFavoris(): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('profile/favoris.html.twig', [
+            'user' => $user,
+        ]);
+    }
 }
