@@ -173,4 +173,74 @@ final class AnnounceController extends AbstractController
             'announce' => $announce,
         ]);
     }
+
+    #[Route('/announce/{id}/avis', name: 'app_avis_add', methods: ['GET', 'POST'])]
+    public function addAvis(
+        \App\Entity\Announce $announce,
+        \Symfony\Component\HttpFoundation\Request $request,
+        \Doctrine\ORM\EntityManagerInterface $entityManager
+    ): \Symfony\Component\HttpFoundation\Response {
+
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $avis = new \App\Entity\Review();
+
+        $form = $this->createFormBuilder($avis)
+            ->add('note', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                'choices'  => [
+                    '⭐⭐⭐⭐⭐ (5/5) - Parfait !' => 5,
+                    '⭐⭐⭐⭐ (4/5) - Très bien' => 4,
+                    '⭐⭐⭐ (3/5) - Bien' => 3,
+                    '⭐⭐ (2/5) - Moyen' => 2,
+                    '⭐ (1/5) - À fuir' => 1,
+                ],
+                'label' => 'Votre note globale'
+            ])
+            ->add('commentaire', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class, [
+                'label' => 'Racontez votre expérience (optionnel)',
+                'required' => false,
+                'attr' => ['rows' => 4, 'placeholder' => 'Le logement était super, très propre...']
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $avis->setUtilisateur($user);
+            $avis->setAnnonce($announce);
+
+            $entityManager->persist($avis);
+
+            $proprietaire = $announce->getUtilisateur();
+
+            if ($proprietaire && $proprietaire !== $user) {
+                $notification = new \App\Entity\Notification();
+                $notification->setRecipient($proprietaire);
+                $notification->setType('nouvel_avis');
+
+                $message = sprintf(
+                    '%s a laissé un avis (%d/5) sur votre logement "%s".',
+                    $user->getPrenom(),
+                    $avis->getNote(),
+                    $announce->getTitre()
+                );
+                $notification->setContent($message);
+                $entityManager->persist($notification);
+            }
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre avis a bien été publié, merci !');
+
+            return $this->redirectToRoute('app_announce_show', ['id' => $announce->getId()]);
+        }
+
+        return $this->render('announce/add_avis.html.twig', [
+            'announce' => $announce,
+            'form' => $form->createView(),
+        ]);
+    }
 }

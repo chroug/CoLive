@@ -55,6 +55,30 @@
             <div class="left-column">
                 <div class="title-row">
                     <h1 class="announce-title">{{ announce.titre }}</h1>
+                    {% set nbAvis = announce.avis|length %}
+
+                    <div class="announce-rating-public mb-3 d-flex align-items-center">
+                        {% if nbAvis > 0 %}
+                            {% set totalNote = 0 %}
+                            {% for avis in announce.avis %}
+                                {% set totalNote = totalNote + avis.note %}
+                            {% endfor %}
+                            {% set averageNote = totalNote / nbAvis %}
+
+                            <div class="text-warning me-2 fs-5">
+                                <i class="bi bi-star-fill"></i>
+                                <strong class="text-dark">{{ averageNote|number_format(1, ',', ' ') }}</strong>
+                            </div>
+                            <a href="#section-avis" class="text-muted small text-decoration-underline" style="cursor: pointer;">
+                                ({{ nbAvis }} avis)
+                            </a>
+                        {% else %}
+                            <span class="badge bg-light text-secondary border">
+            <i class="bi bi-star"></i> Nouveau logement - Aucun avis
+        </span>
+                        {% endif %}
+
+                    </div>
                     {% set isLiked = false %}
                     {% if app.user %}
                         {% for like in announce.likes %}
@@ -83,9 +107,35 @@
                         {% else %}
                             <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" class="host-avatar" alt="Avatar">
                         {% endif %}
+
+                        {% set hostTotalNotes = 0 %}
+                        {% set hostCountNotes = 0 %}
+
+                        {% for ann in announce.utilisateur.annonces %}
+                            {% for avis in ann.avis %}
+                                {% set hostTotalNotes = hostTotalNotes + avis.note %}
+                                {% set hostCountNotes = hostCountNotes + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% set hostAverage = hostCountNotes > 0 ? hostTotalNotes / hostCountNotes : 0 %}
+
                         <div class="host-info">
-                            <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
-                            <p>Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
+                            <h3 class="mb-1">Hôte : {{ announce.utilisateur.prenom }}</h3>
+
+                            <div class="mb-2">
+                                {% if hostCountNotes > 0 %}
+                                    <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                    <strong>{{ hostAverage|number_format(1, ',', ' ') }}</strong>
+                                    <span class="text-muted small">({{ hostCountNotes }} avis au total)</span>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border small">
+                                        <i class="bi bi-star"></i> Nouvel hôte
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <p class="text-muted small mb-0">Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
                         </div>
                     </section>
                 {% endif %}
@@ -119,6 +169,58 @@
                         <i class="bi bi-calendar3"></i>
                         {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin ? announce.disponibiliteFin|date('d M Y') : 'Indéterminée' }}
                     </div>
+                </section>
+                {# --- DÉBUT SECTION AVIS PUBLICS --- #}
+                <section id="section-avis" class="mt-5 pt-4 border-top">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="section-title mb-0">
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            Avis des locataires ({{ announce.avis|length }})
+                        </h2>
+
+                        {% if app.user %}
+                            <a href="{{ path('app_avis_add', {'id': announce.id}) }}" class="btn btn-outline-dark btn-sm rounded-pill">
+                                <i class="bi bi-pencil"></i> Laisser un avis
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    {% if announce.avis is empty %}
+                        <div class="alert alert-light border text-center p-4 rounded-4">
+                            <p class="text-muted mb-0">Ce logement n'a pas encore reçu d'avis.</p>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            {% for avis in announce.avis %}
+                                <div class="col-12 mb-4">
+                                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="fw-bold me-auto">
+                                                {{ avis.utilisateur ? avis.utilisateur.prenom : 'Anonyme' }}
+                                            </div>
+                                            <div class="text-warning small">
+                                                {% for i in 1..5 %}
+                                                    {% if i <= avis.note %}
+                                                        <i class="bi bi-star-fill"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-star"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <p class="text-muted small mb-1">
+                                            Publié le {{ avis.dateCreation|date('d/m/Y') }}
+                                        </p>
+
+                                        {% if avis.commentaire %}
+                                            <p class="mb-0 mt-2">{{ avis.commentaire }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </section>
             </div>
 
