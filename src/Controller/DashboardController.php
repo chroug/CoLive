@@ -35,7 +35,7 @@ class DashboardController extends AbstractController
                     $reservationsEnCours[] = $reservation;
                     $revenusMensuels += $annonce->getPrix();
                 }
-                elseif ($reservation->getDateDebut() > $aujourdhui) {
+                elseif ($reservation->getDateDebut() > $aujourdhui && $reservation->getStatut() === 'confirmé') {
                     $reservationsAVenir[] = $reservation;
                 }
             }
