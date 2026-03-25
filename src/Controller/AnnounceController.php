@@ -209,11 +209,28 @@ final class AnnounceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // On utilise les VRAIS setters de ton entité Review !
+
             $avis->setUtilisateur($user);
             $avis->setAnnonce($announce);
 
             $entityManager->persist($avis);
+
+            $proprietaire = $announce->getUtilisateur();
+
+            if ($proprietaire && $proprietaire !== $user) {
+                $notification = new \App\Entity\Notification();
+                $notification->setRecipient($proprietaire);
+                $notification->setType('nouvel_avis');
+
+                $message = sprintf(
+                    '%s a laissé un avis (%d/5) sur votre logement "%s".',
+                    $user->getPrenom(),
+                    $avis->getNote(),
+                    $announce->getTitre()
+                );
+                $notification->setContent($message);
+                $entityManager->persist($notification);
+            }
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre avis a bien été publié, merci !');
