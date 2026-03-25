@@ -124,8 +124,12 @@
                         {% endif %}
 
                         <button class="card-like-btn {{ isLiked ? 'liked' : '' }}"
-                                onclick="toggleLike(event, {{ announce.id }})">
-                            <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                                onclick="toggleLike(event, {{ announce.id }})"
+                                style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; width: auto; border-radius: 20px; position: absolute; bottom: 10px; right: 10px; z-index: 2; background-color: rgba(255, 255, 255, 0.8); border: none; backdrop-filter: blur(2px);">
+                            <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}" style="font-size: 1.1rem; color: #dc3545;"></i>
+                            <span class="likes-count fw-bold" style="font-size: 0.95rem; color: #333;">
+                                {{ announce.likes|length }}
+                            </span>
                         </button>
 
                         {% set photo = announce.photos|first %}
