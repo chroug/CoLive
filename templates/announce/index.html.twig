@@ -8,13 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('styles/announce_index.css') }}">
 
+    <style>
+        .main-wrapper,
+        .page-header-container,
+        .filter-sidebar {
+            margin-top: 0 !important;
+        }
+
+        .page-title {
+            margin-top: 0 !important;
+            padding-top: 20px;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
 
     {% include '_navbar.html.twig' %}
 
-    <div class="main-wrapper">
+    <div class="main-wrapper" style="margin-top: 0; padding-top: 0;">
         <div class="filter-overlay" id="overlay" onclick="toggleMenu()"></div>
 
         <aside class="filter-sidebar" id="sidebar">
