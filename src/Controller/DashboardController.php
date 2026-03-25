@@ -28,15 +28,22 @@ class DashboardController extends AbstractController
 
         foreach ($mesAnnonces as $annonce) {
             $reservations = $annonce->getReservations();
-            $totalReservations += count($reservations);
 
             foreach ($reservations as $reservation) {
-                if ($reservation->getDateDebut() <= $aujourdhui && $reservation->getDateFin() >= $aujourdhui) {
-                    $reservationsEnCours[] = $reservation;
-                    $revenusMensuels += $annonce->getPrix();
-                }
-                elseif ($reservation->getDateDebut() > $aujourdhui) {
-                    $reservationsAVenir[] = $reservation;
+
+                if ($reservation->getStatut() === 'CONFIRMED') {
+
+                    $totalReservations++;
+
+                    $dateFin = $reservation->getDateFin();
+
+                    if ($reservation->getDateDebut() <= $aujourdhui && ($dateFin === null || $dateFin >= $aujourdhui)) {
+                        $reservationsEnCours[] = $reservation;
+                        $revenusMensuels += $annonce->getPrix();
+                    }
+                    elseif ($reservation->getDateDebut() > $aujourdhui) {
+                        $reservationsAVenir[] = $reservation;
+                    }
                 }
             }
         }
