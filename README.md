@@ -13,14 +13,14 @@ Bienvenue sur le projet **CoLive**. Ce guide contient toutes les instructions po
     ```
 
 3. **Configuration des bases de données** :
-   Copiez le fichier d'environnement et modifiez la ligne DATABASE_URL avec vos accès locaux :
+   Copiez le fichier d'environnement :
     ```bash
     cp .env .env.local
     ```
 4. **Ajout de la liaison avec la base de donnée** :
-   Dans .env.local, modifiez la ligne comme ceci
+   Modifiez la ligne DATABASE_URL comme suit : 
     ````env
-   DATABASE_URL="mysql://USER:PASSWORD@127.0.0.1:3306/colive?serverVersion=8.0"
+   DATABASE_URL="mysql://LOGIN:PASSWORD@mysql:3306/YOUR_DB?serverVersion=10.2.25-MariaDB&charset=utf8mb4"
     ````
 5. **Initialiser la base de données**
     ````bash
