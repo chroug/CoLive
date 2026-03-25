@@ -97,6 +97,13 @@
                                                         <span class="badge bg-light text-secondary border">Demande obsolète ou traitée</span>
                                                     </div>
                                                 {% endif %}
+                                                {% if activeReservation %}
+                                                    <div class="mt-3">
+                                                        <a href="{{ path('app_announce_show', {'id': activeReservation.announce.id}) }}" target="_blank" class="text-primary small text-decoration-underline" style="font-weight: 500;">
+                                                            🏠 Voir l'annonce concernée ↗
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
 
                                             </div>
                                         {% endif %}
