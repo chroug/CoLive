@@ -107,9 +107,35 @@
                         {% else %}
                             <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" class="host-avatar" alt="Avatar">
                         {% endif %}
+
+                        {% set hostTotalNotes = 0 %}
+                        {% set hostCountNotes = 0 %}
+
+                        {% for ann in announce.utilisateur.annonces %}
+                            {% for avis in ann.avis %}
+                                {% set hostTotalNotes = hostTotalNotes + avis.note %}
+                                {% set hostCountNotes = hostCountNotes + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% set hostAverage = hostCountNotes > 0 ? hostTotalNotes / hostCountNotes : 0 %}
+
                         <div class="host-info">
-                            <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
-                            <p>Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
+                            <h3 class="mb-1">Hôte : {{ announce.utilisateur.prenom }}</h3>
+
+                            <div class="mb-2">
+                                {% if hostCountNotes > 0 %}
+                                    <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                                    <strong>{{ hostAverage|number_format(1, ',', ' ') }}</strong>
+                                    <span class="text-muted small">({{ hostCountNotes }} avis au total)</span>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary border small">
+                                        <i class="bi bi-star"></i> Nouvel hôte
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <p class="text-muted small mb-0">Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
                         </div>
                     </section>
                 {% endif %}
