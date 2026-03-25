@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laisser un avis - {{ announce.titre }}{% endblock %}
+
+{% block body %}
+    {% include '_navbar.html.twig' %}
+
+    <div class="container mt-5 mb-5" style="padding-top: 80px;">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="bi bi-star-fill text-warning fs-1 me-3"></i>
+                        <div>
+                            <h2 class="mb-0">Laisser un avis</h2>
+                            <p class="text-muted mb-0">Pour le logement : <strong>{{ announce.titre }}</strong></p>
+                        </div>
+                    </div>
+
+                    {{ form_start(form) }}
+                    <div class="mb-4">
+                        {{ form_label(form.note, null, {'label_attr': {'class': 'fw-bold mb-2'}}) }}
+                        {{ form_widget(form.note, {'attr': {'class': 'form-select form-select-lg'}}) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.commentaire, null, {'label_attr': {'class': 'fw-bold mb-2'}}) }}
+                        {{ form_widget(form.commentaire, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg w-100 rounded-pill mb-2">Publier mon avis</button>
+                    <a href="{{ path('app_announce_show', {'id': announce.id}) }}" class="btn btn-outline-secondary btn-lg w-100 rounded-pill">Annuler</a>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
