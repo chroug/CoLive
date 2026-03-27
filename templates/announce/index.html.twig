@@ -151,6 +151,10 @@
                                     {% endif %}
                                 </p>
                             {% endif %}
+                            <p class="card-publication-date text-muted" style="font-size: 0.8rem; margin-bottom: 5px;">
+                                <i class="bi bi-clock"></i>
+                                Publié le {{ announce.dateCreation ? announce.dateCreation|date('d/m/Y') : 'écemment' }}
+                            </p>
                             <div class="card-price">{{ announce.prix }}€ <small>/mois</small></div>
                         </div>
                     </article>

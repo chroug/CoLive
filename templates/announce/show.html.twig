@@ -92,6 +92,9 @@
 
                 <div class="announce-location">
                     <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
+                    <span class="ms-2 text-muted" style="font-size: 0.9rem;">
+                        • Mise en ligne le {{ announce.dateCreation|date('d/m/Y') }}
+                    </span>
                 </div>
 
                 <ul class="tags-list">
@@ -144,6 +147,13 @@
                     <h2 class="section-title">Le logement</h2>
                     <p class="text-content">{{ announce.description }}</p>
                 </section>
+
+                {% if announce.regle is defined and announce.regle is not empty %}
+                    <section>
+                        <h2 class="section-title">Règles de vie</h2>
+                        <p class="text-content">{{ announce.regle }}</p>
+                    </section>
+                {% endif %}
 
                 {% if announce.photos|length > 1 %}
                     <section>
