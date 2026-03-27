@@ -92,6 +92,9 @@
 
                 <div class="announce-location">
                     <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
+                    <span class="ms-2 text-muted" style="font-size: 0.9rem;">
+                        • Mise en ligne le {{ announce.dateCreation|date('d/m/Y') }}
+                    </span>
                 </div>
 
                 <ul class="tags-list">
