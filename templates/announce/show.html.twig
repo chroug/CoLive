@@ -148,6 +148,13 @@
                     <p class="text-content">{{ announce.description }}</p>
                 </section>
 
+                {% if announce.regle is defined and announce.regle is not empty %}
+                    <section>
+                        <h2 class="section-title">Règles de vie</h2>
+                        <p class="text-content">{{ announce.regle }}</p>
+                    </section>
+                {% endif %}
+
                 {% if announce.photos|length > 1 %}
                     <section>
                         <h2 class="section-title">Photos</h2>
