@@ -11,15 +11,22 @@
         <img src="{{ asset('img/home.png') }}" alt="image-home-appartement">
 
         <div class="auth-center">
-            <section class="auth-card">
+            <section class="auth-card" style="position: relative;">
+
+                <div style="text-align: left; margin-bottom: 20px;">
+                    <a href="{{ path('app_home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #64748b; font-weight: 600; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                        </svg>
+                        Retour à l'accueil
+                    </a>
+                </div>
 
                 <div class="logo-box">C</div>
 
                 <h2 class="title">Rejoindre CoLive</h2>
                 <p class="subtitle">Créez votre compte pour commencer à partager des logements</p>
                 <p class="small-label">Remplissez les informations ci-dessous pour vous inscrire</p>
-
-
 
                 <form action="{{ path('app_registration') }}" method="post" class="form">
 
