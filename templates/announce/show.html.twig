@@ -343,12 +343,17 @@
         async function toggleLike(event, announceId) {
             event.stopPropagation();
             event.preventDefault();
-            {% if not app.user %}
-            window.location.href = "{{ path('app_login') }}";
-            return;
-            {% endif %}
+
+            const isLoggedIn = {{ app.user ? 'true' : 'false' }};
+
+            if (!isLoggedIn) {
+                window.location.href = "{{ path('app_login') }}";
+                return;
+            }
+
             const btn = event.currentTarget;
             const icon = btn.querySelector('i');
+
             try {
                 const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
                 if (response.ok) {

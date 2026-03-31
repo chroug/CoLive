@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Announce;
 use App\Entity\AnnouncePicture;
+use App\Entity\User;
 use App\Entity\UserLikes;
 use App\Form\AnnounceType;
 use App\Repository\AnnounceRepository;
@@ -93,6 +94,7 @@ final class AnnounceController extends AbstractController
         }
 
         $newLike = new UserLikes();
+        /** @var User $user */
         $newLike->setUtilisateur($user);
         $newLike->setAnnonce($announce);
 
@@ -225,7 +227,7 @@ final class AnnounceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            /** @var User $user */
             $avis->setUtilisateur($user);
             $avis->setAnnonce($announce);
 
