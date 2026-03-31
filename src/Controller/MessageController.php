@@ -25,9 +25,21 @@ class MessageController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $allContacts = $currentUser->getContacts();
+        $baseContacts = $currentUser->getContacts()->toArray();
         $searchTerm = $request->query->get('q');
         $users = [];
+
+        $allUserMessages = $messageRepository->findUserDiscussions($currentUser);
+
+        $orderedContacts = [];
+        foreach ($allUserMessages as $msg) {
+            $otherUser = ($msg->getSender() === $currentUser) ? $msg->getRecipient() : $msg->getSender();
+            if (!in_array($otherUser, $orderedContacts, true)) {
+                $orderedContacts[] = $otherUser;
+            }
+        }
+
+        $allContacts = array_unique(array_merge($orderedContacts, $baseContacts), SORT_REGULAR);
 
         if ($searchTerm) {
             foreach ($allContacts as $contact) {
@@ -91,7 +103,6 @@ class MessageController extends AbstractController
                 if ($hasUnread) {
                     $entityManager->flush();
                 }
-
 
                 $latestResId = null;
                 foreach ($messages as $msg) {

@@ -24,4 +24,14 @@ class MessageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findUserDiscussions(User $user): array
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.sender = :user OR m.recipient = :user')
+            ->setParameter('user', $user)
+            ->orderBy('m.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
