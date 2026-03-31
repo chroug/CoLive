@@ -59,20 +59,38 @@
         async function toggleLike(event, announceId, btn) {
             event.stopPropagation();
             event.preventDefault();
-            const icon = btn.querySelector('i');
+
+            btn.disabled = true;
 
             try {
                 const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
+
                 if (response.ok) {
                     const data = await response.json();
-                    if (!data.isLiked) {
+
+                    if (data.isLiked === false) {
                         const card = btn.closest('.listing-card');
+
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                         card.style.opacity = '0';
-                        setTimeout(() => card.remove(), 300);
+                        card.style.transform = 'scale(0.95)';
+
+                        setTimeout(() => {
+                            card.remove();
+
+                            const remainingCards = document.querySelectorAll('.listing-card');
+                            if (remainingCards.length === 0) {
+                                window.location.reload();
+                            }
+                        }, 300);
                     }
+                } else {
+                    console.error("Erreur serveur lors du retrait des favoris.");
+                    btn.disabled = false;
                 }
             } catch (error) {
-                console.error('Erreur', error);
+                console.error('Erreur réseau:', error);
+                btn.disabled = false;
             }
         }
     </script>
