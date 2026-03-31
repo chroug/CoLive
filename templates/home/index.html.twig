@@ -3,72 +3,106 @@
 {% block title %}CoLive – Accueil{% endblock %}
 
 {% block stylesheets %}
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('styles/home.css') }}">
 {% endblock %}
 
 {% block body %}
-    <div class="hero">
-        <img src="{{ asset('img/home.png') }}" alt="CoLive Background" class="hero-bg-image">
+    {% include '_navbar.html.twig' %}
 
-        <div class="overlay"></div>
+    <div class="home-container">
 
-        {% include '_navbar.html.twig' %}
-
-        <div class="hero-content">
-            <div class="text-content">
-                <h1>La cohabitation pensée pour les étudiants en alternance</h1>
-
-                <p class="subtitle">
-                    CoLive connecte les étudiants en alternance pour partager des logements.
-                    Trouvez votre colocataire idéal ou proposez votre espace.
+        <div class="modern-hero">
+            <div class="hero-content-wrapper">
+                <h1 class="hero-title">La cohabitation pensée pour l'alternance.</h1>
+                <p class="hero-subtitle">
+                    Trouvez un logement adapté à votre rythme école/entreprise,
+                    ou rentabilisez votre chambre quand vous n'êtes pas là.
                 </p>
-
-                <a href="{{ path('app_announce_create') }}" class="cta-pill">
-                    Proposer mon logement
-                    <span class="icon-arrow">&rarr;</span>
+                <a href="{{ path('app_announce_create') }}" class="hero-btn">
+                    Proposer un logement
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/></svg>
                 </a>
             </div>
+        </div>
 
-            <div class="search-container">
-                <form action="{{ path('app_announce') }}" method="get" class="search-bar">
+        <div class="modern-search-wrapper">
+            <form action="{{ path('app_announce') }}" method="get" class="modern-search-form">
 
-                    <div class="search-item">
-                        <label for="location">Destination</label>
-                        <input type="text" id="location" name="location" placeholder="Ville, école...">
-                    </div>
+                <div class="search-field">
+                    <label for="location">Destination</label>
+                    <input type="text" id="location" name="location" placeholder="Ville, école, entreprise..." autocomplete="off">
+                </div>
 
-                    <div class="divider"></div>
+                <div class="search-divider"></div>
 
-                    <div class="search-item">
-                        <label for="date_start">Arrivée</label>
-                        <input type="date" id="date_start" name="date_start">
-                    </div>
+                <div class="search-field">
+                    <label for="date_start">Arrivée</label>
+                    <input type="date" id="date_start" name="date_start">
+                </div>
 
-                    <div class="divider"></div>
+                <div class="search-divider"></div>
 
-                    <div class="search-item">
-                        <label for="date_end">Départ</label>
-                        <input type="date" id="date_end" name="date_end">
-                    </div>
+                <div class="search-field">
+                    <label for="date_end">Départ</label>
+                    <input type="date" id="date_end" name="date_end">
+                </div>
 
-                    <div class="divider"></div>
+                <div class="search-divider"></div>
 
-                    <div class="search-item">
-                        <label for="type">Type</label>
-                        <select name="type" id="type">
-                            <option value="all">Tout</option>
-                            <option value="Chambre">Chambre</option>
-                            <option value="Colocation">Colocation</option>
-                            <option value="Studio">Studio</option>
-                        </select>
-                    </div>
+                <div class="search-field">
+                    <label for="type">Logement</label>
+                    <select name="type" id="type">
+                        <option value="all">Tous types</option>
+                        <option value="Chambre">Chambre seule</option>
+                        <option value="Colocation">Colocation</option>
+                        <option value="Studio">Studio complet</option>
+                    </select>
+                </div>
 
-                    <button type="submit" class="search-btn">
-                        Rechercher
-                    </button>
-                </form>
+                <button type="submit" class="btn-search-submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                    Rechercher
+                </button>
+            </form>
+        </div>
+
+        <div class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Communauté Alternante</h3>
+                <p class="feature-text">Cohabitez avec des étudiants qui partagent votre rythme. Payez votre loyer uniquement pour les périodes où vous occupez le logement.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <polyline points="9 12 11 14 15 10"></polyline>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Confiance garantie</h3>
+                <p class="feature-text">Zéro mauvaise surprise. Nous certifions les identités, vérifions les contrats d'alternance et sécurisons tous les paiements sur la plateforme.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Flexibilité totale</h3>
+                <p class="feature-text">Gérez vos périodes de présence via notre calendrier intelligent. Messagerie intégrée et support réactif pour une colocation sans stress.</p>
             </div>
         </div>
+
     </div>
 {% endblock %}
