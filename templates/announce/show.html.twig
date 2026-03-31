@@ -15,10 +15,8 @@
 
     <div class="main-desktop-wrapper">
 
-        <!--HERO WRAPPER (CARROUSEL DESKTOP / HERO MOBILE) -->
         <div class="hero-wrapper" id="heroWrapper">
 
-            <!-- BOUTONS MOBILE -->
             <a href="javascript:history.back()" class="btn-back-floating" onclick="event.stopPropagation()">
                 <i class="bi bi-arrow-left"></i>
             </a>
@@ -35,7 +33,6 @@
                 <a href="{{ path('app_login') }}" class="btn-profile-floating" onclick="event.stopPropagation()" style="padding: 0 30px;">Se connecter</a>
             {% endif %}
 
-            <!-- FLECHES CAROUSSEL MOBILE -->
             <div class="desktop-carousel-nav">
                 <button class="desk-nav-btn prev" onclick="moveDesktopCarousel(-1, event)"><i class="bi bi-chevron-left"></i></button>
                 <button class="desk-nav-btn next" onclick="moveDesktopCarousel(1, event)"><i class="bi bi-chevron-right"></i></button>
@@ -85,8 +82,9 @@
                             {% if like.utilisateur == app.user %}{% set isLiked = true %}{% endif %}
                         {% endfor %}
                     {% endif %}
-                    <button class="btn-like-big {{ isLiked ? 'liked' : '' }}" onclick="toggleLike(event, {{ announce.id }})">
+                    <button class="btn-like-big {{ isLiked ? 'liked' : '' }}" onclick="toggleLike(event, {{ announce.id }})" style="display: inline-flex; align-items: center; gap: 8px;">
                         <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        <span class="likes-count" style="font-size: 1.1rem;">{{ announce.likes|length }}</span>
                     </button>
                 </div>
 
@@ -180,7 +178,6 @@
                         {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin ? announce.disponibiliteFin|date('d M Y') : 'Indéterminée' }}
                     </div>
                 </section>
-                {# --- DÉBUT SECTION AVIS PUBLICS --- #}
                 <section id="section-avis" class="mt-5 pt-4 border-top">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="section-title mb-0">
@@ -234,7 +231,6 @@
                 </section>
             </div>
 
-            <!-- SIDEBAR DESKTOP -->
             <div class="desktop-sidebar-wrapper">
                 <div class="booking-card">
                     <div class="card-price-row">
@@ -266,8 +262,6 @@
 
     </div>
 
-    <!-- FOOTER MOBILE -->
-
     <aside class="fixed-bottom-bar">
         <div class="price-row">
             <span class="price-amount">{{ announce.prix }}€</span>
@@ -283,7 +277,6 @@
         </div>
     </aside>
 
-    <!-- LIGHTBOX -->
     <div id="lightbox" class="lightbox">
         <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
         <img id="lightbox-img" src="" class="lightbox-img" alt="Plein écran">
@@ -295,7 +288,6 @@
     </div>
 
     <script>
-        // --- 1. DONNEES IMAGES ---
         const galleryImages = [];
         {% if announce.photos is not empty %}
         {% for photo in announce.photos %}
@@ -305,19 +297,17 @@
         galleryImages.push("https://picsum.photos/seed/{{ announce.id }}/800/1000");
         {% endif %}
 
-        // --- 2. CARROUSEL DESKTOP ---
         let currentHeroIndex = 0;
         const mainHeroImg = document.getElementById('main-hero-img');
         const desktopCounter = document.getElementById('desktop-photo-count');
 
         function moveDesktopCarousel(direction, event) {
-            event.stopPropagation(); // Empêche l'ouverture de la lightbox quand on clique sur les flèches
+            event.stopPropagation();
             currentHeroIndex = (currentHeroIndex + direction + galleryImages.length) % galleryImages.length;
             mainHeroImg.src = galleryImages[currentHeroIndex];
             if(desktopCounter) desktopCounter.innerText = (currentHeroIndex + 1) + " / " + galleryImages.length;
         }
 
-        // --- 3. LIGHTBOX ---
         let currentImageIndex = 0;
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
@@ -350,7 +340,6 @@
             counter.innerText = (currentImageIndex + 1) + " / " + galleryImages.length;
         }
 
-        // --- 4. LIKE AJAX ---
         async function toggleLike(event, announceId) {
             event.stopPropagation();
             event.preventDefault();
@@ -364,6 +353,12 @@
                 const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
                 if (response.ok) {
                     const data = await response.json();
+
+                    const countSpan = btn.querySelector('.likes-count');
+                    if (countSpan && data.totalLikes !== undefined) {
+                        countSpan.innerText = data.totalLikes;
+                    }
+
                     if (data.isLiked) {
                         btn.classList.add('liked');
                         icon.classList.remove('bi-heart');
@@ -377,7 +372,6 @@
             } catch (error) { console.error(error); }
         }
 
-        // Swipe & Clavier
         let touchStartX = 0;
         let touchEndX = 0;
         lightbox.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);

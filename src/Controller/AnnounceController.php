@@ -68,19 +68,30 @@ final class AnnounceController extends AbstractController
     #[Route('/announce/{id}/like', name: 'app_announce_like')]
     public function like(Announce $announce, EntityManagerInterface $entityManager): JsonResponse
     {
+
         $user = $this->getUser();
         if (!$user) {
             return $this->json(['message' => 'Non autorisé'], 403);
         }
-        $like = $entityManager->getRepository(UserLikes::class)->findOneBy([
+
+        $likeRepo = $entityManager->getRepository(UserLikes::class);
+        $like = $likeRepo->findOneBy([
             'utilisateur' => $user,
             'annonce' => $announce
         ]);
+
         if ($like) {
             $entityManager->remove($like);
             $entityManager->flush();
-            return $this->json(['isLiked' => false]);
+
+            $totalLikes = $likeRepo->count(['annonce' => $announce]);
+
+            return $this->json([
+                'isLiked' => false,
+                'totalLikes' => $totalLikes
+            ]);
         }
+
         $newLike = new UserLikes();
         $newLike->setUtilisateur($user);
         $newLike->setAnnonce($announce);
@@ -88,7 +99,12 @@ final class AnnounceController extends AbstractController
         $entityManager->persist($newLike);
         $entityManager->flush();
 
-        return $this->json(['isLiked' => true]);
+        $totalLikes = $likeRepo->count(['annonce' => $announce]);
+
+        return $this->json([
+            'isLiked' => true,
+            'totalLikes' => $totalLikes
+        ]);
     }
     #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/edit', name: 'app_announce_edit')]
