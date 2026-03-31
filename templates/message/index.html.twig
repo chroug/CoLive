@@ -15,7 +15,9 @@
                 <div class="sidebar-header"><h2>Messagerie</h2></div>
                 <div class="search-box">
                     <form action="{{ path('app_message') }}" method="get">
-                        <input type="text" name="q" value="{{ searchTerm }}" placeholder="Rechercher un contact" autocomplete="off">
+                        <label>
+                            <input type="text" name="q" value="{{ searchTerm }}" placeholder="Rechercher un contact" autocomplete="off">
+                        </label>
                     </form>
                 </div>
                 <div class="contact-list">
@@ -84,7 +86,7 @@
                             <div class="message-row {{ message.sender.id == app.user.id ? 'sent' : 'received' }}">
                                 {% if message.sender.id != app.user.id %}<div class="message-avatar">{{ message.sender.prenom|first }}</div>{% endif %}
                                 <div class="message-bubble">
-                                    {% if message.attachment %}<div class="message-image"><img src="{{ asset('uploads/' ~ message.attachment) }}"></div>{% endif %}
+                                    {% if message.attachment %}<div class="message-image"><img src="{{ asset('uploads/' ~ message.attachment) }}" alt=""></div>{% endif %}
 
                                     {% if "[RES_ID:" in message.content %}
                                         {% set resId = message.content|split('[RES_ID:')[1]|split(']')[0] %}
