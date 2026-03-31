@@ -31,6 +31,13 @@ class MessageController extends AbstractController
 
         $allUserMessages = $messageRepository->findUserDiscussions($currentUser);
 
+        $unreadSenders = [];
+        foreach ($allUserMessages as $msg) {
+            if (!$msg->isRead() && $msg->getRecipient() === $currentUser) {
+                $unreadSenders[$msg->getSender()->getId()] = true;
+            }
+        }
+
         $orderedContacts = [];
         foreach ($allUserMessages as $msg) {
             $otherUser = ($msg->getSender() === $currentUser) ? $msg->getRecipient() : $msg->getSender();
@@ -102,6 +109,10 @@ class MessageController extends AbstractController
 
                 if ($hasUnread) {
                     $entityManager->flush();
+
+                    if (isset($unreadSenders[$selectedUser->getId()])) {
+                        unset($unreadSenders[$selectedUser->getId()]);
+                    }
                 }
 
                 $latestResId = null;
@@ -123,6 +134,7 @@ class MessageController extends AbstractController
             'messages' => $messages,
             'searchTerm' => $searchTerm,
             'activeReservation' => $activeReservation,
+            'unreadSenders' => $unreadSenders,
         ]);
     }
 

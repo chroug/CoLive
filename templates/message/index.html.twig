@@ -23,9 +23,25 @@
                     <div class="list-scroll" id="contactListContainer">
                         {% for user in users %}
                             <div class="contact-item-wrapper">
-                                <a href="{{ path('app_message_conversation', {id: user.id}) }}" class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}">
+                                <a href="{{ path('app_message_conversation', {id: user.id}) }}" class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}" style="position: relative;">
+
+                                    {% if unreadSenders[user.id] is defined %}
+                                        <span style="position: absolute; top: 15px; right: 15px; width: 12px; height: 12px; background-color: #dc3545; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px #fff;"></span>
+                                    {% endif %}
+
                                     <div class="avatar">{{ user.prenom|first|upper }}</div>
-                                    <div class="info"><span class="name">{{ user.prenom }} {{ user.nom }}</span><span class="sub-text">Voir la conversation</span></div>
+                                    <div class="info">
+                                        <span class="name">
+                                            {{ user.prenom }} {{ user.nom }}
+                                        </span>
+                                        <span class="sub-text" {% if unreadSenders[user.id] is defined %}style="color: #000; font-weight: 600;"{% endif %}>
+                                            {% if unreadSenders[user.id] is defined %}
+                                                Nouveau message
+                                            {% else %}
+                                                Voir la conversation
+                                            {% endif %}
+                                        </span>
+                                    </div>
                                 </a>
                             </div>
                         {% endfor %}
