@@ -106,7 +106,7 @@ class MessageController extends AbstractController
 
                 $latestResId = null;
                 foreach ($messages as $msg) {
-                    if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)\]/', $msg->getContent(), $matches)) {
+                    if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)]/', $msg->getContent(), $matches)) {
                         $latestResId = (int) $matches[1];
                     }
                 }
