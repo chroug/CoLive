@@ -25,9 +25,28 @@ class MessageController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $allContacts = $currentUser->getContacts();
+        $baseContacts = $currentUser->getContacts()->toArray();
         $searchTerm = $request->query->get('q');
         $users = [];
+
+        $allUserMessages = $messageRepository->findUserDiscussions($currentUser);
+
+        $unreadSenders = [];
+        foreach ($allUserMessages as $msg) {
+            if (!$msg->isRead() && $msg->getRecipient() === $currentUser) {
+                $unreadSenders[$msg->getSender()->getId()] = true;
+            }
+        }
+
+        $orderedContacts = [];
+        foreach ($allUserMessages as $msg) {
+            $otherUser = ($msg->getSender() === $currentUser) ? $msg->getRecipient() : $msg->getSender();
+            if (!in_array($otherUser, $orderedContacts, true)) {
+                $orderedContacts[] = $otherUser;
+            }
+        }
+
+        $allContacts = array_unique(array_merge($orderedContacts, $baseContacts), SORT_REGULAR);
 
         if ($searchTerm) {
             foreach ($allContacts as $contact) {
@@ -90,12 +109,15 @@ class MessageController extends AbstractController
 
                 if ($hasUnread) {
                     $entityManager->flush();
-                }
 
+                    if (isset($unreadSenders[$selectedUser->getId()])) {
+                        unset($unreadSenders[$selectedUser->getId()]);
+                    }
+                }
 
                 $latestResId = null;
                 foreach ($messages as $msg) {
-                    if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)\]/', $msg->getContent(), $matches)) {
+                    if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)]/', $msg->getContent(), $matches)) {
                         $latestResId = (int) $matches[1];
                     }
                 }
@@ -112,6 +134,7 @@ class MessageController extends AbstractController
             'messages' => $messages,
             'searchTerm' => $searchTerm,
             'activeReservation' => $activeReservation,
+            'unreadSenders' => $unreadSenders,
         ]);
     }
 

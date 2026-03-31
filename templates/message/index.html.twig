@@ -15,7 +15,9 @@
                 <div class="sidebar-header"><h2>Messagerie</h2></div>
                 <div class="search-box">
                     <form action="{{ path('app_message') }}" method="get">
-                        <input type="text" name="q" value="{{ searchTerm }}" placeholder="Rechercher un contact" autocomplete="off">
+                        <label>
+                            <input type="text" name="q" value="{{ searchTerm }}" placeholder="Rechercher un contact" autocomplete="off">
+                        </label>
                     </form>
                 </div>
                 <div class="contact-list">
@@ -23,9 +25,25 @@
                     <div class="list-scroll" id="contactListContainer">
                         {% for user in users %}
                             <div class="contact-item-wrapper">
-                                <a href="{{ path('app_message_conversation', {id: user.id}) }}" class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}">
+                                <a href="{{ path('app_message_conversation', {id: user.id}) }}" class="contact-card {{ selectedUser and selectedUser.id == user.id ? 'active' : '' }}" style="position: relative;">
+
+                                    {% if unreadSenders[user.id] is defined %}
+                                        <span style="position: absolute; top: 15px; right: 15px; width: 12px; height: 12px; background-color: #dc3545; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px #fff;"></span>
+                                    {% endif %}
+
                                     <div class="avatar">{{ user.prenom|first|upper }}</div>
-                                    <div class="info"><span class="name">{{ user.prenom }} {{ user.nom }}</span><span class="sub-text">Voir la conversation</span></div>
+                                    <div class="info">
+                                        <span class="name">
+                                            {{ user.prenom }} {{ user.nom }}
+                                        </span>
+                                        <span class="sub-text" {% if unreadSenders[user.id] is defined %}style="color: #000; font-weight: 600;"{% endif %}>
+                                            {% if unreadSenders[user.id] is defined %}
+                                                Nouveau message
+                                            {% else %}
+                                                Voir la conversation
+                                            {% endif %}
+                                        </span>
+                                    </div>
                                 </a>
                             </div>
                         {% endfor %}
@@ -68,7 +86,7 @@
                             <div class="message-row {{ message.sender.id == app.user.id ? 'sent' : 'received' }}">
                                 {% if message.sender.id != app.user.id %}<div class="message-avatar">{{ message.sender.prenom|first }}</div>{% endif %}
                                 <div class="message-bubble">
-                                    {% if message.attachment %}<div class="message-image"><img src="{{ asset('uploads/' ~ message.attachment) }}"></div>{% endif %}
+                                    {% if message.attachment %}<div class="message-image"><img src="{{ asset('uploads/' ~ message.attachment) }}" alt=""></div>{% endif %}
 
                                     {% if "[RES_ID:" in message.content %}
                                         {% set resId = message.content|split('[RES_ID:')[1]|split(']')[0] %}
@@ -124,7 +142,9 @@
                         <form method="post" class="input-form" enctype="multipart/form-data">
                             <label for="file-upload" class="btn-attachment"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 24 24"><path d="m20,4h-8.59l-1.41-1.41c-.38-.38-.88-.59-1.41-.59h-4.59c-1.1,0-2,.9-2,2v14c0,1.1.9,2,2,2h16c1.1,0,2-.9,2-2V6c0-1.1-.9-2-2-2Zm0,2v3H4v-3h16ZM4,18v-7h16v7H4Z"></path></svg></label>
                             <input id="file-upload" type="file" name="file_upload" style="display: none;" accept="image/*">
-                            <input type="text" name="content" placeholder="Écrivez votre message..." autocomplete="off">
+                            <label>
+                                <input type="text" name="content" placeholder="Écrivez votre message..." autocomplete="off">
+                            </label>
                             <button type="submit" class="btn-send">Envoyer</button>
                         </form>
                     </div>
