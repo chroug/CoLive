@@ -21,15 +21,45 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class AnnounceController extends AbstractController
 {
     #[Route('/announce', name: 'app_announce')]
-    public function index(AnnounceRepository $announceRepository, Request $request)
+    public function index(AnnounceRepository $announceRepository, Request $request): Response
     {
         $location = $request->query->get('location');
         $type = $request->query->get('type');
         $dateStart = $request->query->get('date_start');
         $dateEnd = $request->query->get('date_end');
-        $announces = $announceRepository->findByFilters($location, $type, $dateStart, $dateEnd);
+
+        $user = $this->getUser();
+
+        $announces = $announceRepository->findByFilters($location, $type, $dateStart, $dateEnd, $user);
+
+        $cityCoords = [
+            'Paris'     => ['lat' => 48.8566, 'lon' => 2.3522],
+            'Lyon'      => ['lat' => 45.7640, 'lon' => 4.8357],
+            'Marseille' => ['lat' => 43.2965, 'lon' => 5.3698],
+            'Bordeaux'  => ['lat' => 44.8378, 'lon' => -0.5792],
+            'Lille'     => ['lat' => 50.6292, 'lon' => 3.0573],
+            'Toulouse'  => ['lat' => 43.6047, 'lon' => 1.4442],
+            'Nantes'    => ['lat' => 47.2184, 'lon' => -1.5536],
+        ];
+
+        if (empty($location) && $user && method_exists($user, 'getVille') && isset($cityCoords[$user->getVille()])) {
+
+            $userLat = $cityCoords[$user->getVille()]['lat'];
+            $userLon = $cityCoords[$user->getVille()]['lon'];
+
+            usort($announces, function($a, $b) use ($cityCoords, $userLat, $userLon) {
+                $villeA = $a->getVille();
+                $villeB = $b->getVille();
+
+                $distA = isset($cityCoords[$villeA]) ? $this->calculateDistance($userLat, $userLon, $cityCoords[$villeA]['lat'], $cityCoords[$villeA]['lon']) : 9999;
+                $distB = isset($cityCoords[$villeB]) ? $this->calculateDistance($userLat, $userLon, $cityCoords[$villeB]['lat'], $cityCoords[$villeB]['lon']) : 9999;
+
+                return $distA <=> $distB;
+            });
+        }
+
         return $this->render('announce/index.html.twig', [
-            'announces'=>$announces,
+            'announces' => $announces,
             'searchLocation' => $location,
             'searchType' => $type,
             'searchStart' => $dateStart,
@@ -227,6 +257,9 @@ final class AnnounceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+<<<<<<< src/Controller/AnnounceController.php
+
+>>>>>>> src/Controller/AnnounceController.php
             /** @var User $user */
             $avis->setUtilisateur($user);
             $avis->setAnnonce($announce);
@@ -260,5 +293,25 @@ final class AnnounceController extends AbstractController
             'announce' => $announce,
             'form' => $form->createView(),
         ]);
+    }
+
+    private function calculateDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        if ($lat1 === $lat2 && $lon1 === $lon2) {
+            return 0.0;
+        }
+
+        $earthRadius = 6371;
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }
