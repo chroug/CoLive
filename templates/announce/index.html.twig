@@ -205,10 +205,11 @@
                         <a href="{{ path('app_announce_show', {'id': announce.id}) }}" style="display:inline-block; margin-top:8px; background-color:#212529; color:white; padding:4px 12px; border-radius:20px; text-decoration:none; font-size:12px;">Voir l'annonce</a>
                     </div>`;
 
-                const lat = {{ announce.latitude|number_format(5, '.', '') }};
-                const lon = {{ announce.longitude|number_format(5, '.', '') }};
+                const lat = parseFloat('{{ announce.latitude|number_format(5, ".", "") }}');
+                const lon = parseFloat('{{ announce.longitude|number_format(5, ".", "") }}');
 
-                const marker = L.marker([lat, lon]).addTo(map).bindPopup(popupHtml);
+                L.marker([lat, lon]).addTo(map).bindPopup(popupHtml);
+
                 markers.push([lat, lon]);
             }
             {% endif %}
@@ -225,14 +226,17 @@
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
         }
+
         async function toggleLike(event, announceId) {
             event.stopPropagation();
             event.preventDefault();
 
-            {% if not app.user %}
-            window.location.href = "{{ path('app_login') }}";
-            return;
-            {% endif %}
+            const isLoggedIn = {{ app.user ? 'true' : 'false' }};
+
+            if (!isLoggedIn) {
+                window.location.href = "{{ path('app_login') }}";
+                return;
+            }
 
             const btn = event.currentTarget;
             const icon = btn.querySelector('i');
