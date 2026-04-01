@@ -249,6 +249,11 @@
                 if (response.ok) {
                     const data = await response.json();
 
+                    const countSpan = btn.querySelector('.likes-count');
+                    if (countSpan && data.totalLikes !== undefined) {
+                        countSpan.innerText = data.totalLikes;
+                    }
+
                     if (data.isLiked) {
                         btn.classList.add('liked');
                         btn.classList.add('animate');
