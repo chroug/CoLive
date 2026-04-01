@@ -82,11 +82,15 @@
                     <legend class="form-legend">Période</legend>
                     <div style="margin-bottom:30px;">
                         <label class="form-label">Arrivée</label>
-                        <input type="date" name="date_start" class="form-input" value="{{ app.request.query.get('date_start') }}">
+                        <label>
+                            <input type="date" name="date_start" class="form-input" value="{{ app.request.query.get('date_start') }}">
+                        </label>
                     </div>
                     <div>
                         <label class="form-label">Départ</label>
-                        <input type="date" name="date_end" class="form-input" value="{{ app.request.query.get('date_end') }}">
+                        <label>
+                            <input type="date" name="date_end" class="form-input" value="{{ app.request.query.get('date_end') }}">
+                        </label>
                     </div>
                 </fieldset>
 
@@ -175,10 +179,12 @@
             event.stopPropagation();
             event.preventDefault();
 
-            {% if not app.user %}
-            window.location.href = "{{ path('app_login') }}";
-            return;
-            {% endif %}
+            const isLoggedIn = {{ app.user ? 'true' : 'false' }};
+
+            if (!isLoggedIn) {
+                window.location.href = "{{ path('app_login') }}";
+                return;
+            }
 
             const btn = event.currentTarget;
             const icon = btn.querySelector('i');
@@ -190,6 +196,11 @@
 
                 if (response.ok) {
                     const data = await response.json();
+
+                    const countSpan = btn.querySelector('.likes-count');
+                    if (countSpan && data.totalLikes !== undefined) {
+                        countSpan.innerText = data.totalLikes;
+                    }
 
                     if (data.isLiked) {
                         btn.classList.add('liked');
