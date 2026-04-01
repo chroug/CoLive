@@ -29,6 +29,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'tel' => self::faker()->phoneNumber(),
             'password' => 'password',
             'role' => 1,
+            'ville' => self::faker()->randomElement(['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Toulouse', 'Nantes']),
             'dateCreationCompte' => self::faker()->dateTimeBetween('-1 year', 'now'),
         ];
     }

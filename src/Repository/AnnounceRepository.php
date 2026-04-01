@@ -16,7 +16,7 @@ class AnnounceRepository extends ServiceEntityRepository
         parent::__construct($registry, Announce::class);
     }
 
-    public function findByFilters(?string $location, ?string $type, ?string $dateStart, ?string $dateEnd): array
+    public function findByFilters(?string $location, ?string $type, ?string $dateStart, ?string $dateEnd, ?\App\Entity\User $user = null): array
     {
         $qb = $this->createQueryBuilder('a');
 
@@ -39,7 +39,18 @@ class AnnounceRepository extends ServiceEntityRepository
             $qb->andWhere('a.disponibilite_fin >= :dateEnd')
                 ->setParameter('dateEnd', $dateEnd);
         }
-        $qb->orderBy('a.dateCreation', 'DESC');
+
+        if (empty($location) && $user && method_exists($user, 'getVille') && $user->getVille()) {
+
+            $qb->addSelect('(CASE WHEN a.ville LIKE :userCity THEN 0 ELSE 1 END) AS HIDDEN sortPriority')
+                ->setParameter('userCity', '%' . $user->getVille() . '%')
+                ->orderBy('sortPriority', 'ASC')
+                ->addOrderBy('a.dateCreation', 'DESC');
+
+        } else {
+            $qb->orderBy('a.dateCreation', 'DESC');
+        }
+
         return $qb->getQuery()->getResult();
     }
 }

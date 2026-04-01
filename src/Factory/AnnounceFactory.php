@@ -23,7 +23,7 @@ final class AnnounceFactory extends PersistentProxyObjectFactory
             'latitude' => self::faker()->latitude(45.7, 45.8),
             'longitude' => self::faker()->longitude(4.8, 4.9),
             'adresse' => self::faker()->streetAddress(),
-            'ville' => 'Lyon',
+            'ville' => self::faker()->randomElement(['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Toulouse', 'Nantes']),
             'code_postal' => self::faker()->postcode(),
             'surface' => self::faker()->randomFloat(1, 12, 60),
             'disponibilite_debut' => self::faker()->dateTimeBetween('now', '+1 month'),

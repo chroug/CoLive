@@ -30,6 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $tel = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ville = null;
+
     #[ORM\Column(name: "mot_de_passe", length: 255)]
     private ?string $password = null;
 
@@ -100,6 +103,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self { $this->email = $email; return $this; }
     public function getTel(): ?string { return $this->tel; }
     public function setTel(?string $tel): self { $this->tel = $tel; return $this; }
+    public function getVille(): ?string { return $this->ville; }
+    public function setVille(?string $ville): self { $this->ville = $ville; return $this; }
     public function getPassword(): ?string { return $this->password; }
     public function setPassword(string $password): self { $this->password = $password; return $this; }
     public function getAvatar(): ?string { return $this->avatar; }
