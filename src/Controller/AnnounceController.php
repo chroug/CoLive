@@ -257,9 +257,7 @@ final class AnnounceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-<<<<<<< src/Controller/AnnounceController.php
 
->>>>>>> src/Controller/AnnounceController.php
             /** @var User $user */
             $avis->setUtilisateur($user);
             $avis->setAnnonce($announce);
