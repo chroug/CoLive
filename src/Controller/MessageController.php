@@ -68,27 +68,43 @@ class MessageController extends AbstractController
 
             if ($request->isMethod('POST')) {
                 $content = $request->request->get('content');
-                $file = $request->files->get('file_upload');
+                // On récupère toutes les images envoyées sous forme de tableau via all()
+                $files = $request->files->all('file_upload');
 
-                if (!empty($content) || $file) {
-                    $message = new Message();
-                    $message->setContent($content);
-                    $message->setSender($currentUser);
-                    $message->setRecipient($selectedUser);
+                if (!empty($content) || !empty($files)) {
+                    if (empty($files)) {
+                        $message = new Message();
+                        $message->setContent($content);
+                        $message->setSender($currentUser);
+                        $message->setRecipient($selectedUser);
+                        $entityManager->persist($message);
+                    } else {
+                        // S'il y a des fichiers, on boucle dessus
+                        foreach ($files as $index => $file) {
+                            if ($file) {
+                                $message = new Message();
+                                if ($index === 0 && !empty($content)) {
+                                    $message->setContent($content);
+                                }
 
-                    if ($file) {
-                        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
-                        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+                                $message->setSender($currentUser);
+                                $message->setRecipient($selectedUser);
 
-                        try {
-                            $file->move($uploadDir, $fileName);
-                            $message->setAttachment($fileName);
-                        } catch (\Exception $e) {
-                            $this->addFlash('danger', 'Erreur lors de l\'envoi du fichier.');
+                                $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
+                                $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+
+                                try {
+                                    $file->move($uploadDir, $fileName);
+                                    $message->setAttachment($fileName);
+                                } catch (\Exception $e) {
+                                    $this->addFlash('danger', 'Erreur lors de l\'envoi d\'un fichier.');
+                                }
+
+                                $entityManager->persist($message);
+                            }
                         }
                     }
 
-                    $entityManager->persist($message);
                     $entityManager->flush();
 
                     return $this->redirectToRoute('app_message_conversation', ['id' => $selectedUser->getId()]);
