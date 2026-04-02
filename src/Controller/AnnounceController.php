@@ -81,6 +81,7 @@ final class AnnounceController extends AbstractController
             'searchEnd' => $dateEnd,
         ]);
     }
+
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/announce/create', name: 'app_announce_create')]
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
@@ -111,13 +112,14 @@ final class AnnounceController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/like', name: 'app_announce_like')]
-    public function like(Announce $announce, EntityManagerInterface $entityManager): JsonResponse
+    public function like(Announce $announce, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-
         $user = $this->getUser();
-        if (!$user) {
-            return $this->json(['message' => 'Non autorisé'], 403);
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('like' . $announce->getId(), $token)) {
+            return $this->json(['message' => 'Action non autorisée, token invalide'], 403);
         }
 
         $likeRepo = $entityManager->getRepository(UserLikes::class);
@@ -153,6 +155,7 @@ final class AnnounceController extends AbstractController
             'totalLikes' => $totalLikes
         ]);
     }
+
     #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/edit', name: 'app_announce_edit')]
     public function edit(Announce $annonce, Request $request, EntityManagerInterface $em): Response
@@ -237,6 +240,7 @@ final class AnnounceController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/avis', name: 'app_avis_add', methods: ['GET', 'POST'])]
     public function addAvis(
         \App\Entity\Announce $announce,
@@ -245,10 +249,6 @@ final class AnnounceController extends AbstractController
     ): \Symfony\Component\HttpFoundation\Response {
 
         $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $avis = new \App\Entity\Review();
 
         $form = $this->createFormBuilder($avis)

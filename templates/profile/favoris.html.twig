@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="listing-actions" style="display:flex; justify-content:center; align-items:center;">
-                                <button class="card-like-btn liked" onclick="toggleLike(event, {{ like.annonce.id }}, this)" title="Retirer des favoris">
+                                <button class="card-like-btn liked" data-token="{{ csrf_token('like' ~ like.annonce.id) }}" onclick="toggleLike(event, {{ like.annonce.id }}, this)" title="Retirer des favoris">
                                     <i class="bi bi-heart-fill"></i>
                                 </button>
                             </div>
@@ -62,8 +62,16 @@
 
             btn.disabled = true;
 
+
+            const csrfToken = btn.getAttribute('data-token');
+            const formData = new FormData();
+            formData.append('_token', csrfToken);
+
             try {
-                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
+                const response = await fetch('/announce/' + announceId + '/like', {
+                    method: 'POST',
+                    body: formData
+                });
 
                 if (response.ok) {
                     const data = await response.json();
@@ -85,7 +93,7 @@
                         }, 300);
                     }
                 } else {
-                    console.error("Erreur serveur lors du retrait des favoris.");
+                    console.error("Erreur serveur lors du retrait des favoris ou Token invalide.");
                     btn.disabled = false;
                 }
             } catch (error) {

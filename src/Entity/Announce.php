@@ -158,4 +158,13 @@ class Announce
         }
         return $this;
     }
+    public function isLikedByUser(\Symfony\Component\Security\Core\User\UserInterface $user): bool
+    {
+        foreach ($this->likes as $like) {
+            if ($like->getUtilisateur() === $user) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -25,337 +25,193 @@
                     {% if app.user.avatar %}
                         <img src="{{ app.user.avatar }}" alt="Avatar" class="nav-avatar-mini">
                     {% else %}
-                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff" class="nav-avatar-mini" alt="Avatar">
+                        <img src="https://ui-avatars.com/api/?name={{ app.user.prenom }}+{{ app.user.nom }}&background=000&color=fff&size=256&font-size=0.33" alt="Avatar" class="nav-avatar-mini">
                     {% endif %}
-                    <span>{{ app.user.prenom }}</span>
                 </a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn-profile-floating" onclick="event.stopPropagation()" style="padding: 0 30px;">Se connecter</a>
             {% endif %}
 
-            <div class="desktop-carousel-nav">
-                <button class="desk-nav-btn prev" onclick="moveDesktopCarousel(-1, event)"><i class="bi bi-chevron-left"></i></button>
-                <button class="desk-nav-btn next" onclick="moveDesktopCarousel(1, event)"><i class="bi bi-chevron-right"></i></button>
+            <div class="hero-main-img" onclick="openLightbox(0)">
+                {% if announce.photos is not empty %}
+                    <img src="{{ announce.photos|first.contenu }}" alt="Photo principale">
+                {% else %}
+                    <img src="https://via.placeholder.com/1200x600?text=Pas+de+photo" alt="Pas de photo">
+                {% endif %}
             </div>
 
-            {% if announce.photos is not empty %}
-                <img id="main-hero-img" src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Couverture" onclick="handleHeroClick()">
-                <div id="desktop-photo-count" class="photo-count-badge">1 / {{ announce.photos|length }}</div>
-            {% else %}
-                <img src="https://picsum.photos/seed/{{ announce.id }}/800/1000" class="hero-img" alt="Couverture">
-            {% endif %}
+            <div class="hero-side-imgs">
+                {% for i in 1..2 %}
+                    {% if announce.photos[i] is defined %}
+                        <div class="side-img-item" onclick="openLightbox({{ i }})">
+                            <img src="{{ announce.photos[i].contenu }}" alt="Photo {{ i+1 }}">
+                        </div>
+                    {% else %}
+                        <div class="side-img-item empty"></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <button class="btn-all-photos" onclick="openLightbox(0)">
+                <i class="bi bi-grid-3x3-gap"></i> Afficher toutes les photos
+            </button>
         </div>
 
-        <!-- 2. CONTENU PRINCIPAL -->
-        <main class="content-sheet">
-
+        <div class="content-container">
             <div class="left-column">
-                <div class="title-row">
-                    <h1 class="announce-title">{{ announce.titre }}</h1>
-                    {% set nbAvis = announce.avis|length %}
-
-                    <div class="announce-rating-public mb-3 d-flex align-items-center">
-                        {% if nbAvis > 0 %}
-                            {% set totalNote = 0 %}
-                            {% for avis in announce.avis %}
-                                {% set totalNote = totalNote + avis.note %}
-                            {% endfor %}
-                            {% set averageNote = totalNote / nbAvis %}
-
-                            <div class="text-warning me-2 fs-5">
-                                <i class="bi bi-star-fill"></i>
-                                <strong class="text-dark">{{ averageNote|number_format(1, ',', ' ') }}</strong>
-                            </div>
-                            <a href="#section-avis" class="text-muted small text-decoration-underline" style="cursor: pointer;">
-                                ({{ nbAvis }} avis)
-                            </a>
-                        {% else %}
-                            <span class="badge bg-light text-secondary border">
-            <i class="bi bi-star"></i> Nouveau logement - Aucun avis
-        </span>
-                        {% endif %}
-
+                <div class="header-section">
+                    <div class="title-row">
+                        <h1>{{ announce.titre }}</h1>
+                        <button class="btn-action-circle {% if app.user and announce.isLikedByUser(app.user) %}liked{% endif %}"
+                                data-token="{{ csrf_token('like' ~ announce.id) }}"
+                                onclick="toggleLike(event, {{ announce.id }}, this)">
+                            <i class="bi {% if app.user and announce.isLikedByUser(app.user) %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                            <span class="likes-count">{{ announce.likes|length }}</span>
+                        </button>
                     </div>
-                    {% set isLiked = false %}
-                    {% if app.user %}
-                        {% for like in announce.likes %}
-                            {% if like.utilisateur == app.user %}{% set isLiked = true %}{% endif %}
-                        {% endfor %}
-                    {% endif %}
-                    <button class="btn-like-big {{ isLiked ? 'liked' : '' }}" onclick="toggleLike(event, {{ announce.id }})" style="display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="bi {{ isLiked ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-                        <span class="likes-count" style="font-size: 1.1rem;">{{ announce.likes|length }}</span>
-                    </button>
+                    <p class="location-text">{{ announce.ville }} • {{ announce.type }}</p>
+                    <div class="badges-row">
+                        <span class="badge-item"><i class="bi bi-people"></i> Colocation</span>
+                        <span class="badge-item"><i class="bi bi-shield-check"></i> Vérifié</span>
+                    </div>
                 </div>
 
-                <div class="announce-location">
-                    <i class="bi bi-geo-alt-fill"></i> {{ announce.ville }}
-                    <span class="ms-2 text-muted" style="font-size: 0.9rem;">
-                        • Mise en ligne le {{ announce.dateCreation|date('d/m/Y') }}
-                    </span>
-                </div>
+                <hr class="separator">
 
-                <ul class="tags-list">
-                    <li class="tag-pill">{{ announce.type }}</li>
-                    {% if announce.surface %}<li class="tag-pill">{{ announce.surface }} m²</li>{% endif %}
-                    {% if announce.nbPieces %}<li class="tag-pill">{{ announce.nbPieces }} pièces</li>{% endif %}
-                </ul>
-
-                {% if announce.utilisateur %}
-                    <section class="host-card">
+                <div class="host-preview">
+                    <div class="host-info">
                         {% if announce.utilisateur.avatar %}
-                            <img src="{{ announce.utilisateur.avatar }}" class="host-avatar" alt="Avatar">
+                            <img src="{{ announce.utilisateur.avatar }}" alt="Hôte" class="host-avatar">
                         {% else %}
-                            <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" class="host-avatar" alt="Avatar">
+                            <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" alt="Hôte" class="host-avatar">
                         {% endif %}
-
-                        {% set hostTotalNotes = 0 %}
-                        {% set hostCountNotes = 0 %}
-
-                        {% for ann in announce.utilisateur.annonces %}
-                            {% for avis in ann.avis %}
-                                {% set hostTotalNotes = hostTotalNotes + avis.note %}
-                                {% set hostCountNotes = hostCountNotes + 1 %}
-                            {% endfor %}
-                        {% endfor %}
-
-                        {% set hostAverage = hostCountNotes > 0 ? hostTotalNotes / hostCountNotes : 0 %}
-
-                        <div class="host-info">
-                            <h3 class="mb-1">Hôte : {{ announce.utilisateur.prenom }}</h3>
-
-                            <div class="mb-2">
-                                {% if hostCountNotes > 0 %}
-                                    <span class="text-warning"><i class="bi bi-star-fill"></i></span>
-                                    <strong>{{ hostAverage|number_format(1, ',', ' ') }}</strong>
-                                    <span class="text-muted small">({{ hostCountNotes }} avis au total)</span>
-                                {% else %}
-                                    <span class="badge bg-light text-secondary border small">
-                                        <i class="bi bi-star"></i> Nouvel hôte
-                                    </span>
-                                {% endif %}
-                            </div>
-
-                            <p class="text-muted small mb-0">Inscrit en {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
-                        </div>
-                    </section>
-                {% endif %}
-
-                <section>
-                    <h2 class="section-title">Le logement</h2>
-                    <p class="text-content">{{ announce.description }}</p>
-                </section>
-
-                {% if announce.regle is defined and announce.regle is not empty %}
-                    <section>
-                        <h2 class="section-title">Règles de vie</h2>
-                        <p class="text-content">{{ announce.regle }}</p>
-                    </section>
-                {% endif %}
-
-                {% if announce.photos|length > 1 %}
-                    <section>
-                        <h2 class="section-title">Photos</h2>
-                        <div class="mini-gallery">
-                            {% for photo in announce.photos|slice(1) %}
-                                <img src="{{ photo.contenu }}" alt="Photo" onclick="openLightbox({{ loop.index }})">
-                            {% endfor %}
-                        </div>
-                    </section>
-                {% endif %}
-
-                {% if announce.equipements %}
-                    <section>
-                        <h2 class="section-title">Équipements</h2>
-                        <p class="text-content">{{ announce.equipements }}</p>
-                    </section>
-                {% endif %}
-
-                <section class="d-lg-none" style="display:block;">
-                    <h2 class="section-title">Dates</h2>
-                    <div class="tag-pill" style="display:inline-flex;">
-                        <i class="bi bi-calendar3"></i>
-                        {{ announce.disponibiliteDebut|date('d M') }} - {{ announce.disponibiliteFin ? announce.disponibiliteFin|date('d M Y') : 'Indéterminée' }}
-                    </div>
-                </section>
-                <section id="section-avis" class="mt-5 pt-4 border-top">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="section-title mb-0">
-                            <i class="bi bi-star-fill text-warning me-2"></i>
-                            Avis des locataires ({{ announce.avis|length }})
-                        </h2>
-
-                        {% if app.user %}
-                            <a href="{{ path('app_avis_add', {'id': announce.id}) }}" class="btn btn-outline-dark btn-sm rounded-pill">
-                                <i class="bi bi-pencil"></i> Laisser un avis
-                            </a>
-                        {% endif %}
-                    </div>
-
-                    {% if announce.avis is empty %}
-                        <div class="alert alert-light border text-center p-4 rounded-4">
-                            <p class="text-muted mb-0">Ce logement n'a pas encore reçu d'avis.</p>
-                        </div>
-                    {% else %}
-                        <div class="row">
-                            {% for avis in announce.avis %}
-                                <div class="col-12 mb-4">
-                                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <div class="fw-bold me-auto">
-                                                {{ avis.utilisateur ? avis.utilisateur.prenom : 'Anonyme' }}
-                                            </div>
-                                            <div class="text-warning small">
-                                                {% for i in 1..5 %}
-                                                    {% if i <= avis.note %}
-                                                        <i class="bi bi-star-fill"></i>
-                                                    {% else %}
-                                                        <i class="bi bi-star"></i>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-
-                                        <p class="text-muted small mb-1">
-                                            Publié le {{ avis.dateCreation|date('d/m/Y') }}
-                                        </p>
-
-                                        {% if avis.commentaire %}
-                                            <p class="mb-0 mt-2">{{ avis.commentaire }}</p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </section>
-            </div>
-
-            <div class="desktop-sidebar-wrapper">
-                <div class="booking-card">
-                    <div class="card-price-row">
-                        <span class="card-price-amount">{{ announce.prix }}€</span>
-                        <span class="card-price-label">par mois</span>
-                    </div>
-                    <div class="card-dates-box">
-                        <div class="card-date-line">
-                            <span>Arrivée</span>
-                            <span class="card-date-val">{{ announce.disponibiliteDebut|date('d/m/Y') }}</span>
-                        </div>
-                        <div class="card-date-line">
-                            <span>Départ</span>
-                            <span class="card-date-val">{{ announce.disponibiliteFin ? announce.disponibiliteFin|date('d/m/Y') : 'Indéterminée' }}</span>
+                        <div>
+                            <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
+                            <p>Membre depuis {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
                         </div>
                     </div>
-                    {% if app.user %}
-                        <a href="{{ path('app_announce_reserve', {'id': announce.id}) }}" class="btn-card-action btn-reserve-desk">Réserver</a>
-                    {% else %}
-                        <a href="{{ path('app_login') }}" class="btn-card-action btn-reserve-desk">Connexion requise</a>
-                    {% endif %}
-                    <a href="{{ path('app_contact_add', {'id': announce.utilisateur.id}) }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
+                    <a href="{{ path('app_host_reviews', {'id': announce.utilisateur.id}) }}" class="btn-secondary">Voir les avis</a>
+                </div>
+
+                <hr class="separator">
+
+                <div class="description-section">
+                    <h2>À propos de ce logement</h2>
+                    <p>{{ announce.description|nl2br }}</p>
+                </div>
+
+                <hr class="separator">
+
+                <div class="amenities-section">
+                    <h2>Ce que propose ce logement</h2>
+                    <div class="amenities-grid">
+                        <div class="amenity-item"><i class="bi bi-wifi"></i> Wifi haut débit</div>
+                        <div class="amenity-item"><i class="bi bi-tv"></i> Télévision</div>
+                        <div class="amenity-item"><i class="bi bi-p-circle"></i> Parking gratuit</div>
+                        <div class="amenity-item"><i class="bi bi-wind"></i> Climatisation</div>
+                        <div class="amenity-item"><i class="bi bi-egg-fried"></i> Cuisine équipée</div>
+                        <div class="amenity-item"><i class="bi bi-droplet"></i> Lave-linge</div>
+                    </div>
+                </div>
+
+                <hr class="separator">
+
+                <div class="contact-card-info" style="background: #f9fafb; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                    <h2 style="margin-top: 0; font-size: 1.2rem;"><i class="bi bi-info-circle"></i> Informations de contact</h2>
+                    <p style="margin-bottom: 8px;"><strong>Email :</strong> {{ announce.utilisateur.email }}</p>
+                    <p style="margin-bottom: 0;"><strong>Téléphone :</strong> {{ announce.utilisateur.tel|default('Non renseigné') }}</p>
                 </div>
             </div>
 
-            <div class="spacer-footer"></div>
+            <div class="right-column">
+                <div class="sticky-booking-card">
+                    <div class="price-header">
+                        <span class="price">{{ announce.prix }}€</span>
+                        <span class="per-month">/ mois</span>
+                    </div>
 
-        </main>
+                    <div class="booking-details-box">
+                        <div class="detail-row">
+                            <span>Disponibilité</span>
+                            <span class="val">Immédiate</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Frais de service</span>
+                            <span class="val">0€</span>
+                        </div>
+                    </div>
 
+                    <a href="{{ path('app_reservation_reserve', {'id': announce.id}) }}" class="btn-primary-large">Réserver maintenant</a>
+
+                    <p class="no-charge-text">Aucun montant ne sera débité pour le moment</p>
+
+                    <div class="total-row">
+                        <span>Total (hors charges)</span>
+                        <span>{{ announce.prix }}€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <aside class="fixed-bottom-bar">
-        <div class="price-row">
-            <span class="price-amount">{{ announce.prix }}€</span>
-            <span class="price-label">/ mois</span>
-        </div>
-        <div class="buttons-row">
-            <a href="{{ path('app_contact_add', {'id': announce.utilisateur.id}) }}" class="btn-action btn-contact">Contacter</a>
-            {% if app.user %}
-                <a href="{{ path('app_announce_reserve', {'id': announce.id}) }}" class="btn-action btn-reserve">Réserver</a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn-action btn-reserve">Réserver</a>
-            {% endif %}
-        </div>
-    </aside>
-
     <div id="lightbox" class="lightbox">
-        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-        <img id="lightbox-img" src="" class="lightbox-img" alt="Plein écran">
-        <div class="lightbox-nav">
-            <button class="lightbox-btn" onclick="prevImage()"><i class="bi bi-chevron-left"></i></button>
-            <button class="lightbox-btn" onclick="nextImage()"><i class="bi bi-chevron-right"></i></button>
+        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content">
+            <img id="lightboxImg" src="" alt="Zoom Photo">
+            <div class="lightbox-nav">
+                <button onclick="prevImage()"><i class="bi bi-chevron-left"></i></button>
+                <button onclick="nextImage()"><i class="bi bi-chevron-right"></i></button>
+            </div>
         </div>
-        <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
     </div>
 
     <script>
-        const galleryImages = [];
-        {% if announce.photos is not empty %}
-        {% for photo in announce.photos %}
-        galleryImages.push("{{ photo.contenu }}");
-        {% endfor %}
-        {% else %}
-        galleryImages.push("https://picsum.photos/seed/{{ announce.id }}/800/1000");
-        {% endif %}
-
-        let currentHeroIndex = 0;
-        const mainHeroImg = document.getElementById('main-hero-img');
-        const desktopCounter = document.getElementById('desktop-photo-count');
-
-        function moveDesktopCarousel(direction, event) {
-            event.stopPropagation();
-            currentHeroIndex = (currentHeroIndex + direction + galleryImages.length) % galleryImages.length;
-            mainHeroImg.src = galleryImages[currentHeroIndex];
-            if(desktopCounter) desktopCounter.innerText = (currentHeroIndex + 1) + " / " + galleryImages.length;
-        }
-
-        let currentImageIndex = 0;
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const counter = document.getElementById('lightbox-counter');
-
-        function handleHeroClick() {
-            openLightbox(currentHeroIndex);
-        }
+        // --- GESTION LIGHTBOX ---
+        let currentImgIndex = 0;
+        const photos = [
+            {% for photo in announce.photos %}
+            "{{ photo.contenu }}"{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
 
         function openLightbox(index) {
-            currentImageIndex = index;
-            updateLightbox();
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            if (photos.length === 0) return;
+            currentImgIndex = index;
+            document.getElementById('lightboxImg').src = photos[currentImgIndex];
+            document.getElementById('lightbox').style.display = "flex";
+            document.body.style.overflow = "hidden";
         }
+
         function closeLightbox() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            document.getElementById('lightbox').style.display = "none";
+            document.body.style.overflow = "auto";
         }
+
         function nextImage() {
-            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
-            updateLightbox();
+            currentImgIndex = (currentImgIndex + 1) % photos.length;
+            document.getElementById('lightboxImg').src = photos[currentImgIndex];
         }
+
         function prevImage() {
-            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
-            updateLightbox();
-        }
-        function updateLightbox() {
-            lightboxImg.src = galleryImages[currentImageIndex];
-            counter.innerText = (currentImageIndex + 1) + " / " + galleryImages.length;
+            currentImgIndex = (currentImgIndex - 1 + photos.length) % photos.length;
+            document.getElementById('lightboxImg').src = photos[currentImgIndex];
         }
 
-        async function toggleLike(event, announceId) {
+        async function toggleLike(event, announceId, btn) {
             event.stopPropagation();
-            event.preventDefault();
-
-            const isLoggedIn = {{ app.user ? 'true' : 'false' }};
-
-            if (!isLoggedIn) {
-                window.location.href = "{{ path('app_login') }}";
-                return;
-            }
-
-            const btn = event.currentTarget;
             const icon = btn.querySelector('i');
 
+
+            const csrfToken = btn.getAttribute('data-token');
+            const formData = new FormData();
+            if (csrfToken) {
+                formData.append('_token', csrfToken);
+            }
+
             try {
-                const response = await fetch('/announce/' + announceId + '/like', { method: 'POST' });
+                const response = await fetch('/announce/' + announceId + '/like', {
+                    method: 'POST',
+                    body: formData
+                });
+
                 if (response.ok) {
                     const data = await response.json();
 
@@ -373,18 +229,23 @@
                         icon.classList.remove('bi-heart-fill');
                         icon.classList.add('bi-heart');
                     }
+                } else {
+                    console.error("Erreur de sécurité ou accès non autorisé.");
                 }
             } catch (error) { console.error(error); }
         }
 
         let touchStartX = 0;
         let touchEndX = 0;
+        const lightbox = document.getElementById('lightbox');
+
         lightbox.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
         lightbox.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
             if (touchEndX < touchStartX - 50) nextImage();
             if (touchEndX > touchStartX + 50) prevImage();
         });
+
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") closeLightbox();
             if (event.key === "ArrowRight") nextImage();

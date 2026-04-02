@@ -11,7 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 class MessageController extends AbstractController
 {
     #[Route('/message', name: 'app_message')]
@@ -20,11 +22,6 @@ class MessageController extends AbstractController
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
-
-        if (!$currentUser) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $baseContacts = $currentUser->getContacts()->toArray();
         $searchTerm = $request->query->get('q');
         $users = [];
