@@ -139,6 +139,10 @@ class MessageController extends AbstractController
     {
         $user = $this->getUser();
 
+        if (!$user) {
+            return new Response('');
+        }
+
         $count = $em->getRepository(Message::class)->count([
             'recipient' => $user,
             'isRead' => false

@@ -66,6 +66,7 @@ final class AnnounceController extends AbstractController
             'searchEnd' => $dateEnd,
         ]);
     }
+
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/announce/create', name: 'app_announce_create')]
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
@@ -98,10 +99,13 @@ final class AnnounceController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/like', name: 'app_announce_like')]
-    public function like(Announce $announce, EntityManagerInterface $entityManager): JsonResponse
+    public function like(Announce $announce, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-
         $user = $this->getUser();
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('like' . $announce->getId(), $token)) {
+            return $this->json(['message' => 'Action non autorisée, token invalide'], 403);
+        }
 
         $likeRepo = $entityManager->getRepository(UserLikes::class);
         $like = $likeRepo->findOneBy([
@@ -136,6 +140,7 @@ final class AnnounceController extends AbstractController
             'totalLikes' => $totalLikes
         ]);
     }
+
     #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/edit', name: 'app_announce_edit')]
     public function edit(Announce $annonce, Request $request, EntityManagerInterface $em): Response
