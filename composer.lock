@@ -3679,16 +3679,16 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v7.3.9",
+            "version": "v7.3.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "7978f8fcbd86fca55d02f9cd1428a9f8b8cf5d06"
+                "reference": "2793f0559b19b3d45f57fd7548eb65f197a82fbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/7978f8fcbd86fca55d02f9cd1428a9f8b8cf5d06",
-                "reference": "7978f8fcbd86fca55d02f9cd1428a9f8b8cf5d06",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/2793f0559b19b3d45f57fd7548eb65f197a82fbe",
+                "reference": "2793f0559b19b3d45f57fd7548eb65f197a82fbe",
                 "shasum": ""
             },
             "require": {
@@ -3755,7 +3755,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v7.3.9"
+                "source": "https://github.com/symfony/http-client/tree/v7.3.11"
             },
             "funding": [
                 {
@@ -3775,7 +3775,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-23T14:45:27+00:00"
+            "time": "2026-01-27T16:12:03+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -11403,5 +11403,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\UserLikes;
 use App\Form\AnnounceType;
 use App\Repository\AnnounceRepository;
+use App\Service\GeocodingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -84,13 +85,27 @@ final class AnnounceController extends AbstractController
 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     #[Route('/announce/create', name: 'app_announce_create')]
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, GeocodingService $geocodingService): Response
     {
         $annonce = new Announce();
         $form = $this->createForm(AnnounceType::class, $annonce);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $annonce->setUtilisateur($this->getUser());
+            $user = $this->getUser();
+            $annonce->setUtilisateur($user);
+
+            $coords = $geocodingService->getCoordinates(
+                $annonce->getAdresse(),
+                $annonce->getCodePostal(),
+                $annonce->getVille()
+            );
+
+            if ($coords) {
+                $annonce->setLatitude($coords['lat']);
+                $annonce->setLongitude($coords['lon']);
+            }
+
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
                 $fileContent = file_get_contents($image->getPathname());
@@ -102,11 +117,40 @@ final class AnnounceController extends AbstractController
                 $picture->setAnnonce($annonce);
                 $em->persist($picture);
             }
+
             $em->persist($annonce);
+
             $em->flush();
-            $this->addFlash('success', 'Votre annonce a été publiée avec succès.');
+
+            $admins = $em->getRepository(User::class)->findBy(['role' => 2]);
+
+            foreach ($admins as $admin) {
+                $notification = new \App\Entity\Notification();
+                $notification->setRecipient($admin);
+                $notification->setType('validation_annonce');
+
+                $prenom = method_exists($user, 'getPrenom') ? $user->getPrenom() : 'Un utilisateur';
+
+                $url = $this->generateUrl('app_announce_show', ['id' => $annonce->getId()]);
+
+                /** @noinspection HtmlUnknownTarget */
+                $message = sprintf(
+                    'Nouvelle annonce en attente : <strong>"%s"</strong> par %s.<br><a href="%s" style="display: inline-block; margin-top: 8px; padding: 6px 12px; background-color: #0d6efd; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9em; font-weight: 500;">Examiner l\'annonce</a>',
+                    $annonce->getTitre(),
+                    $prenom,
+                    $url
+                );
+
+                $notification->setContent($message);
+                $em->persist($notification);
+            }
+
+            $em->flush();
+            $this->addFlash('success', 'Votre annonce a été soumise et est en attente de validation par un administrateur.');
+
             return $this->redirectToRoute('app_home');
         }
+
         return $this->render('announce/create.html.twig', [
             'formAnnonce' => $form->createView(),
         ]);
@@ -158,7 +202,7 @@ final class AnnounceController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/edit', name: 'app_announce_edit')]
-    public function edit(Announce $annonce, Request $request, EntityManagerInterface $em): Response
+    public function edit(Announce $annonce, Request $request, EntityManagerInterface $em, GeocodingService $geocodingService): Response
     {
         if ($annonce->getUtilisateur() !== $this->getUser()) {
             $this->addFlash('danger', 'Vous ne pouvez pas modifier cette annonce.');
@@ -169,6 +213,17 @@ final class AnnounceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $coords = $geocodingService->getCoordinates(
+                $annonce->getAdresse(),
+                $annonce->getCodePostal(),
+                $annonce->getVille()
+            );
+
+            if ($coords) {
+                $annonce->setLatitude($coords['lat']);
+                $annonce->setLongitude($coords['lon']);
+            }
 
             $images = $form->get('images')->getData();
             foreach ($images as $image) {
@@ -326,5 +381,69 @@ final class AnnounceController extends AbstractController
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
+    }
+
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/admin/announce/{id}/validate', name: 'app_admin_announce_validate', methods: ['POST'])]
+    public function validateAnnounce(Announce $annonce, EntityManagerInterface $em, Request $request): Response
+    {
+        $user = $this->getUser();
+
+        if (!method_exists($user, 'getRole') || $user->getRole() !== 2) {
+            $this->addFlash('danger', 'Accès refusé. Vous n\'êtes pas administrateur.');
+            return $this->redirectToRoute('app_home');
+        }
+
+        if ($this->isCsrfTokenValid('validate' . $annonce->getId(), $request->request->get('_token'))) {
+
+            $annonce->setIsValidated(true);
+
+            $proprietaire = $annonce->getUtilisateur();
+            if ($proprietaire) {
+                $notification = new \App\Entity\Notification();
+                $notification->setRecipient($proprietaire);
+                $notification->setType('annonce_acceptee');
+                $notification->setContent(sprintf('Bonne nouvelle ! Votre annonce "%s" a été validée par un administrateur et est maintenant en ligne.', $annonce->getTitre()));
+                $em->persist($notification);
+            }
+
+            $em->flush();
+            $this->addFlash('success', 'L\'annonce a été validée et publiée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_announce_show', ['id' => $annonce->getId()]);
+    }
+
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/admin/announce/{id}/reject', name: 'app_admin_announce_reject', methods: ['POST'])]
+    public function rejectAnnounce(Announce $annonce, EntityManagerInterface $em, Request $request): Response
+    {
+        $user = $this->getUser();
+
+        if (!method_exists($user, 'getRole') || $user->getRole() !== 2) {
+            $this->addFlash('danger', 'Accès refusé.');
+            return $this->redirectToRoute('app_home');
+        }
+
+        if ($this->isCsrfTokenValid('reject' . $annonce->getId(), $request->request->get('_token'))) {
+
+            $proprietaire = $annonce->getUtilisateur();
+            $titre = $annonce->getTitre();
+
+            $em->remove($annonce);
+
+            if ($proprietaire) {
+                $notification = new \App\Entity\Notification();
+                $notification->setRecipient($proprietaire);
+                $notification->setType('annonce_refusee');
+                $notification->setContent(sprintf('Désolé, votre annonce "%s" n\'a pas été validée car elle ne respecte pas nos critères.', $titre));
+                $em->persist($notification);
+            }
+
+            $em->flush();
+            $this->addFlash('success', 'L\'annonce a été refusée et supprimée de la base de données.');
+        }
+
+        return $this->redirectToRoute('app_home');
     }
 }

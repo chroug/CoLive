@@ -10,13 +10,11 @@
 {% endblock %}
 
 {% block body %}
-
     {% include '_navbar.html.twig' %}
 
     <div class="main-desktop-wrapper">
 
-        <div class="hero-wrapper" id="heroWrapper">
-
+        <div class="hero-wrapper" onclick="openLightbox(0)">
             <a href="javascript:history.back()" class="btn-back-floating" onclick="event.stopPropagation()">
                 <i class="bi bi-arrow-left"></i>
             </a>
@@ -30,141 +28,131 @@
                 </a>
             {% endif %}
 
-            <div class="hero-main-img" onclick="openLightbox(0)">
-                {% if announce.photos is not empty %}
-                    <img src="{{ announce.photos|first.contenu }}" alt="Photo principale">
-                {% else %}
-                    <img src="https://via.placeholder.com/1200x600?text=Pas+de+photo" alt="Pas de photo">
+            {% if announce.photos is not empty %}
+                <img src="{{ announce.photos|first.contenu }}" class="hero-img" alt="Photo principale">
+                <div class="photo-count-badge">1 / {{ announce.photos|length }}</div>
+            {% else %}
+                <img src="https://via.placeholder.com/1200x600?text=Pas+de+photo" class="hero-img" alt="Pas de photo">
+            {% endif %}
+        </div>
+
+        <div class="content-sheet">
+            <div class="left-column">
+
+                {% if app.user and app.user.role == 2 and not announce.isValidated %}
+                    <div style="background: #fff3cd; border: 1px solid #ffe69c; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                        <h5 style="margin-top: 0; color: #856404; font-size: 1.1rem;"><i class="bi bi-gear-fill"></i> Action Administrateur requise</h5>
+                        <p style="color: #856404; margin-bottom: 15px;">Cette annonce est actuellement invisible pour les utilisateurs car elle est en attente de validation.</p>
+                        <div style="display: flex; gap: 15px;">
+                            <form action="{{ path('app_admin_announce_validate', {'id': announce.id}) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ announce.id) }}">
+                                <button type="submit" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                    <i class="bi bi-check-circle"></i> Accepter
+                                </button>
+                            </form>
+                            <form action="{{ path('app_admin_announce_reject', {'id': announce.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir refuser et supprimer définitivement cette annonce ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ announce.id) }}">
+                                <button type="submit" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                    <i class="bi bi-trash"></i> Refuser
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="title-row">
+                    <h1 class="announce-title">{{ announce.titre }}</h1>
+                    <button class="btn-like-big {% if app.user and announce.isLikedByUser(app.user) %}liked{% endif %}"
+                            data-token="{{ csrf_token('like' ~ announce.id) }}"
+                            onclick="toggleLike(event, {{ announce.id }}, this)">
+                        <i class="bi {% if app.user and announce.isLikedByUser(app.user) %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                    </button>
+                </div>
+
+                <div class="announce-location">
+                    <i class="bi bi-geo-alt"></i> {{ announce.ville }}
+                </div>
+
+                <ul class="tags-list">
+                    <li class="tag-pill"><i class="bi bi-house"></i> {{ announce.type }}</li>
+                    <li class="tag-pill"><i class="bi bi-people"></i> Colocation</li>
+                </ul>
+
+                <div class="host-card">
+                    {% if announce.utilisateur.avatar %}
+                        <img src="{{ announce.utilisateur.avatar }}" alt="Hôte" class="host-avatar">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" alt="Hôte" class="host-avatar">
+                    {% endif %}
+                    <div class="host-info">
+                        <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
+                        <p>Membre depuis {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
+                    </div>
+                </div>
+
+                <h2 class="section-title">À propos de ce logement</h2>
+                <div class="text-content">
+                    {{ announce.description|nl2br }}
+                </div>
+
+                {% if announce.photos|length > 1 %}
+                    <h2 class="section-title">Galerie</h2>
+                    <div class="mini-gallery">
+                        {% for i in 1..(announce.photos|length - 1) %}
+                            {% if announce.photos[i] is defined %}
+                                <img src="{{ announce.photos[i].contenu }}" alt="Photo {{ i+1 }}" onclick="openLightbox({{ i }})">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 {% endif %}
             </div>
 
-            <div class="hero-side-imgs">
-                {% for i in 1..2 %}
-                    {% if announce.photos[i] is defined %}
-                        <div class="side-img-item" onclick="openLightbox({{ i }})">
-                            <img src="{{ announce.photos[i].contenu }}" alt="Photo {{ i+1 }}">
+            <div class="desktop-sidebar-wrapper">
+                <div class="booking-card">
+                    <div class="card-price-row">
+                        <span class="card-price-amount">{{ announce.prix }}€</span>
+                        <span class="card-price-label">/ mois</span>
+                    </div>
+                    <div class="card-dates-box">
+                        <div class="card-date-line">
+                            <span>Disponibilité</span>
+                            <span class="card-date-val">Immédiate</span>
                         </div>
-                    {% else %}
-                        <div class="side-img-item empty"></div>
-                    {% endif %}
-                {% endfor %}
+                        <div class="card-date-line">
+                            <span>Frais de service</span>
+                            <span class="card-date-val">0€</span>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_reservation_reserve', {'id': announce.id}) }}" class="btn-card-action btn-reserve-desk">Réserver maintenant</a>
+                    <a href="mailto:{{ announce.utilisateur.email }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
+                </div>
             </div>
-
-            <button class="btn-all-photos" onclick="openLightbox(0)">
-                <i class="bi bi-grid-3x3-gap"></i> Afficher toutes les photos
-            </button>
         </div>
 
-        <div class="content-container">
-            <div class="left-column">
-                <div class="header-section">
-                    <div class="title-row">
-                        <h1>{{ announce.titre }}</h1>
-                        <button class="btn-action-circle {% if app.user and announce.isLikedByUser(app.user) %}liked{% endif %}"
-                                data-token="{{ csrf_token('like' ~ announce.id) }}"
-                                onclick="toggleLike(event, {{ announce.id }}, this)">
-                            <i class="bi {% if app.user and announce.isLikedByUser(app.user) %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
-                            <span class="likes-count">{{ announce.likes|length }}</span>
-                        </button>
-                    </div>
-                    <p class="location-text">{{ announce.ville }} • {{ announce.type }}</p>
-                    <div class="badges-row">
-                        <span class="badge-item"><i class="bi bi-people"></i> Colocation</span>
-                        <span class="badge-item"><i class="bi bi-shield-check"></i> Vérifié</span>
-                    </div>
-                </div>
+        <div class="spacer-footer"></div>
+    </div>
 
-                <hr class="separator">
-
-                <div class="host-preview">
-                    <div class="host-info">
-                        {% if announce.utilisateur.avatar %}
-                            <img src="{{ announce.utilisateur.avatar }}" alt="Hôte" class="host-avatar">
-                        {% else %}
-                            <img src="https://ui-avatars.com/api/?name={{ announce.utilisateur.prenom }}+{{ announce.utilisateur.nom }}&background=000&color=fff" alt="Hôte" class="host-avatar">
-                        {% endif %}
-                        <div>
-                            <h3>Hôte : {{ announce.utilisateur.prenom }}</h3>
-                            <p>Membre depuis {{ announce.utilisateur.dateCreationCompte|date('Y') }}</p>
-                        </div>
-                    </div>
-                    <a href="{{ path('app_host_reviews', {'id': announce.utilisateur.id}) }}" class="btn-secondary">Voir les avis</a>
-                </div>
-
-                <hr class="separator">
-
-                <div class="description-section">
-                    <h2>À propos de ce logement</h2>
-                    <p>{{ announce.description|nl2br }}</p>
-                </div>
-
-                <hr class="separator">
-
-                <div class="amenities-section">
-                    <h2>Ce que propose ce logement</h2>
-                    <div class="amenities-grid">
-                        <div class="amenity-item"><i class="bi bi-wifi"></i> Wifi haut débit</div>
-                        <div class="amenity-item"><i class="bi bi-tv"></i> Télévision</div>
-                        <div class="amenity-item"><i class="bi bi-p-circle"></i> Parking gratuit</div>
-                        <div class="amenity-item"><i class="bi bi-wind"></i> Climatisation</div>
-                        <div class="amenity-item"><i class="bi bi-egg-fried"></i> Cuisine équipée</div>
-                        <div class="amenity-item"><i class="bi bi-droplet"></i> Lave-linge</div>
-                    </div>
-                </div>
-
-                <hr class="separator">
-
-                <div class="contact-card-info" style="background: #f9fafb; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                    <h2 style="margin-top: 0; font-size: 1.2rem;"><i class="bi bi-info-circle"></i> Informations de contact</h2>
-                    <p style="margin-bottom: 8px;"><strong>Email :</strong> {{ announce.utilisateur.email }}</p>
-                    <p style="margin-bottom: 0;"><strong>Téléphone :</strong> {{ announce.utilisateur.tel|default('Non renseigné') }}</p>
-                </div>
-            </div>
-
-            <div class="right-column">
-                <div class="sticky-booking-card">
-                    <div class="price-header">
-                        <span class="price">{{ announce.prix }}€</span>
-                        <span class="per-month">/ mois</span>
-                    </div>
-
-                    <div class="booking-details-box">
-                        <div class="detail-row">
-                            <span>Disponibilité</span>
-                            <span class="val">Immédiate</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Frais de service</span>
-                            <span class="val">0€</span>
-                        </div>
-                    </div>
-
-                    <a href="{{ path('app_reservation_reserve', {'id': announce.id}) }}" class="btn-primary-large">Réserver maintenant</a>
-
-                    <p class="no-charge-text">Aucun montant ne sera débité pour le moment</p>
-
-                    <div class="total-row">
-                        <span>Total (hors charges)</span>
-                        <span>{{ announce.prix }}€</span>
-                    </div>
-                </div>
-            </div>
+    <div class="fixed-bottom-bar">
+        <div class="price-row">
+            <span class="price-amount">{{ announce.prix }}€</span>
+            <span class="price-label">/ mois</span>
+        </div>
+        <div class="buttons-row">
+            <a href="mailto:{{ announce.utilisateur.email }}" class="btn-action btn-contact">Contact</a>
+            <a href="{{ path('app_reservation_reserve', {'id': announce.id}) }}" class="btn-action btn-reserve">Réserver</a>
         </div>
     </div>
 
     <div id="lightbox" class="lightbox">
-        <span class="close-lightbox" onclick="closeLightbox()">&times;</span>
-        <div class="lightbox-content">
-            <img id="lightboxImg" src="" alt="Zoom Photo">
-            <div class="lightbox-nav">
-                <button onclick="prevImage()"><i class="bi bi-chevron-left"></i></button>
-                <button onclick="nextImage()"><i class="bi bi-chevron-right"></i></button>
-            </div>
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <div class="lightbox-nav">
+            <button class="lightbox-btn" onclick="prevImage()"><i class="bi bi-chevron-left"></i></button>
+            <button class="lightbox-btn" onclick="nextImage()"><i class="bi bi-chevron-right"></i></button>
         </div>
+        <img id="lightboxImg" src="" class="lightbox-img" alt="Zoom Photo">
     </div>
 
     <script>
-        // --- GESTION LIGHTBOX ---
         let currentImgIndex = 0;
         const photos = [
             {% for photo in announce.photos %}
@@ -176,12 +164,12 @@
             if (photos.length === 0) return;
             currentImgIndex = index;
             document.getElementById('lightboxImg').src = photos[currentImgIndex];
-            document.getElementById('lightbox').style.display = "flex";
+            document.getElementById('lightbox').classList.add("active");
             document.body.style.overflow = "hidden";
         }
 
         function closeLightbox() {
-            document.getElementById('lightbox').style.display = "none";
+            document.getElementById('lightbox').classList.remove("active");
             document.body.style.overflow = "auto";
         }
 
@@ -199,7 +187,6 @@
             event.stopPropagation();
             const icon = btn.querySelector('i');
 
-
             const csrfToken = btn.getAttribute('data-token');
             const formData = new FormData();
             if (csrfToken) {
@@ -214,11 +201,6 @@
 
                 if (response.ok) {
                     const data = await response.json();
-
-                    const countSpan = btn.querySelector('.likes-count');
-                    if (countSpan && data.totalLikes !== undefined) {
-                        countSpan.innerText = data.totalLikes;
-                    }
 
                     if (data.isLiked) {
                         btn.classList.add('liked');
@@ -252,5 +234,4 @@
             if (event.key === "ArrowLeft") prevImage();
         });
     </script>
-
 {% endblock %}
