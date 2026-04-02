@@ -27,9 +27,6 @@ class ProfileController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
         $totalNote = 0;
         $countNotes = 0;
 
@@ -131,21 +128,25 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/profil/like/remove/{id}', name: 'app_like_remove')]
-    public function removeLike(Announce $annonce, EntityManagerInterface $entityManager): Response
+    #[Route('/profil/like/remove/{id}', name: 'app_like_remove', methods: ['POST'])]
+    public function removeLike(Announce $annonce, Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
 
-        $like = $entityManager->getRepository(UserLikes::class)->findOneBy([
-            'utilisateur' => $user,
-            'announce' => $annonce
-        ]);
+        if ($this->isCsrfTokenValid('remove_like_' . $annonce->getId(), $request->request->get('_token'))) {
+            $like = $entityManager->getRepository(UserLikes::class)->findOneBy([
+                'utilisateur' => $user,
+                'annonce' => $annonce
+            ]);
 
-        if ($like) {
-            $entityManager->remove($like);
-            $entityManager->flush();
+            if ($like) {
+                $entityManager->remove($like);
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Announce retirée de vos favoris.');
+                $this->addFlash('success', 'Annonce retirée de vos favoris.');
+            }
+        } else {
+            $this->addFlash('danger', 'Action non autorisée (Token de sécurité invalide).');
         }
 
         return $this->redirectToRoute('app_profile');
@@ -155,10 +156,6 @@ class ProfileController extends AbstractController
     public function mesFavoris(): Response
     {
         $user = $this->getUser();
-
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
 
         return $this->render('profile/favoris.html.twig', [
             'user' => $user,
