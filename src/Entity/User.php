@@ -163,4 +163,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getPublicTel(): ?string
+    {
+        if (!$this->tel) {
+            return null;
+        }
+
+        $telSansEspaces = str_replace(' ', '', $this->tel);
+        if (strlen($telSansEspaces) < 6) {
+            return 'Numéro masqué';
+        }
+
+        return substr($telSansEspaces, 0, 2) . ' ** ** ** ' . substr($telSansEspaces, -2);
+    }
+
+    public function getPublicEmail(): ?string
+    {
+        if (!$this->email) {
+            return null;
+        }
+
+        $parts = explode('@', $this->email);
+        $name = $parts[0];
+        $domain = $parts[1] ?? '';
+
+        if (strlen($name) > 3) {
+            $maskedName = substr($name, 0, 2) . '***' . substr($name, -1);
+        } else {
+            $maskedName = '***';
+        }
+
+        return $maskedName . '@' . $domain;
+    }
 }
