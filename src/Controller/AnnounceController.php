@@ -96,14 +96,12 @@ final class AnnounceController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/like', name: 'app_announce_like')]
     public function like(Announce $announce, EntityManagerInterface $entityManager): JsonResponse
     {
 
         $user = $this->getUser();
-        if (!$user) {
-            return $this->json(['message' => 'Non autorisé'], 403);
-        }
 
         $likeRepo = $entityManager->getRepository(UserLikes::class);
         $like = $likeRepo->findOneBy([
@@ -222,6 +220,7 @@ final class AnnounceController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/announce/{id}/avis', name: 'app_avis_add', methods: ['GET', 'POST'])]
     public function addAvis(
         \App\Entity\Announce $announce,
@@ -230,10 +229,6 @@ final class AnnounceController extends AbstractController
     ): \Symfony\Component\HttpFoundation\Response {
 
         $user = $this->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-
         $avis = new \App\Entity\Review();
 
         $form = $this->createFormBuilder($avis)
