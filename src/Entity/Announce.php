@@ -2,66 +2,99 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use App\Repository\AnnounceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AnnounceRepository::class)]
 #[ORM\Table(name: "announce")]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Get()
+    ],
+    normalizationContext: ['groups' => ['announce:read']],
+    paginationItemsPerPage: 10
+)]
+#[ApiFilter(SearchFilter::class, properties: ['ville' => 'partial', 'type' => 'exact'])]
+#[ApiFilter(RangeFilter::class, properties: ['prix'])]
+#[ApiFilter(OrderFilter::class, properties: ['dateCreation' => 'DESC', 'prix' => 'ASC'])]
 class Announce
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_annonce", type: "integer")]
+    #[Groups(['announce:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['announce:read'])]
     private ?string $titre = null;
 
     #[ORM\Column(type: "text")]
+    #[Groups(['announce:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['announce:read'])]
     private ?string $type = null;
 
     #[ORM\Column(type: "integer")]
+    #[Groups(['announce:read'])]
     private ?int $nb_pieces = null;
 
     #[ORM\Column(type: "float")]
+    #[Groups(['announce:read'])]
     private ?float $prix = null;
 
     #[ORM\Column(type: "float")]
+    #[Groups(['announce:read'])]
     private ?float $latitude = null;
 
     #[ORM\Column(type: "float")]
+    #[Groups(['announce:read'])]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['announce:read'])]
     private ?string $equipements = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $regle = null;
 
     #[ORM\Column(type: "datetime")]
+    #[Groups(['announce:read'])]
     private \DateTimeInterface $dateCreation;
 
     #[ORM\Column(type: "date")]
+    #[Groups(['announce:read'])]
     private \DateTimeInterface $disponibilite_debut;
 
     #[ORM\Column(type: "date", nullable: true)]
+    #[Groups(['announce:read'])]
     private ?\DateTimeInterface $disponibilite_fin = null;
 
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['announce:read'])]
     private ?string $ville = null;
 
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $code_postal = null;
 
     #[ORM\Column(type: "float", nullable: true)]
+    #[Groups(['announce:read'])]
     private ?float $surface = null;
 
     #[ORM\Column(type: "boolean", options: ["default" => false])]
@@ -75,6 +108,7 @@ class Announce
     private Collection $avis;
 
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: AnnouncePicture::class, cascade: ['remove'], orphanRemoval: true)]
+    #[Groups(['announce:read'])] // <-- C'est ici qu'on dit à l'API d'afficher les photos !
     private Collection $photos;
 
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: UserLikes::class, cascade: ['remove'], orphanRemoval: true)]
@@ -158,6 +192,7 @@ class Announce
         }
         return $this;
     }
+
     public function isLikedByUser(\Symfony\Component\Security\Core\User\UserInterface $user): bool
     {
         foreach ($this->likes as $like) {
