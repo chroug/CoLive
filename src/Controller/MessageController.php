@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_USER')]
@@ -62,66 +62,66 @@ class MessageController extends AbstractController
 
         if ($id) {
             $selectedUser = $entityManager->getRepository(User::class)->find($id);
+            if (!$selectedUser) {
+                throw $this->createNotFoundException('Cette conversation n\'existe pas ou l\'utilisateur a été supprimé.');
+            }
 
-            if ($selectedUser) {
+            if ($request->isMethod('POST')) {
+                $content = $request->request->get('content');
+                $file = $request->files->get('file_upload');
 
-                if ($request->isMethod('POST')) {
-                    $content = $request->request->get('content');
-                    $file = $request->files->get('file_upload');
+                if (!empty($content) || $file) {
+                    $message = new Message();
+                    $message->setContent($content);
+                    $message->setSender($currentUser);
+                    $message->setRecipient($selectedUser);
 
-                    if (!empty($content) || $file) {
-                        $message = new Message();
-                        $message->setContent($content);
-                        $message->setSender($currentUser);
-                        $message->setRecipient($selectedUser);
+                    if ($file) {
+                        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
+                        $fileName = md5(uniqid()) . '.' . $file->guessExtension();
 
-                        if ($file) {
-                            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
-                            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-
-                            try {
-                                $file->move($uploadDir, $fileName);
-                                $message->setAttachment($fileName);
-                            } catch (\Exception $e) {
-                                $this->addFlash('danger', 'Erreur lors de l\'envoi du fichier.');
-                            }
+                        try {
+                            $file->move($uploadDir, $fileName);
+                            $message->setAttachment($fileName);
+                        } catch (\Exception $e) {
+                            $this->addFlash('danger', 'Erreur lors de l\'envoi du fichier.');
                         }
-
-                        $entityManager->persist($message);
-                        $entityManager->flush();
-
-                        return $this->redirectToRoute('app_message_conversation', ['id' => $selectedUser->getId()]);
                     }
-                }
 
-                $messages = $messageRepository->findConversation($currentUser, $selectedUser);
-
-                $hasUnread = false;
-                foreach ($messages as $msg) {
-                    if ($msg->getRecipient()->getId() === $currentUser->getId() && !$msg->isRead()) {
-                        $msg->setIsRead(true);
-                        $hasUnread = true;
-                    }
-                }
-
-                if ($hasUnread) {
+                    $entityManager->persist($message);
                     $entityManager->flush();
 
-                    if (isset($unreadSenders[$selectedUser->getId()])) {
-                        unset($unreadSenders[$selectedUser->getId()]);
-                    }
+                    return $this->redirectToRoute('app_message_conversation', ['id' => $selectedUser->getId()]);
                 }
+            }
 
-                $latestResId = null;
-                foreach ($messages as $msg) {
-                    if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)]/', $msg->getContent(), $matches)) {
-                        $latestResId = (int) $matches[1];
-                    }
-                }
+            $messages = $messageRepository->findConversation($currentUser, $selectedUser);
 
-                if ($latestResId) {
-                    $activeReservation = $reservationRepository->find($latestResId);
+            $hasUnread = false;
+            foreach ($messages as $msg) {
+                if ($msg->getRecipient()->getId() === $currentUser->getId() && !$msg->isRead()) {
+                    $msg->setIsRead(true);
+                    $hasUnread = true;
                 }
+            }
+
+            if ($hasUnread) {
+                $entityManager->flush();
+
+                if (isset($unreadSenders[$selectedUser->getId()])) {
+                    unset($unreadSenders[$selectedUser->getId()]);
+                }
+            }
+
+            $latestResId = null;
+            foreach ($messages as $msg) {
+                if ($msg->getContent() !== null && preg_match('/\[RES_ID:(\d+)]/', $msg->getContent(), $matches)) {
+                    $latestResId = (int) $matches[1];
+                }
+            }
+
+            if ($latestResId) {
+                $activeReservation = $reservationRepository->find($latestResId);
             }
         }
 
