@@ -95,6 +95,56 @@
                     </div>
                 </fieldset>
 
+                <fieldset class="form-fieldset criteria-fieldset">
+                    <legend class="form-legend">Critères</legend>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Budget</label>
+                        <div class="price-inputs">
+                            <div class="input-wrapper">
+                                <span>Min</span>
+                                <label for="min_price"></label><input type="number" id="min_price" name="min_price" value="{{ app.request.query.get('min_price') }}" placeholder="0" min="0">
+                            </div>
+                            <span class="separator">-</span>
+                            <div class="input-wrapper">
+                                <span>Max</span>
+                                <label for="max_price"></label><input type="number" id="max_price" name="max_price" value="{{ app.request.query.get('max_price') }}" placeholder="1500+" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Surface</label>
+                        <div class="custom-select-wrapper">
+                            <label>
+                                <select name="min_surface" class="custom-select">
+                                    <option value="" {% if app.request.query.get('min_surface') == '' %}selected{% endif %}>Toute</option>
+                                    <option value="15" {% if app.request.query.get('min_surface') == '15' %}selected{% endif %}>15 m² +</option>
+                                    <option value="30" {% if app.request.query.get('min_surface') == '30' %}selected{% endif %}>30 m² +</option>
+                                    <option value="50" {% if app.request.query.get('min_surface') == '50' %}selected{% endif %}>50 m² +</option>
+                                </select>
+                            </label>
+                            <i class="bi bi-chevron-down select-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Pièces</label>
+                        <div class="custom-select-wrapper">
+                            <label>
+                                <select name="nb_pieces" class="custom-select">
+                                    <option value="" {% if app.request.query.get('nb_pieces') == '' %}selected{% endif %}>Toutes</option>
+                                    <option value="1" {% if app.request.query.get('nb_pieces') == '1' %}selected{% endif %}>1 pièce</option>
+                                    <option value="2" {% if app.request.query.get('nb_pieces') == '2' %}selected{% endif %}>2 pièces</option>
+                                    <option value="3" {% if app.request.query.get('nb_pieces') == '3' %}selected{% endif %}>3 pièces</option>
+                                    <option value="4" {% if app.request.query.get('nb_pieces') == '4' %}selected{% endif %}>4 pièces +</option>
+                                </select>
+                            </label>
+                            <i class="bi bi-chevron-down select-icon"></i>
+                        </div>
+                    </div>
+                </fieldset>
+
                 <button type="submit" class="btn-submit">Voir les résultats</button>
 
                 <a href="{{ path('app_announce') }}" class="btn-reset-filters">
@@ -116,7 +166,7 @@
                 </button>
             </div>
 
-            <div class="map-container mb-4" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="height: 25px; width: 100%;"></div> <div class="map-container mb-4" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 <div id="map" style="height: 350px; width: 100%; z-index: 1;"></div>
             </div>
 
@@ -272,6 +322,44 @@
             } catch (error) {
                 console.error('Erreur', error);
             }
+        }
+
+        const minPriceInput = document.getElementById('min_price');
+        const maxPriceInput = document.getElementById('max_price');
+
+        if (minPriceInput && maxPriceInput) {
+
+            minPriceInput.addEventListener('input', function() {
+                if (this.value === '') {
+                    maxPriceInput.min = '0';
+                    return;
+                }
+
+                let minVal = parseInt(this.value);
+                if (minVal < 0) minVal = 0;
+
+                maxPriceInput.min = minVal.toString();
+
+                let maxVal = parseInt(maxPriceInput.value);
+                if (isNaN(maxVal) || minVal > maxVal) {
+                    maxPriceInput.value = minVal.toString();
+                }
+            });
+
+            maxPriceInput.addEventListener('input', function() {
+                if (this.value === '') return;
+
+                let maxVal = parseInt(this.value);
+                if (maxVal < 0) {
+                    this.value = '0';
+                    maxVal = 0;
+                }
+
+                let minVal = parseInt(minPriceInput.value);
+                if (!isNaN(minVal) && maxVal < minVal) {
+                    minPriceInput.value = maxVal.toString();
+                }
+            });
         }
     </script>
 {% endblock %}

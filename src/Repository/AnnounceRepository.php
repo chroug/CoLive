@@ -16,7 +16,7 @@ class AnnounceRepository extends ServiceEntityRepository
         parent::__construct($registry, Announce::class);
     }
 
-    public function findByFilters(?string $location, ?string $type, ?string $dateStart, ?string $dateEnd, ?\App\Entity\User $user = null): array
+    public function findByFilters(?string $location, ?string $type, ?string $dateStart, ?string $dateEnd, ?\App\Entity\User $user = null, ?float $minPrice = null, ?float $maxPrice = null, ?float $minSurface = null, ?int $nbPieces = null): array
     {
         $qb = $this->createQueryBuilder('a');
 
@@ -38,6 +38,23 @@ class AnnounceRepository extends ServiceEntityRepository
         if ($dateEnd) {
             $qb->andWhere('a.disponibilite_fin >= :dateEnd')
                 ->setParameter('dateEnd', $dateEnd);
+        }
+
+        if ($minPrice) {
+            $qb->andWhere('a.prix >= :minPrice')
+                ->setParameter('minPrice', $minPrice);
+        }
+        if ($maxPrice) {
+            $qb->andWhere('a.prix <= :maxPrice')
+                ->setParameter('maxPrice', $maxPrice);
+        }
+        if ($minSurface) {
+            $qb->andWhere('a.surface >= :minSurface')
+                ->setParameter('minSurface', $minSurface);
+        }
+        if ($nbPieces) {
+            $qb->andWhere('a.nb_pieces >= :nbPieces')
+                ->setParameter('nbPieces', $nbPieces);
         }
 
         if (empty($location) && $user && method_exists($user, 'getVille') && $user->getVille()) {

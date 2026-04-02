@@ -28,9 +28,24 @@ final class AnnounceController extends AbstractController
         $dateStart = $request->query->get('date_start');
         $dateEnd = $request->query->get('date_end');
 
+        $minPriceRaw = $request->query->get('min_price');
+        $minPrice = ($minPriceRaw !== null && $minPriceRaw !== '') ? (float) $minPriceRaw : null;
+
+        $maxPriceRaw = $request->query->get('max_price');
+        $maxPrice = ($maxPriceRaw !== null && $maxPriceRaw !== '') ? (float) $maxPriceRaw : null;
+
+        $minSurfaceRaw = $request->query->get('min_surface');
+        $minSurface = ($minSurfaceRaw !== null && $minSurfaceRaw !== '') ? (float) $minSurfaceRaw : null;
+
+        $nbPiecesRaw = $request->query->get('nb_pieces');
+        $nbPieces = ($nbPiecesRaw !== null && $nbPiecesRaw !== '') ? (int) $nbPiecesRaw : null;
+
         $user = $this->getUser();
 
-        $announces = $announceRepository->findByFilters($location, $type, $dateStart, $dateEnd, $user);
+        $announces = $announceRepository->findByFilters(
+            $location, $type, $dateStart, $dateEnd, $user,
+            $minPrice, $maxPrice, $minSurface, $nbPieces
+        );
 
         $cityCoords = [
             'Paris'     => ['lat' => 48.8566, 'lon' => 2.3522],
