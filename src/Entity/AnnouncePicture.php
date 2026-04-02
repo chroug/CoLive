@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity]
 #[ORM\Table(name: "announce_picture")]
@@ -12,10 +13,13 @@ class AnnouncePicture
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(name: "id_photoAnnonce", type: "integer")]
+    #[Groups(['announce:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['announce:read'])]
     private ?string $contenu = null;
+
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $dateCreation;
 
@@ -35,5 +39,5 @@ class AnnouncePicture
     public function getDateCreation(): \DateTimeInterface { return $this->dateCreation; }
     public function setDateCreation(\DateTimeInterface $d): self { $this->dateCreation = $d; return $this; }
     public function getAnnonce(): ?Announce { return $this->annonce; }
-    public function setAnnonce(?Announce $a): self { $this->annonce = $a; return $this; }
+    public function setAnnonce(?Announce $annonce): self { $this->annonce = $annonce; return $this; }
 }
