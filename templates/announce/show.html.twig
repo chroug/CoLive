@@ -116,8 +116,8 @@
 
                 <div class="contact-card-info" style="background: #f9fafb; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
                     <h2 style="margin-top: 0; font-size: 1.2rem;"><i class="bi bi-info-circle"></i> Informations de contact</h2>
-                    <p style="margin-bottom: 8px;"><strong>Email :</strong> {{ announce.utilisateur.publicEmail }}</p>
-                    <p style="margin-bottom: 0;"><strong>Téléphone :</strong> {{ announce.utilisateur.publicTel }}</p>
+                    <p style="margin-bottom: 8px;"><strong>Email :</strong> {{ announce.utilisateur.email }}</p>
+                    <p style="margin-bottom: 0;"><strong>Téléphone :</strong> {{ announce.utilisateur.tel|default('Non renseigné') }}</p>
                 </div>
             </div>
 
