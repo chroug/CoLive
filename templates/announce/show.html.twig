@@ -124,7 +124,7 @@
                         </div>
                     </div>
                     <a href="{{ path('app_reservation_reserve', {'id': announce.id}) }}" class="btn-card-action btn-reserve-desk">Réserver maintenant</a>
-                    <a href="mailto:{{ announce.utilisateur.email }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
+                    <a href="{{ path('app_message_conversation', {'id': announce.utilisateur.id}) }}" class="btn-card-action btn-contact-desk">Contacter l'hôte</a>
                 </div>
             </div>
         </div>
@@ -138,7 +138,7 @@
             <span class="price-label">/ mois</span>
         </div>
         <div class="buttons-row">
-            <a href="mailto:{{ announce.utilisateur.email }}" class="btn-action btn-contact">Contact</a>
+            <a href="{{ path('app_message_conversation', {'id': announce.utilisateur.id}) }}" class="btn-action btn-contact">Contact</a>
             <a href="{{ path('app_reservation_reserve', {'id': announce.id}) }}" class="btn-action btn-reserve">Réserver</a>
         </div>
     </div>
